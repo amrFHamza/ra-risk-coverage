@@ -1,0 +1,235 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/coverage-overview"><i class="fa fa-fw fa-asterisk"></i> Overview</a></li>
+  <li><a href="/coverage-heat-maps"><i class="fa fa-fw fa-th-large"></i> Heat map</a></li>
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>  
+  <li class="active"><i class="fa fa-fw fa-briefcase"></i> Product segments</a></li>
+<!--   <li><a href="/coverage-business-process"><i class="fa fa-fw fa-code-fork"></i> Business process</a></li>
+  <li><a href="/coverage-system"><i class="fa fa-fw fa-desktop"></i> Systems</a></li> -->
+</ol>
+<!-- Breadcrumbs -->
+
+<!-- LoB Buttons -->
+		<div class="sm-margins" layout="row" layout-align="space-between center">
+			<a class="btn btn-sm btn-default" ng-class="{'btn-primary': entry.searchProductSegment.LOB == lob.LOB || (!entry.searchProductSegment.LOB && !lob.LOB)}" ng-repeat="lob in lobs | orderBy:['LOB']" ng-click="setFilterLob(lob.LOB)" style="margin-right: 5px;" flex>
+				<div>
+					<h4 class="sm-margins sub-header">
+						<strong ng-if="lob.LOB">{{lob.LOB}}</strong> 
+						<strong ng-if="!lob.LOB">All</strong> 
+						<span style="font-size: 10px;">({{lob.LOB_COUNT}})</span>
+					</h4>
+				</div>
+				<div><i class="fa fa-euro"></i> <strong>{{lob.PS_VALUE | number:0}}</strong></div>
+				<div>( {{lob.PS_TOTAL_VALUE_RATIO | number:4}}% )</div>
+				<div layout="row" layout-align="center center">
+  				<uib-progressbar ng-if="!entry.showMeasureCoverage" class="danger sm-margins" type="success" max="100" value="lob.COVERAGE" flex>
+  					<span style="color: #333">{{lob.COVERAGE|number:2}}%</span>
+  				</uib-progressbar>
+
+  				<uib-progressbar ng-if="entry.showMeasureCoverage" class="danger sm-margins" type="warning" max="100" value="(lob.MEASURE_COVERAGE/lob.LOB_COUNT)" flex>
+  					<span style="color: #333">{{(lob.MEASURE_COVERAGE/lob.LOB_COUNT)|number:2}}%</span>
+  				</uib-progressbar>  				
+  			</div>				
+			</a>
+		</div>
+
+		<!-- Group Buttons -->
+		<h4 ng-if="entry.searchProductSegment.LOB" class="sub-header">
+			Product groups
+		</h4>
+
+		<div ng-if="entry.searchProductSegment.LOB" class="sm-margins" layout="row" layout-align="space-between center">
+			<a class="btn btn-sm btn-default" ng-class="{'btn-info': entry.searchProductSegment.PRODUCT_GROUP_ID !== productGroup.PRODUCT_GROUP_ID && entry.searchProductSegment.PRODUCT_GROUP_ID, 'btn-primary': entry.searchProductSegment.PRODUCT_GROUP_ID == productGroup.PRODUCT_GROUP_ID || !entry.searchProductSegment.PRODUCT_GROUP_ID}" ng-repeat="(pgId, productGroup) in productGroups | filter: {'LOB': entry.searchProductSegment.LOB} | orderBy:['PRODUCT_GROUP']" ng-click="setFilterProductGroup(productGroup.PRODUCT_GROUP_ID)" style="margin-right: 5px;" flex>
+				<div>
+					<h5 class="sm-margins sub-header">
+						<strong>{{productGroup.PRODUCT_GROUP}}</strong> 
+						<span style="font-size: 10px;">({{productGroup.LOB_COUNT}})</span>
+					</div>
+				</h5>
+				<div><i class="fa fa-euro"></i> <strong>{{productGroup.PS_VALUE | number:0}}</strong></div>
+				<div>( {{productGroup.PS_TOTAL_VALUE_RATIO | number:4}}% )</div>
+				<div layout="row" layout-align="center center">
+  				<uib-progressbar ng-if="!entry.showMeasureCoverage" class="sm-margins" type="success" max="100" value="productGroup.COVERAGE" flex>
+  				  <span style="color: #333">{{productGroup.COVERAGE|number:2}}%</span>
+  				</uib-progressbar>
+  				<uib-progressbar ng-if="entry.showMeasureCoverage"  class="sm-margins" type="warning" max="100" value="(productGroup.MEASURE_COVERAGE/productGroup.LOB_COUNT)" flex>
+  				  <span style="color: #333;">{{(productGroup.MEASURE_COVERAGE/productGroup.LOB_COUNT)|number:2}}%</span>
+  				</uib-progressbar>  				
+  			</div>				
+			</a>
+		</div>
+
+
+<div layout="row" layout-align="space-between center">
+  <div flex>
+		<h3 class="sub-header">
+		    <span class="input-group btn-group pull-left">
+		      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        <span class="caret"></span>
+		      </a>
+		      <ul class="dropdown-menu">
+		        <li><a ng-href="#" ng-click="newProductSegment(entry.OPCO_ID, entry.searchProductSegment.PRODUCT_GROUP_ID)"><i class="fa fa-briefcase fa-fw"></i> New product segment</a></li>
+		        <li ng-if="selectedProductSegments.length" class="divider"></li>
+		        <li ng-if="selectedProductSegments.length == 2"><a ng-href="#" ng-click="compareProductSegments(selectedProductSegments)"><i class="fa fa-exchange fa-fw"></i> Compare selected product segments</a></li>
+		        <li ng-if="selectedProductSegments.length"><a ng-href="#" ng-click="deleteProductSegments(selectedProductSegments)"><i class="fa fa-trash fa-fw"></i> Delete selected product segments</a></li>
+		      </ul>
+		    </span> 
+		    &nbsp;
+		    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+		    {{entry.state.data.title}} 
+		    <span ng-if="!entry.showMeasureCoverage"> - risk coverage</span>
+		    <span ng-if="entry.showMeasureCoverage"> - measure coverage</span>
+		</h3> 
+  </div>
+
+  <div>
+    <md-switch class="md-primary md-hue-1 no-margins" ng-model="entry.showMeasureCoverage" md-no-ink aria-label="Show measure coverage" disabled="true"> 
+    	<span ng-if="!entry.showMeasureCoverage">Risk coverage</span>
+    	<span ng-if="entry.showMeasureCoverage">Measure coverage</span>
+    </md-switch>	
+  </div>  
+</div>
+
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+<!-- 
+		<div layout="row">
+			<div flex>
+			  <div class="small no-margins" ng-if="!_und.size(entry.searchProductSegment)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li class="filter-alert"> None </li>
+						    <li><strong>Product segments: </strong></li>
+						    <li>{{filteredProductSegments.length}}</li>			          
+			      </ul>
+			  </div>
+			  <div class="small no-margins" ng-if="_und.size(entry.searchProductSegment)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li ng-repeat="(element, filter) in entry.searchProductSegment" class="filter-alert" ng-if="filter">
+			              <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+			              {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+			          </li>
+						    <li><strong>Product segments: </strong></li>
+						    <li>{{filteredProductSegments.length}}</li>
+			      </ul>
+			  </div>
+			</div>
+		</div> -->	 
+		
+		<div layout="row">
+			<div class="sm-margins" flex>
+		    <ul class="list-inline sm-margins">
+				    <li><strong>Product segments: </strong></li>
+				    <li>{{filteredProductSegments.length}}</li>
+		    </ul>
+		  </div>
+		</div>	 
+
+		<!-- Main table -->
+    <table class="table table-hover table-condensed">		
+      <thead>
+          <tr>
+              <th width="10px"></th>
+              <th width="220px" style="vertical-align: middle; text-align: left;">LOB / Product group</th>
+              <th style="vertical-align: middle; text-align: left;">Product segment</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">Risk nodes</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">RPN</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">Controls</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">Risk flow</th>
+              <th width="120px" style="vertical-align: middle; text-align: right;">Value</th>
+              <th width="200px" style="vertical-align: middle; text-align: center;">    
+              	<span ng-if="!entry.showMeasureCoverage">Risk coverage</span>
+    						<span ng-if="entry.showMeasureCoverage">Measure coverage</span>
+    					</th>
+          </tr>
+<!-- 	        <tr>
+	            <td></td>
+	            <td>
+	            </td>
+	            <td>
+	            	<span layout="row">
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchProductSegment.PRODUCT_SEGMENT"  placeholder="Product segment"/> &nbsp;
+	            	</span>
+	            </td>	            
+	            <td></td>
+	            <td></td>
+	            <td></td>
+	            <td></td>
+	        </tr> -->
+      </thead>
+      <tbody ng-if="!_und.size(filteredProductSegments)">
+        <tr>
+            <td colspan="9">
+                <!-- Spinner -->
+                  <div class="col-sm-12 text-center">
+                    <br><br>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                  </div>
+                <!-- Spinner -->                
+            </td>
+        </tr>
+      </tbody>
+      <tbody ng-repeat="productSegmentGroup in groupFilteredProductSegments" class="table-segment-bottom">
+				<tr class="animation pointer-row" ng-class="{'info':productSegment.SELECTED=='Y'}" ng-repeat="productSegment in productSegmentGroup" ng-click="$event.originalEvent.checkBoxClick || $event.originalEvent.sankeyDiagramClick || riskNodeTable(productSegment.PRODUCT_SEGMENT_ID)">
+					<td style="vertical-align: middle; text-align: center;">
+	          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="productSegment.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Product segment selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="updateSelected()" ng-disabled="isDisabled"> 
+	          </md-checkbox>							
+					</td>
+					<td style="vertical-align: middle; text-align: left;">
+						<div style="font-size: 14px">
+							<strong class="btn-blue">{{productSegment.LOB}}</strong>
+						</div>
+							<strong class="btn-green" flex>{{productSegment.PRODUCT_GROUP}}</strong> 
+					</td>
+					<td style="vertical-align: middle; text-align: left;">
+								<span ng-if="productSegment.PRODUCT_SEGMENT_ID"><strong>{{productSegment.PRODUCT_SEGMENT}}</strong></span>
+								<span ng-if="!productSegment.PRODUCT_SEGMENT_ID"><strong class="btn-red">No segments exist in this product group. </strong> 
+								<a ng-href="#" ng-click="newProductSegment(entry.OPCO_ID, productSegment.PRODUCT_GROUP_ID)" class="btn btn-danger btn-xs" ng-if="!isDisabled"><i class="fa fa-briefcase fa-fw"></i> Create product segment</a> </span>
+					</td>					
+					<td style="vertical-align: middle; text-align: center;">
+						<h4>
+							<span class="label label-primary">{{productSegment.RISK_COUNT}}</span>
+						</h4>
+					</td>
+					<td style="vertical-align: middle; text-align: center;">
+						<h4>
+							<span class="label label-danger">{{productSegment.RPN_COUNT}}</span>
+						</h4>
+					</td>	
+					<td style="vertical-align: middle; text-align: center;">
+						<h4>
+							<span class="label label-default">{{productSegment.CONTROL_COUNT}}</span>
+						</h4>
+					</td>	
+					<td style="vertical-align: middle; text-align: center;">
+							<a ng-disabled="!productSegment.PRODUCT_SEGMENT_ID" class="btn btn-default btn-sm" ng-click="$event.originalEvent.sankeyDiagramClick = true; showSankeyDiagram(productSegment)">
+								<i class="fa fa-lg fa-random"></i> 
+							</a>
+					</td>					
+					<td style="vertical-align: middle; text-align: right;">
+							<div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
+								<i class="fa fa-euro"></i> <strong>{{productSegment.PS_VALUE | number:0}} </strong> 
+							</div>
+							<div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
+								( {{productSegment.PS_TOTAL_VALUE_RATIO | number:4}}% )
+							</div>
+					</td>					
+					<td style="vertical-align: middle;">
+						<span layout-align="center center">
+	    				<uib-progressbar ng-if="!entry.showMeasureCoverage" class="danger no-margins" type="primary" max="100" value="productSegment.COVERAGE">
+	    					<span style="color:#333; white-space:nowrap;">{{productSegment.COVERAGE}}%</span>
+	    				</uib-progressbar>
+
+	    				<uib-progressbar ng-if="entry.showMeasureCoverage" class="danger no-margins" type="warning" max="100" value="productSegment.MEASURE_COVERAGE">
+	    					<span style="color:#333; white-space:nowrap;">{{productSegment.MEASURE_COVERAGE}}%</span>
+	    				</uib-progressbar>	    				
+	    			</span>
+					</td>						
+				</tr>
+			</tbody>
+		</table>
+		<!-- Main table -->
+
+</div>

@@ -1,0 +1,89 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li class="active"><i class="fa fa-desktop"></i> Systems</li>
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li><a href="/procedure-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-cogs"></i> Procedures</a></li>
+  <li ng-if="procedure.TYPE === 'T'"><a href="/dato-info/{{procedure.OPCO_ID}}/{{procedure.NAME}}"><i class="fa fa-edit"></i> Edit dato <strong>{{procedure.NAME}}</strong></a></li> 
+  <li><a href="/scheduler-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-clock-o"></i> Schedulers</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="systemInfo({systemId:'new'})"><i class="fa fa-desktop fa-fw"></i> New system</a></li>
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+    <!-- Filters -->
+    <div class="small no-margins" ng-if="!entry.searchSystem">
+        <ul class="list-inline no-margins">
+            <li><strong>Filters: </strong></li>
+            <li class="filter-alert"> None </li>
+        </ul>
+    </div>
+
+    <div class="small no-margins" ng-if="entry.searchSystem">
+        <ul class="list-inline no-margins">
+            <li><strong>Filters: </strong></li>
+            <li ng-repeat="(element, filter) in entry.searchSystem" class="filter-alert" ng-if="filter">
+                <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+                {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+            </li>
+        </ul>
+    </div>
+    <!-- Filters -->
+
+    <div class="table-responsive" >
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th width="10px" style="text-align:right">#</th>
+                    <th width="200px">System</th>
+                    <th>Description</th>
+                </tr>
+                <tr>                
+                    <th></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchSystem.NAME" placeholder="Name" focus-me="true"/></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchSystem.DESCRIPTION" placeholder="Description" focus-me="false"/></th>
+                </tr>                
+            </thead>
+            <tbody>
+                <tr ng-if="!systems.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>               
+                <tr ng-if="!systems.length && loadFinished"><td colspan="7"><h4>No systems exist yet. You can create a new system from the menu above.</h4></td></tr>
+                <tr class="animation pointer-row" ng-repeat="system in systems | filter:entry.searchSystem" ng-click="systemInfo(system.SYSTEM_ID)" >
+                    <td style="vertical-align:middle; text-align:right">{{$index + 1}}. </td>                               
+                    <td style="vertical-align:middle;">
+                        <strong>{{system.NAME}}</strong> 
+                    </td>
+                    <td style="vertical-align:middle; padding-left:10px;">
+                        <span ng-if="system.DESCRIPTION">{{system.DESCRIPTION}}</span>
+                        <small>
+                            <span ng-if="system.DOCU_LINK"><br/><strong>Documentation:</strong> {{system.DOCU_LINK}}</span>
+                        </small>
+                    </td>                
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

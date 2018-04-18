@@ -1,0 +1,268 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/system-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-desktop"></i> Systems</a></li>  
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li class="active"><i class="fa fa-database"></i> {{datasource.TYPE_TEXT}} <strong>{{datasource.NAME}}</strong></li>
+  <li><a href="/procedure-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-cogs"></i> Procedures</a></li>
+  <li><a href="/scheduler-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-clock-o"></i> Schedulers</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="datasourceInfo({datasourceId:'newDBObject'})"><i class="fa fa-database fa-fw"></i> New DB Object</a></li>
+        <li><a ui-sref="datasourceInfo({datasourceId:'newFile'})"><i class="fa fa-file-text-o fa-fw"></i> New File</a></li>
+        <li><a ui-sref="datasourceInfo({datasourceId:'newEmail'})"><i class="fa fa-envelope fa-fw"></i> New automated Email</a></li>
+        <li class="divider"></li>
+        <li><a ng-href="#" ng-click="clone(datasource.DATASOURCE_ID)"><i class="fa fa-clone fa-fw"></i> Clone</a></li>
+        <li><a ng-href="#" ng-click="delete(datasource.DATASOURCE_ID)"><i class="fa fa-trash fa-fw"></i> Delete</a></li>        
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<form class="form-horizontal" name="datoForm">
+<div ng-if="datasource.TYPE">
+<div class="panel panel-default md-whiteframe-4dp panel-{{datasource.TYPE}}">
+  
+  <div class="panel-heading no-margins">
+
+    <h4 class="no-margins">
+      <i class="fa fa-fw fa-lg" ng-class="{ 'fa-database':datasource.TYPE == 'D', 'fa-file-text-o':datasource.TYPE == 'F', 'fa-envelope':datasource.TYPE == 'E'}"></i> 
+      {{datasource.SUB_TYPE}}
+      {{datasource.TYPE_TEXT}}
+      <strong>
+        {{datasource.NAME}}
+      </strong> 
+      <small>{{entry.lookup.getOpcoById(datasource.OPCO_ID).OPCO_NAME}}</small>
+      
+      <small ng-if="changeRequest" class="alert-danger"> change request </small>
+      <small ng-if="newDato" class="alert-danger"> new dato </small>
+      
+      <span class="label pull-right btn-day">{{datasource.FREQUENCY}}</span>
+      <span class="small label pull-right"><small ng-if="isDisabled">{{flashMessage}}</small></span>
+
+    </h4> 
+  </div>
+  <div class="panel-body" ng-cloak>
+
+      <!-- Procedure -->
+      <div class="form-group">
+          <div class="col-sm-3">
+            <label for="datasourceNAME">{{datasource.TYPE_TEXT}} name</label>
+            <input type="text" name="datasourceNAME" minlength="3" maxlength="255" class="form-control" placeholder="Name" ng-model="datasource.NAME" required ng-disabled="isDisabled" autocomplete="off">
+            <div ng-messages="datoForm.datasourceNAME.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              <div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should be unique and at least 3 characters long</small></div>
+            </div>             
+          </div>  
+
+          <div class="col-sm-3">
+            <label for="datasourceRETENTION">{{datasource.TYPE_TEXT}} retention policy</label>
+            <input type="text" name="datasourceRETENTION" ng-model="datasource.RETENTION_POLICY" placeholder="{{datasource.TYPE_TEXT}} Retention" class="form-control" ng-disabled="isDisabled">           
+          </div>
+
+          <div class="col-sm-4">
+            <label for="procedureINTERFACE">Interface</label>
+            <div layout="row" flex>
+                <select name="procedureINTERFACE" class="form-control selectpicker" ng-options="interface.INTERFACE_ID as interface.INTERFACE_NAME for interface in interfaces" ng-model="datasource.INTERFACE_ID" ng-disabled="isDisabled">
+                  <option value=""></option>
+                </select>
+                <a ng-if="datasource.INTERFACE_ID" class="btn btn-default" ng-href="/interface-info?interfaceId={{datasource.INTERFACE_ID}}"><i class="fa fa-plug"></i></a>         
+            </div>            
+          </div>
+
+          <div class="col-sm-2">
+            <label for="datasourceSTATUS">Status</label>
+            <select name="datasourceSTATUS" class="form-control" ng-model="datasource.STATUS_CODE" ng-disabled="isDisabled" required>
+              <option value="A" default>Active</option>
+              <option value="I">Inactive</option>
+              <option value="D">Development</option>
+              <option value="P">Plan</option>
+            </select>
+            <div ng-messages="datoForm.procedureSTATUS.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+            </div> 
+          </div>
+
+      </div>
+      
+      <!-- File -->
+      <div class="form-group" ng-if="datasource.TYPE == 'F'">
+          <div class="col-sm-3">
+              <label>Host</label>
+              <input name="datasourceHOST" type="text" ng-model="datasource.HOST" placeholder="Host" class="form-control" ng-disabled="isDisabled" required>
+              <div ng-messages="datoForm.datasourceHOST.$error"> 
+                <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              </div>               
+          </div>
+          <div class="col-sm-3">
+              <label>Directory</label>
+              <input name="datasourceDIRECTORY" type="text" ng-model="datasource.DIRECTORY" placeholder="Directory" class="form-control" ng-disabled="isDisabled" required>
+              <div ng-messages="datoForm.datasourceDIRECTORY.$error"> 
+                <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              </div>                
+          </div>
+          <div class="col-sm-2">
+              <label>Filemask</label>
+              <input type="text" ng-model="datasource.FILEMASK" placeholder="File mask" class="form-control" ng-disabled="isDisabled">
+          </div>
+          <div class="col-sm-2">
+              <label>Format</label>
+              <input type="text" ng-model="datasource.FORMAT" placeholder="Format" class="form-control" ng-disabled="isDisabled">
+          </div> 
+          <div class="col-sm-2">
+              <label>Compression</label>
+              <input type="text" ng-model="datasource.COMPRESSION" placeholder="compression" class="form-control" ng-disabled="isDisabled">
+          </div>          
+      </div>
+      <!-- File -->
+
+      <!-- DB Object -->
+      <div class="form-group" ng-if="datasource.TYPE == 'D'">
+          <div class="col-sm-3">
+              <label>DB Owner</label>
+              <input name="datasourceOWNER" type="text" ng-model="datasource.OWNER" placeholder="DB Owner" class="form-control" ng-disabled="isDisabled" required>
+              <div ng-messages="datoForm.datasourceOWNER.$error"> 
+                <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              </div>               
+          </div>
+          <div class="col-sm-9">
+              <label>Comment</label>
+              <input type="text" ng-model="datasource.COMMENT" placeholder="Comment" class="form-control" ng-disabled="isDisabled">
+          </div>     
+      </div>
+      <!-- Control -->
+
+      <!-- Solution -->
+      <div class="form-group" ng-if="datasource.TYPE == 'E'">
+          <div class="col-sm-3">
+              <label>Subject</label>
+              <input type="text" ng-model="datasource.SUBJECT" placeholder="Subject" class="form-control" ng-disabled="isDisabled">
+          </div>
+          <div class="col-sm-9">
+              <label>Recipients</label>
+              <input type="text" ng-model="datasource.RECIPIENTS" placeholder="Recipients" class="form-control" ng-disabled="isDisabled">
+          </div>  
+      </div>      
+      <!-- Solution -->
+
+			<!-- Description -->
+      <div class="form-group">
+          <div class="col-sm-12">
+              <label for="datasourceDESCRIPTION">Description</label>
+              <textarea msd-elastic name="datasourceDESCRIPTION" type="text" class="form-control" placeholder="Description" ng-model="datasource.DESCRIPTION" rows="3" ng-disabled="isDisabled"></textarea>         
+          </div>
+      </div>
+			<!-- Description -->
+
+      <!-- I/O -->
+      <md-content layout="row" layout-align="top space-around">
+        <md-card flex="50" class="md-whiteframe-2dp">
+          <md-card-header layout-align="start center" class="xs-padding panel-header-grey">
+            <i class="fa fa-fw fa-upload fa-rotate-90 fa-2x"></i>
+            <strong>Is output from</strong>
+          </md-card-header>
+          <md-card-content class="sm-padding" layout="column" flex>
+             <div class="table-responsive" >
+                  <table class="table table-hover table-condensed borderless">
+                      <tbody>
+                          <tr class="animation pointer-row" ng-repeat="procedure in datasource.links | filter:{'DIRECTION': 'O'}" ui-sref="procedureInfo({procedureId: procedure.PROCEDURE_ID})" >
+                              <td style="vertical-align:middle; text-align:center">
+                                  <i class="fa fa-fw fa-lg" ng-class="{   'fa-cog':procedure.TYPE == 'J', 
+                                                                          'fa-area-chart':procedure.TYPE == 'C',
+                                                                          'fa-cube':procedure.TYPE == 'T',
+                                                                          'fa-puzzle-piece':procedure.TYPE == 'S',
+                                  }"></i> 
+                              </td>                
+                              <td style="vertical-align:middle">{{procedure.SUB_TYPE}} {{procedure.TYPE_TEXT | lowercase}}</td>
+                              <td class="node-{{procedure.TYPE}}"></td>                
+                              <td style="vertical-align:middle; padding-left:10px;">
+                                  <strong>{{procedure.NAME}}</strong> <i class="fa fa-fw" ng-class="{'fa-check-square btn-green':procedure.STATUS_CODE == 'A', 'fa-minus-square btn-red':procedure.STATUS_CODE == 'I', 'fa-pencil-square btn-blue':procedure.STATUS_CODE == 'D', 'fa-plus-square btn-grey':procedure.STATUS_CODE == 'P'}"></i></br>
+                                  <span ng-if="procedure.DESCRIPTION">{{procedure.DESCRIPTION}}</br></span>
+                                      <small>
+                                          <span ng-if="procedure.TYPE == 'S' && procedure.SOLUTION_CONTACT_ID"><strong>Contact:</strong> {{entry.lookup.getContactById(procedure.SOLUTION_CONTACT_ID).NAME}}</span>
+                                          <span ng-if="procedure.TYPE == 'S' && procedure.SOX_RELEVANT == 'Y'"><strong>Sox Relevant</strong></span>
+                                          
+                                          <span ng-if="procedure.TYPE == 'J' && procedure.CODE_LOCATION"><strong>Code location:</strong> {{procedure.CODE_LOCATION}} <strong ng-if="procedure.JOB_PARAMETERS">Parameters:</strong> {{procedure.JOB_PARAMETERS}}</span>
+                                          
+                                          <span ng-if="procedure.SCHEDULE_NAME"><strong>Schedule:</strong> {{procedure.SCHEDULE_NAME}}</span>
+                                          <span ng-if="procedure.SCHEDULE_TYPE"><strong>Schedule type:</strong> {{procedure.SCHEDULE_TYPE_TEXT}}</span>
+                                          <span ng-if="procedure.FREQUENCY"><strong>Frequency:</strong> {{procedure.FREQUENCY_TEXT}}</span>
+                                      </small>
+                              </td>
+                              <td style="vertical-align:middle; text-align: center"><h4><span class="label btn-day">{{procedure.FREQUENCY}}</span></h4></td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </md-card-content>
+        </md-card>        
+
+        <md-card flex="50" class="md-whiteframe-2dp">
+          <md-card-header layout-align="end center" class="xs-padding panel-header-grey">
+            <strong>Used as input in</strong>
+            <i class="fa fa-fw fa-download fa-rotate-270 fa-2x"></i>
+          </md-card-header>
+          <md-card-content class="sm-padding" layout="column" flex>
+             <div class="table-responsive" >
+                  <table class="table table-hover table-condensed borderless">
+                      <tbody>
+                          <tr class="animation pointer-row" ng-repeat="procedure in datasource.links | filter:{'DIRECTION': 'I'}" ui-sref="procedureInfo({procedureId: procedure.PROCEDURE_ID})" >
+                              <td style="vertical-align:middle; text-align:center">
+                                  <i class="fa fa-fw fa-lg" ng-class="{   'fa-cog':procedure.TYPE == 'J', 
+                                                                          'fa-area-chart':procedure.TYPE == 'C',
+                                                                          'fa-cube':procedure.TYPE == 'T',
+                                                                          'fa-puzzle-piece':procedure.TYPE == 'S',
+                                  }"></i> 
+                              </td>                
+                              <td style="vertical-align:middle">{{procedure.SUB_TYPE}} {{procedure.TYPE_TEXT | lowercase}}</td>
+                              <td class="node-{{procedure.TYPE}}"></td>                
+                              <td style="vertical-align:middle; padding-left:10px;">
+                                  <strong>{{procedure.NAME}}</strong> <i class="fa fa-fw" ng-class="{'fa-check-square btn-green':procedure.STATUS_CODE == 'A', 'fa-minus-square btn-red':procedure.STATUS_CODE == 'I', 'fa-pencil-square btn-blue':procedure.STATUS_CODE == 'D', 'fa-plus-square btn-grey':procedure.STATUS_CODE == 'P'}"></i></br>
+                                  <span ng-if="procedure.DESCRIPTION">{{procedure.DESCRIPTION}}</br></span>
+                                      <small>
+                                          <span ng-if="procedure.TYPE == 'S' && procedure.SOLUTION_CONTACT_ID"><strong>Contact:</strong> {{entry.lookup.getContactById(procedure.SOLUTION_CONTACT_ID).NAME}}</span>
+                                          <span ng-if="procedure.TYPE == 'S' && procedure.SOX_RELEVANT == 'Y'"><strong>Sox Relevant</strong></span>
+                                          
+                                          <span ng-if="procedure.TYPE == 'J' && procedure.CODE_LOCATION"><strong>Code location:</strong> {{procedure.CODE_LOCATION}} <strong ng-if="procedure.JOB_PARAMETERS">Parameters:</strong> {{procedure.JOB_PARAMETERS}}</span>
+                                          
+                                          <span ng-if="procedure.SCHEDULE_NAME"><strong>Schedule:</strong> {{procedure.SCHEDULE_NAME}}</span>
+                                          <span ng-if="procedure.SCHEDULE_TYPE"><strong>Schedule type:</strong> {{procedure.SCHEDULE_TYPE_TEXT}}</span>
+                                          <span ng-if="procedure.FREQUENCY"><strong>Frequency:</strong> {{procedure.FREQUENCY_TEXT}}</span>
+                                      </small>
+                              </td>
+                              <td style="vertical-align:middle; text-align: center"><h4><span class="label btn-day">{{procedure.FREQUENCY}}</span></h4></td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </md-card-content>
+        </md-card>
+      </md-content>
+      <!-- I/O -->
+    </div> 
+
+    <!-- Buttons -->
+    <div class="panel-footer no-margins">
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <button ng-if="!isDisabled" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+          <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+          <a type="button" class="btn btn-default" ng-href="/dataflow-graph?datasourceId={{datasource.DATASOURCE_ID}}"><i class="fa fa-sitemap"></i> Dataflow graph</a>            
+        </div>
+      </div>
+    </div>
+    <!-- Buttons -->
+
+</div>
+</div>
+</form>

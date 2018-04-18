@@ -1,0 +1,78 @@
+<div class="panel panel-default md-padding">
+
+    <!-- Main table -->
+    <table class="table table-hover table-condensed">   
+      <thead>
+          <tr>
+              <th width="220px" style="vertical-align: middle; text-align: left;">LOB / Product group</th>
+              <th style="vertical-align: middle; text-align: left;">Product segment</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">Risk nodes</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">RPN</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;">Controls</th>
+              <th width="120px" style="vertical-align: middle; text-align: right;">Value</th>
+              <th width="120px" style="vertical-align: middle; text-align: right;">Coverage</th>
+          </tr>
+      </thead>
+      <tbody ng-if="!_und.size(filteredProductSegments)">
+        <tr>
+            <td colspan="9">
+                <!-- Spinner -->
+                  <div class="col-sm-12 text-center">
+                    <br><br>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                  </div>
+                <!-- Spinner -->                
+            </td>
+        </tr>
+      </tbody>
+      <tbody ng-repeat="productSegmentGroup in groupFilteredProductSegments" class="table-segment-bottom">
+        <tr class="animation pointer-row" ng-class="{'info':productSegment.SELECTED=='Y'}" ng-repeat="productSegment in productSegmentGroup" ng-click="selectProductSegment(productSegment)">
+
+          <td style="vertical-align: middle; text-align: left;">
+            <div style="font-size: 14px">
+              <strong class="btn-blue">{{productSegment.LOB}}</strong>
+            </div>
+              <strong class="btn-green" flex>{{productSegment.PRODUCT_GROUP}}</strong> 
+          </td>
+          <td style="vertical-align: middle; text-align: left;">
+                <span ng-if="productSegment.PRODUCT_SEGMENT_ID"><strong>{{productSegment.PRODUCT_SEGMENT}}</strong></span>
+                <span ng-if="!productSegment.PRODUCT_SEGMENT_ID"><strong class="btn-red">No segments exist in this product group. </strong> 
+                <a ng-href="#" ng-click="newProductSegment(entry.OPCO_ID, productSegment.PRODUCT_GROUP_ID)" class="btn btn-danger btn-xs" ng-if="!isDisabled"><i class="fa fa-briefcase fa-fw"></i> Create product segment</a> </span>
+          </td>         
+          <td style="vertical-align: middle; text-align: center;">
+            <h4>
+              <span class="label label-primary">{{productSegment.RISK_COUNT}}</span>
+            </h4>
+          </td>
+          <td style="vertical-align: middle; text-align: center;">
+            <h4>
+              <span class="label label-danger">{{productSegment.RPN_COUNT}}</span>
+            </h4>
+          </td> 
+          <td style="vertical-align: middle; text-align: center;">
+            <h4>
+              <span class="label label-default">{{productSegment.CONTROL_COUNT}}</span>
+            </h4>
+          </td> 
+       
+          <td style="vertical-align: middle; text-align: right;">
+              <div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
+                <i class="fa fa-euro"></i> <strong>{{productSegment.PS_VALUE | number:0}} </strong> 
+              </div>
+              <div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
+                ( {{productSegment.PS_TOTAL_VALUE_RATIO | number:4}}% )
+              </div>
+          </td>   
+
+          <td style="vertical-align: middle; text-align: right;">
+            <h4>
+              <span class="label label-default">{{productSegment.COVERAGE | number:0}}%</span>
+            </h4>
+          </td>         
+         
+        </tr>
+      </tbody>
+    </table>
+    <!-- Main table -->
+
+</div>

@@ -1,0 +1,171 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li class="active"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</li>
+  <li><a href="/key-risk-areas"><i class="fa fa-fw fa-map"></i> Key Risk Areas</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+	<span class="input-group btn-group pull-left">
+		<a class="btn btn-primary dropdown-toggle no-margins no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="isDisabled">
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a ui-sref="riskInfo({riskId:'newRisk'})"><i class="fa fa-exclamation-triangle fa-fw"></i> New risk</a></li>
+		</ul>
+	</span> 
+	&nbsp;
+  <strong class="btn-blue">Global</strong>		
+	{{entry.state.data.title}} 
+</h3> 
+
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+		<!-- Process buttons -->
+		<div class="sm-margins" layout="row" layout-align="space-between center">
+			<a class="btn btn-sm btn-default" ng-click="setFilterBusinessProcess(0)" style="margin-right: 5px;" flex>All</a>
+			<a class="btn btn-sm btn-default label-process-{{businessProcess.BUSINESS_PROCESS_ID}}" ng-repeat="businessProcess in businessProcesses" ng-click="setFilterBusinessProcess(businessProcess.BUSINESS_PROCESS)" style="margin-right: 5px;" flex>
+				{{businessProcess.BUSINESS_PROCESS}}
+			</a>
+		</div>
+	
+		<div layout="row">
+			<div flex>
+			  <!-- Filters -->
+			  <div class="small no-margins" ng-if="!_und.size(entry.searchRiskCatalogue)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li class="filter-alert"> None </li>
+						    <li><strong>Risks: </strong></li>
+						    <li>{{filteredRisks.length}}</li>			          
+			      </ul>
+			  </div>
+			  <div class="small no-margins" ng-if="_und.size(entry.searchRiskCatalogue)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li ng-repeat="(element, filter) in entry.searchRiskCatalogue" class="filter-alert" ng-if="filter">
+			              <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+			              {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+			          </li>
+						    <li><strong>Risks: </strong></li>
+						    <li>{{filteredRisks.length}}</li>
+			      </ul>
+			  </div>
+			  <!-- Filters -->
+			</div>
+			<div>
+        <md-switch class="md-primary md-hue-1 no-margins" ng-model="entry.expandSubRisk" md-no-ink aria-label="Expand sub-risks"> 
+        	Show sub-risks
+        </md-switch>				
+			</div>
+		</div>	
+
+		<!-- Main table -->
+    <table class="table table-hover table-condensed">		
+      <thead>
+          <tr>
+              <th width="10px"></th>
+              <th width="30px"></th>
+              <th width="30px"></th>
+              <th width="5px"></th>
+              <th style="vertical-align: middle; text-align: left; padding-left:10px;">Risk</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">Sub-risks</th>
+              <th width="80px" style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">Measures</th>
+              <th width="50px" style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">Source</th>
+          </tr>
+	        <tr>
+	            <td></td>
+	            <td></td>
+	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.RISK_ID" placeholder="ID"/></td>
+	            <td></td>
+	            <td>
+	            	<span layout="row">
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.BUSINESS_PROCESS"  placeholder="Business process"/> &nbsp;
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.BUSINESS_SUB_PROCESS"  placeholder="Business sub-process"/> &nbsp;
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.RISK"  placeholder="Risk"/>
+	            	</span>
+	            </td>
+	            <td ng-if="!entry.expandSubRisk"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.SUB_RISK_COUNT"  placeholder=""/></td>
+	            <td ng-if="!entry.expandSubRisk"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.MEASURES_COUNT"  placeholder=""/></td>
+	            <td style="text-align:center;" ng-if="!entry.expandSubRisk"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.SOURCE" placeholder=""/></td>
+	        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!filteredRisks.length && !loadFinished">
+            <td colspan="9">
+                <!-- Spinner -->
+                  <div class="col-sm-12 text-center">
+                    <br><br>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                  </div>
+                <!-- Spinner -->                
+            </td>
+        </tr>   
+        <tr ng-if="!filteredRisks.length && loadFinished">
+            <td colspan="9">
+                <h4>No risks found.</h4>
+            </td>
+        </tr>   
+
+				<tr class="animation pointer-row" ng-class="{'info':risk.SELECTED=='Y'}" ng-repeat="risk in filteredRisks" ng-click="$event.originalEvent.checkBoxClick || riskInfo(risk.RISK_ID, risk.BUSINESS_SUB_PROCESS_ID)">
+					<td style="vertical-align: middle; text-align: center;">
+	          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="risk.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="printSelected()" ng-disabled="isDisabled"> 
+	          </md-checkbox>							
+					</td>
+					<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}} |</span></td>			
+					<td style="vertical-align: middle; text-align: center;"><strong ng-if='risk.RISK_ID'>{{risk.RISK_ID}}</strong> <span ng-if='!risk.RISK_ID' ng-class="{'btn-red': !risk.RISK_ID.length, 'btn-green': risk.RISK_ID.length > 0}"><strong>ERR</strong></span></td>
+					<td style="vertical-align: middle; text-align: left;" class="label-process-{{risk.BUSINESS_PROCESS_ID}}"></td>
+					<td style="vertical-align: middle; text-align: left; padding-left:10px;">
+						<span style="font-size: 14px" class="btn-process-{{risk.BUSINESS_PROCESS_ID}}">
+							<strong>{{risk.BUSINESS_PROCESS}}</strong> 
+							<i class="fa fa-fw fa-dot-circle-o"></i> 
+							<span>{{risk.BUSINESS_SUB_PROCESS}}</span> 
+						</span>
+						<small class="btn-grey">(ID# {{risk.BUSINESS_SUB_PROCESS_ID}})</small>
+						<br/>
+						<span ng-if="risk.RISK_ID">
+							<span style="font-size: 14px">
+								<strong>{{risk.RISK}}</strong> 
+							</span>	
+							<span ng-if="risk.RISK_DESCRIPTION" class="no-margins">
+								<br/>
+								{{risk.RISK_DESCRIPTION}}
+							</span>
+							<span ng-if="risk.RISK_CATEGORY"> 
+								<i class="fa fa-fw fa-caret-right"></i> <span>{{risk.RISK_CATEGORY}}</span>
+							</span>
+
+							<div ng-if="entry.expandSubRisk" layout="row">
+								<div style="width: 20px">
+								</div>
+								<div flex>
+							    <table class="table table-condensed sm-margins">		
+						        <tbody>				    	
+											<tr  class="info" ng-repeat="subRisk in getSubRisks(risk.RISK_ID)">
+												<td width="30px" style="vertical-align: middle; text-align: right;">{{$index + 1}}|</td>
+												<td width="30px" class="cvg-tablecell-center"><strong>{{subRisk.SUB_RISK_ID}}</strong></td>
+												<td>{{subRisk.SUB_RISK}}</td>
+												<td width="50px" class="cvg-tablecell-center">{{subRisk.BASE_LIKELIHOOD}}</td>
+												<td width="50px" class="cvg-tablecell-center">{{subRisk.BASE_IMPACT}}</td>
+												<td width="50px" class="cvg-tablecell-center">{{subRisk.SOURCE}}</td>
+			                  <td width="20px" class="cvg-tablecell-center"><i class="fa fa-lg fa-fw btn-grey" ng-class="{'fa-check-square':subRisk.RELEVANT=='Y', 'fa-square-o':subRisk.RELEVANT=='N'}"></i></td>									
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</span>
+						<span ng-if="!risk.RISK_ID">
+							<span class="btn-red">No risks defined for this sub-process</span> <span ng-if="risk.RISK_DESCRIPTION"> <i class="fa fa-fw fa-caret-right"></i> <span class="btn-grey">{{risk.RISK_DESCRIPTION}}</span></span>
+						</span>						
+					</td>
+					<td style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk"><h3><span class="label label-process-{{risk.BUSINESS_PROCESS_ID}}">{{risk.SUB_RISK_COUNT}}</span></h3></td>
+					<td style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk"><h3><span class="label label-default">{{risk.MEASURES_COUNT}}</span></h3></td>
+					<td style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">{{risk.SOURCE}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- Main table -->
+
+</div>

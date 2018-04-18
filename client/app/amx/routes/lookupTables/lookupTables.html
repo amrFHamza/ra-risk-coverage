@@ -1,0 +1,203 @@
+
+<div>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+	<li role="presentation" class="active">
+		<a href="#contacts" aria-controls="contacts" role="tab" data-toggle="tab">
+			<i class="fa fa-lg fa-group fa-fw"></i>
+			Contacts
+		</a>
+	</li>
+	<li role="presentation">
+		<a href="#systems" aria-controls="systems" role="tab" data-toggle="tab">
+			<i class="fa fa-lg fa-desktop fa-fw"></i>
+			Systems
+		</a>
+	</li>
+	<li role="presentation">
+		<a href="#bill-cycles" aria-controls="bill-cycles" role="tab" data-toggle="tab">
+			<i class="fa fa-lg fa-calendar-check-o fa-fw"></i>
+			Bill cycles
+		</a>
+	</li>
+	<li role="presentation">
+		<a href="#reglas" aria-controls="reglas" role="tab" data-toggle="tab">
+			<i class="fa fa-lg fa-download fa-fw"></i>
+			Export
+		</a>
+	</li>
+</ul>
+
+<div class="tab-content">
+
+	<!-- Contacts -->
+	<div role="tabpanel" class="tab-pane fade in active" id="contacts">
+		
+		<h3 class="sub-header">
+			<strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+			contacts
+		</h3> 
+
+		<div class="table-responsive">
+		  <table class="table table-striped table-condensed">
+		      <thead>
+		        <tr>
+		          <th>&nbsp;</th>
+		          <th>&nbsp;</th>
+		          <th>Contact type</th>
+		          <th>Contact name</th>
+		          <th>Email</th>
+		          <th width="50px">&nbsp;</th>
+		        </tr>
+		      </thead>
+		      <tbody>
+		        <tr ng-repeat="contact in entry.lookup.contacts | opcoFilter:entry.OPCO_ID">
+		          <td style="vertical-align:middle">{{$index+1}}.</td>
+		          <td style="vertical-align:middle"><strong>{{entry.lookup.getOpcoById(contact.OPCO_ID).COUNTRY_CODE}}</strong></td>
+		          <td style="vertical-align:middle">
+				        <select class="form-control input-sm" ng-required="true" ng-model="contact.CONTACT_TYPE" ng-disabled="contact.OPCO_ID != entry.currentUser.userOpcoId">
+				          <option value="P">Contact Person</option>
+				          <option value="H">Division Director (Title: Name, Division)</option>
+				          <option value="G">Department / Group</option>
+				        </select>
+		          </td>							
+		          <td style="vertical-align:middle"><input type="text" class="form-control input-sm" ng-model="contact.NAME" ng-disabled="contact.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle"><input type="text" class="form-control input-sm" ng-model="contact.EMAIL" ng-disabled="contact.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle" ng-if="contact.CONTACT_ID"><a class="btn btn-primary btn-sm" ng-click="deleteContact(contact.CONTACT_ID)" ng-if="contact.OPCO_ID == entry.currentUser.userOpcoId" tooltip="Delete" tooltip-trigger="mouseenter" tooltip-placement="top" ><i class="fa fa-trash"></i></a></td>
+		        </tr>
+		      </tbody>
+		  </table>
+		</div>
+		<a ng-if="entry.OPCO_ID == entry.currentUser.userOpcoId || entry.OPCO_ID == 0" class="btn btn-primary" ng-click="addContact()"><i class="fa fa-plus"></i> Add new contact</a>
+		<a ng-if="entry.OPCO_ID == entry.currentUser.userOpcoId || entry.OPCO_ID == 0" class="btn btn-primary" ng-click="saveContact()"><i class="fa fa-save"></i> Save changes</a>
+
+	</div>
+
+	<!-- Systems -->
+	<div role="tabpanel" class="tab-pane fade" id="systems">
+
+		<h3 class="sub-header">
+			<strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+			systems
+		</h3> 
+		<div class="table-responsive">
+		  <table class="table table-striped table-condensed">
+		      <thead>
+		        <tr>
+		          <th>&nbsp;</th>
+		          <th>&nbsp;</th>
+		          <th>System name</th>
+		          <th>Description</th>
+		          <th width="50px">&nbsp;</th>
+		        </tr>
+		      </thead>
+		      <tbody>
+		        <tr ng-repeat="system in entry.lookup.systems | opcoFilter:entry.OPCO_ID">
+		          <td style="vertical-align:middle">{{$index+1}}.</td>
+							<td style="vertical-align:middle"><strong>{{entry.lookup.getOpcoById(system.OPCO_ID).COUNTRY_CODE}}</strong></td>
+		          <td style="vertical-align:middle"><input type="text" class="form-control input-sm" ng-model="system.NAME" ng-disabled="system.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle"><input type="text" class="form-control input-sm" ng-model="system.DESCRIPTION" ng-disabled="system.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle" ng-if="system.SYSTEM_ID"><a class="btn btn-primary btn-sm" ng-click="deleteSystem(system.SYSTEM_ID)" ng-if="system.OPCO_ID == entry.currentUser.userOpcoId" tooltip="Delete" tooltip-trigger="mouseenter" tooltip-placement="top" ><i class="fa fa-trash"></i></a></td>
+		        </tr>
+		      </tbody>
+		  </table>
+		</div>
+		<a ng-if="entry.OPCO_ID == entry.currentUser.userOpcoId || entry.OPCO_ID == 0" class="btn btn-primary" ng-click="addSystem()"><i class="fa fa-plus"></i> Add new system</a>
+		<a ng-if="entry.OPCO_ID == entry.currentUser.userOpcoId || entry.OPCO_ID == 0" class="btn btn-primary" ng-click="saveSystem()"><i class="fa fa-save"></i> Save changes</a>
+
+	</div>
+
+	<!-- Bill cycles -->
+	<div role="tabpanel" class="tab-pane fade" id="bill-cycles">
+
+		<h3 class="sub-header">
+			<strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+			bill cycles
+		</h3> 
+
+		<div class="table-responsive">
+		  <table class="table table-striped table-condensed">
+		      <thead>
+		        <tr>
+		          <th width="50px">&nbsp;</th>
+		          <th>&nbsp;</th>
+		          <th>Cycle code <i class="fa fa-info-circle" tooltip="Must be numeric" tooltip-trigger="mouseenter" tooltip-placement="top"></i></th>
+		          <th>Description</th>
+		          <th>Cycle Close Day <i class="fa fa-info-circle" tooltip="0 if cycle close date is end of the month" tooltip-trigger="mouseenter" tooltip-placement="top"></i> </th>
+		          <th>Cycle type</th>
+		          <th width="50px">&nbsp;</th>
+		        </tr>
+		      </thead>
+		      <tbody>
+		        <tr ng-repeat="cycle in entry.lookup.billCycles | opcoFilter:entry.OPCO_ID">
+		          <td style="vertical-align:middle">{{$index+1}}.</td>
+							<td style="vertical-align:middle"><strong>{{entry.lookup.getOpcoById(cycle.OPCO_ID).COUNTRY_CODE}}</strong></td>
+		          <td style="vertical-align:middle"><input type="number" class="form-control input-sm" ng-model="cycle.BILL_CYCLE" ng-disabled="cycle.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle"><input type="text" class="form-control input-sm" ng-model="cycle.DESCRIPTION" ng-disabled="cycle.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle"><input type="number" class="form-control input-sm" ng-model="cycle.CYCLE_CLOSE_DAY" ng-disabled="cycle.OPCO_ID != entry.currentUser.userOpcoId"></td>
+		          <td style="vertical-align:middle">
+					        <select name="cycleTYPE" class="form-control input-sm" ng-required="true" ng-model="cycle.CYCLE_TYPE" ng-disabled="cycle.OPCO_ID != entry.currentUser.userOpcoId">
+					          <option value="T00">Monthly</option>
+					          <option value="T10">Bi-monthly even</option>
+					          <option value="T11">Bi-monthly odd</option>
+					        </select>
+		          </td>
+		          <td style="vertical-align:middle" ng-if="cycle.BILL_CYCLE_ID"><a class="btn btn-primary btn-sm" ng-click="deleteCycle(cycle.BILL_CYCLE_ID)" ng-if="cycle.OPCO_ID == entry.currentUser.userOpcoId" tooltip="Delete" tooltip-trigger="mouseenter" tooltip-placement="top" ><i class="fa fa-trash"></i></a></td>
+		        </tr>
+		      </tbody>
+		  </table>
+		</div>
+		<a ng-if="entry.OPCO_ID == entry.currentUser.userOpcoId || entry.OPCO_ID == 0" class="btn btn-primary" ng-click="addCycle()"><i class="fa fa-plus"></i> Add new cycle</a>
+		<a ng-if="entry.OPCO_ID == entry.currentUser.userOpcoId || entry.OPCO_ID == 0" class="btn btn-primary" ng-click="saveCycle()"><i class="fa fa-save"></i> Save changes</a>
+
+	</div>
+
+	<!-- Download -->
+	<div role="tabpanel" class="tab-pane fade" id="reglas">
+
+		<h3 class="sub-header">
+			<strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+			Export
+		</h3> 
+		
+		<div class="table-responsive">
+			<table class="table table-striped table-condensed">
+	      <thead>
+	        <tr>
+	          <th width="50px">&nbsp;</th>
+	          <th>Description</th>
+	          <th width="50px">&nbsp;</th>
+	        </tr>
+	      </thead>
+		    <tbody>
+					<!-- Reglas file -->
+					<tr>
+						<td>1. </td>
+						<td style="vertical-align:middle;">Indicator rules file (Reglas file)</td>
+						<td class="text-right">
+							<button class="btn btn-primary btn-sm"  ng-csv="reglasFile.lines" csv-header="reglasFile.header" csv-column-order="reglasFile.header" lazy-load="true" filename="Reglas_{{entry.OPCO_ID}}.csv" field-separator="," decimal-separator=".">
+								<i class="fa fa-download"></i> Reglas_{{entry.OPCO_ID}}.csv
+		          </button>
+						</td>
+					</tr>	
+					<!-- Reglas file -->
+					<!-- Implementation status file -->
+					<tr>
+						<td>2. </td>
+						<td style="vertical-align:middle;">Metric tuning status (current)</td>
+						<td class="text-right">
+							<button class="btn btn-primary btn-sm"  ng-csv="finetuneStatusFile.lines" csv-header="finetuneStatusFile.header" csv-column-order="finetuneStatusFile.header" lazy-load="true" filename="Metric_Tuning_Status_{{entry.OPCO_ID}}_{{currDate}}.xls" field-separator="\t" decimal-separator=".">
+								<i class="fa fa-download"></i> Metric_Tuning_Status_{{entry.OPCO_ID}}_{{currDate}}.xls
+		          </button>
+						</td>
+					</tr>	
+					<!--  Implementation status file -->					
+		   	<tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+
+</div>

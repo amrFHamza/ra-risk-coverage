@@ -1,0 +1,134 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/system-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-desktop"></i> Systems</a></li>     
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li class="active"><i class="fa fa-plug"></i> Interface <strong>{{interface.INTERFACE_NAME}}</strong></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li><a href="/scheduler-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-clock-o"></i> Schedulers</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="interfaceInfo({interfaceId:'new'})"><i class="fa fa-plug fa-fw"></i> New interface</a></li>
+        <li class="divider"></li>
+        <li><a ng-href="#" ng-click="clone(interface.INTERFACE_ID)"><i class="fa fa-clone fa-fw"></i> Clone</a></li>
+        <li><a ng-href="#" ng-click="delete(interface.INTERFACE_ID)"><i class="fa fa-trash fa-fw"></i> Delete</a></li>        
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<form class="form-horizontal" name="datoForm">
+<div ng-if="interface.OPCO_ID">
+<div class="panel panel-default md-whiteframe-4dp panel-{{interface.INTERFACE_TYPE}}">
+  
+  <div class="panel-heading no-margins">
+    <h4 class="no-margins">
+      <i class="fa fa-fw fa-lg" ng-class="{ 'fa-database':interface.INTERFACE_TYPE == 'D', 'fa-file-text-o':interface.INTERFACE_TYPE == 'F', 'fa-envelope':interface.INTERFACE_TYPE == 'E'}"></i> 
+      Interface
+      <strong>
+        {{interface.INTERFACE_NAME}}
+      </strong> 
+      <small>{{entry.lookup.getOpcoById(interface.OPCO_ID).OPCO_NAME}}</small>
+      
+      <small ng-if="changeRequest" class="alert-danger"> change request </small>
+      <small ng-if="newDato" class="alert-danger"> new dato </small> 
+    </h4> 
+  </div>
+  <div class="panel-body" ng-cloak>
+
+      <!-- Procedure -->
+      <div class="form-group">
+          <div class="col-sm-4">
+            <label for="interfaceSTATUS">Interface type</label>
+            <select name="interfaceSTATUS" class="form-control" ng-model="interface.INTERFACE_TYPE" ng-disabled="isDisabled" required>
+              <option value="D">DB interface</option>
+              <option value="F">File interface</option>
+              <option value="E">Email interface</option>
+            </select>         
+          </div>  
+
+          <div class="col-sm-8">
+            <label for="interfaceNAME">Interface name</label>
+            <input type="text" name="interfaceNAME" minlength="3" maxlength="255" class="form-control" placeholder="Name" ng-model="interface.INTERFACE_NAME" required ng-disabled="isDisabled" autocomplete="off">
+            <div ng-messages="datoForm.interfaceNAME.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              <div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should be unique and at least 3 characters long</small></div>
+            </div>             
+          </div>  
+
+
+
+      </div>
+
+      <div class="form-group">
+
+          <div class="col-sm-4">
+            <label for="interfaceSYSTEM">System</label>
+            <select class="form-control" ng-options="system.SYSTEM_ID as system.NAME for system in entry.lookup.systems | opcoFilter:interface.OPCO_ID" ng-model="interface.IFC_SYSTEM_ID" ng-disabled="isDisabled">
+              <option value=""></option>
+            </select>           
+          </div>  
+
+          <div class="col-sm-4">
+            <label for="interfaceCONTACT">Contact</label>
+              <select class="form-control" ng-options="contact.CONTACT_ID as contact.NAME + ((contact.EMAIL)?(' <' + contact.EMAIL + '>'):'') for contact in entry.lookup.contacts | opcoFilter:interface.OPCO_ID | filter:{'CONTACT_TYPE':'G'}" ng-model="interface.IFC_CONTACT_ID" ng-disabled="isDisabled">
+                <option value=""></option>
+              </select>          
+          </div>  
+
+          <div class="col-sm-4">
+            <label for="interfaceEXPERT">Expert name</label>
+            <input type="text" name="interfaceEXPERT" ng-model="interface.EXPERT_NAME" placeholder="Expert name" class="form-control" ng-disabled="isDisabled">           
+          </div>
+
+      </div>
+
+			<!-- Documentation -->
+      <div class="form-group">
+          <div class="col-sm-12">
+            <label for="interfaceDOCULINK">Documentation link</label>
+            <input type="text" name="interfaceDOCULINK" ng-model="interface.DOCU_LINK" placeholder="Documentation link" class="form-control" ng-disabled="isDisabled">
+          </div>
+      </div>
+			<!-- Documentation -->
+
+			<!-- Description -->
+      <div class="form-group">
+          <div class="col-sm-4">
+            <label for="interfaceCONNECTIONINFO">Connection info</label>
+            <textarea type="text" name="interfaceCONNECTIONINFO" ng-model="interface.CONNECTION_INFO" placeholder="Connection info" class="form-control" rows="3" ng-disabled="isDisabled"></textarea> 
+          </div>
+
+          <div class="col-sm-8">
+              <label for="interfaceDESCRIPTION">Description</label>
+              <textarea name="interfaceDESCRIPTION" type="text" class="form-control" placeholder="Description" ng-model="interface.INTERFACE_DESCRIPTION" rows="3" ng-disabled="isDisabled"></textarea>         
+          </div>
+
+      </div>
+			<!-- Description -->
+
+    </div> 
+
+    <!-- Buttons -->
+    <div class="panel-footer no-margins">
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <button ng-if="!isDisabled" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+          <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Buttons -->
+
+</div>
+</div>
+</form>

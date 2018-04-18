@@ -1,0 +1,64 @@
+<div class="md-whiteframe-4dp">
+	<form ng-submit="submit()">
+		<div class="modal-body no-margins">
+			<!-- Main table -->
+		  <table ng-if="productGroups.length" class="table table-condensed table-hover">		
+		    <thead>
+		        <tr>
+		            <th colspan="5"><a class="btn btn-xs btn-default" ng-click="selectAll()">Select all</a></th>
+		        </tr>
+		    </thead>
+		    <tbody>				    	
+						    <tr ng-if="!productGroups.length && !loadFinished && keyRiskArea.KEY_RISK_AREA_ID">
+						        <td colspan="5">
+						            <!-- Spinner -->
+						              <div class="col-sm-12 text-center">
+						                <br><br>
+						                <i class="fa fa-spinner fa-pulse fa-3x"></i>
+						              </div>
+						            <!-- Spinner -->                
+						        </td>
+						    </tr>   
+						    <tr ng-if="(!productGroups.length && loadFinished)">
+						        <td colspan="5">
+						            <h4>No product groups linked</h4>
+						        </td>
+						    </tr>   
+
+								<tr class="animation pointer-row" ng-class="{'info':productGroup.SELECTED=='Y'}" ng-repeat="productGroup in productGroups" ng-click="$event.originalEvent.checkBoxClick || ((productGroup.SELECTED=='Y'?productGroup.SELECTED='N':productGroup.SELECTED='Y') && clickProductGroupCheckbox())">
+									<td style="vertical-align: middle; text-align: center;">
+						        <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="productGroup.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="clickProductGroupCheckbox()" ng-disabled="isDisabled"> 
+						        </md-checkbox>							
+									</td>
+									<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}} |</span></td>			
+									<td style="vertical-align: middle; text-align: center;"><strong ng-if='productGroup.PRODUCT_GROUP_ID'>{{productGroup.PRODUCT_GROUP_ID}}</strong> <span ng-if='!productGroup.PRODUCT_GROUP_ID' ng-class="{'btn-red': !productGroup.PRODUCT_GROUP_ID.length, 'btn-green': productGroup.PRODUCT_GROUP_ID.length > 0}"><strong>ERR</strong></span></td>
+									<td style="vertical-align: middle; text-align: left;" class="label-process-0"></td>
+									<td style="vertical-align: middle; text-align: left; padding-left:10px;">
+										<span style="font-size: 16px" ng-style="{color: getColor(productGroup.LOB)}">
+											<strong>{{productGroup.LOB}}</strong> 
+										</span>
+										<span ng-if="productGroup.PRODUCT_GROUP_ID">
+											<span style="font-size: 14px">
+												<i class="fa fa-fw fa-dot-circle-o"></i>
+												<strong>{{productGroup.PRODUCT_GROUP}}</strong> 
+											</span>	
+										</span>
+										<span ng-if="!productGroup.PRODUCT_GROUP_ID">
+											<span class="btn-red">No product groups linked</span> <span ng-if="productGroup.RISK_DESCRIPTION"> <i class="fa fa-fw fa-caret-right"></i> <span class="btn-grey">{{productGroup.RISK_DESCRIPTION}}</span></span>
+										</span>						
+									</td>
+								</tr>
+				</tbody>
+			</table>			
+			<!-- Main table -->
+    </div>
+
+		<div class="modal-footer no-margins">
+      <div class="input-group">
+				<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+				<button type="button" class="btn btn-primary" ng-if="selected.length > 0" ng-click="save()">Add ({{selected.length}})</button>
+      </div>
+	   </div>
+
+	</form>
+</div>

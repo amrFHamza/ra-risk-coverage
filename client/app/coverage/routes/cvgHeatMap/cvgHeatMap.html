@@ -1,0 +1,73 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/coverage-overview"><i class="fa fa-fw fa-asterisk"></i> Overview</a></li>  
+  <li class="active"><i class="fa fa-fw fa-th-large"></i> Heat map</li>
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>  
+  <li><a href="/product-segments?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-briefcase"></i> Product segments</a></li>
+<!--   <li><a href="/coverage-business-process"><i class="fa fa-fw fa-code-fork"></i> Business process</a></li>
+  <li><a href="/coverage-system"><i class="fa fa-fw fa-desktop"></i> Systems</a></li> -->
+</ol>
+<!-- Breadcrumbs -->
+
+  <div layout="row" layout-align="space-between center" flex>
+    <h3 class="sub-header" flex>
+        <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+        {{entry.state.data.title}} 
+    </h3> 
+
+    <div layout="row" layout-align="space-between center" flex="50">
+      <md-radio-group layout="row" layout-align="center center" name="mapValue" ng-model="entry.searchHeatMap.mapValue" ng-change="updateFilters(false)">
+        <md-radio-button class="md-primary" value="Total">Overall risk</md-radio-button>
+        <md-radio-button class="md-primary" value="Covered">Covered risk</md-radio-button>
+        <md-radio-button class="md-primary" value="Residual">Residual risk</md-radio-button>
+        <md-radio-button class="md-primary" value="Controls">Controls</md-radio-button>
+      </md-radio-group>
+
+      <md-switch ng-if="entry.searchHeatMap.mapValue != 'Controls'" class="md-primary md-hue-1 no-margins" ng-model="entry.searchHeatMap.showRPN" aria-label="Show monetary value" ng-change="updateFilters(false)">
+          <span ng-if="entry.searchHeatMap.showRPN">RPN</span>
+          <span ng-if="!entry.searchHeatMap.showRPN">EUR</span>
+      </md-switch>
+    </div>
+
+  </div>
+
+
+  <div layout="column" layout-align="center space-between" flex>
+
+
+    <div layout="row" layout-align="space-between center" flex>
+
+        <md-radio-group layout="row" layout-align="center center" name="mapType" ng-model="entry.searchHeatMap.mapType" ng-change="updateFilters(true)">
+          <md-radio-button value="Process / Group" >Business process / Product group</md-radio-button>
+          <md-radio-button value="Risk / Group" >Risk / Product group</md-radio-button>
+          <md-radio-button value="Process / Segment">Business process / Product segment</md-radio-button>
+          <md-radio-button value="Risk / Segment">Risk / Product segment</md-radio-button>
+          <md-radio-button value="Process / System">Business process / System</md-radio-button>
+          <md-radio-button value="Risk / System">Risk / System</md-radio-button>
+        </md-radio-group>
+
+
+  
+        <div flex="30" layout="row" layout-align="space-between center">
+          <i class="fa fa-search"></i> 
+          &nbsp; 
+          <input class="no-borders-title" type="text" ng-model="entry.searchHeatMap.X"  placeholder="{{xTitle}}" ng-change="updateFilters()"/>
+          &nbsp; 
+          <input class="no-borders-title" type="text" ng-model="entry.searchHeatMap.Y"  placeholder="{{yTitle}}" ng-change="updateFilters()"/>
+        </div>
+ 
+
+    </div>
+  </div>
+
+
+    <!-- Spinner -->
+      <div ng-if="!loadFinished" class="col-sm-12 text-center">
+        <br/><br/>
+        <i class="fa fa-spinner fa-pulse fa-3x"></i>
+      </div>
+    <!-- Spinner -->
+         
+    <div ng-if="loadFinished" flex>
+      <heat-map config="heatMapConfig"></heat-map>
+    </div>

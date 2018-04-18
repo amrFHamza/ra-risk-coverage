@@ -1,0 +1,47 @@
+<div class="md-whiteframe-4dp">
+	<form ng-submit="submit()">
+
+		<div class="modal-body no-margins">
+			<h4 class="text-center">Systems</h4>
+
+			<!-- Main table -->
+
+				<div layout="row">
+					<div layout="column" ng-repeat="systemsChunk in chunkedSystems" flex>
+						<div style="margin-left: 10px; margin-right: 10px;">
+						  <table ng-if="systems.length" class="table table-condensed table-hover">		
+						    <thead>
+						        <tr>
+						            <th width="30px"></th>
+						            <th style="vertical-align: middle; text-align: left;"></th>
+						        </tr>
+						    </thead>
+						    <tbody>				    	
+									<tr class="animation pointer-row" ng-class="{'info': system.SELECTED == 'Y'}" ng-repeat="system in systemsChunk" ng-click="selectSystem(system.SYSTEM_ID, system.NAME)">
+										<td style="vertical-align: middle; text-align: center;">
+<!-- 						          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="system.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="updateSelected()"> 
+						          </md-checkbox>	 -->						
+										</td>		        
+										<td style="vertical-align: middle; text-align: left;">
+											<div><strong>{{system.NAME}}</strong></div> 
+											<!-- <div class="btn-grey no-margins" style="overflow: hidden;">{{system.DESCRIPTION}} </div> -->
+										</td>
+									</tr>
+								</tbody>
+							</table>			
+						</div>
+					</div>
+				</div>
+
+			<!-- Main table -->
+    </div>
+
+		<div class="modal-footer no-margins">
+      <div class="input-group">
+				<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+				<button ng-if="selectedSystems.length" type="submit" class="btn btn-primary">Link ({{selectedSystems.length}})</button>
+      </div>
+	   </div>
+
+	</form>
+</div>

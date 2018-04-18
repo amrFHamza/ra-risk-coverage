@@ -1,0 +1,90 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/risk-catalogue"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</a></li>
+  <li class="active"><i class="fa fa-fw fa-map"></i> Key Risk Areas</li>
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>  
+</ol>
+<!-- Breadcrumbs -->
+
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="keyRiskAreaInfo({keyRiskAreaId:'newKeyriskArea'})"><i class="fa fa-object-group fa-fw"></i> New key risk area</a></li>
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">Global</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+        <!-- Filters -->
+        <div class="small no-margins" ng-if="!entry.searchKeyRiskArea">
+            <ul class="list-inline no-margins">
+                <li><strong>Filters: </strong></li>
+                <li class="filter-alert"> None </li>
+            </ul>
+        </div>
+
+        <div class="small no-margins" ng-if="entry.searchKeyRiskArea">
+            <ul class="list-inline no-margins">
+                <li><strong>Filters: </strong></li>
+                <li ng-repeat="(element, filter) in entry.searchKeyRiskArea" class="filter-alert" ng-if="filter">
+                    <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+                    {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+                </li>
+            </ul>
+        </div>
+        <!-- Filters -->
+
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th width="10px" style="text-align:right">#</th>
+                    <th width="330px">Key Risk Area</th>
+                    <th>Description</th>
+                    <th width="50px" style="vertical-align:middle; text-align: center"># PGs</th>
+                    <th width="50px" style="vertical-align:middle; text-align: center"># Risks</th>
+                </tr>
+                <tr>                
+                    <th></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchKeyRiskArea.KEY_RISK_AREA" placeholder="Key Risk Area"/></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchKeyRiskArea.KEY_RISK_AREA_DESCRIPTION" placeholder="Description"/></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!keyRiskAreas.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>            
+                <tr ng-if="!keyRiskAreas.length && loadFinished"><td colspan="7"><h4>No procedures found. Please try changing the filtering criteria. You can create a new procedure item from the menu above.</h4></td></tr>
+                <tr class="animation pointer-row" ng-class="{'btn-not-relevant':keyRiskArea.PRODUCT_GROUP_COUNT == 0 || keyRiskArea.RISK_COUNT == 0}" ng-repeat="keyRiskArea in keyRiskAreas | filter: entry.searchKeyRiskArea" ng-click="keyRiskAreaInfo(keyRiskArea.KEY_RISK_AREA_ID)" >
+                    <td style="vertical-align:middle; text-align:right">{{$index + 1}}. </td>                
+                    <td style="vertical-align:middle; padding-left:10px;" colspan="2">                            
+                        <span class="key-risk-area-title"><strong>{{keyRiskArea.KEY_RISK_AREA}}</strong></span></br>
+                        <span ng-if="keyRiskArea.KEY_RISK_AREA_DESCRIPTION">{{keyRiskArea.KEY_RISK_AREA_DESCRIPTION}}</br></span>
+                    </td>
+                    <td style="vertical-align:middle; text-align: center"><h3><span class="label" ng-class="{'label-success': keyRiskArea.PRODUCT_GROUP_COUNT > 0, 'label-default': keyRiskArea.PRODUCT_GROUP_COUNT == 0}"  uib-tooltip="Number of product groups in the Risk Area" tooltip-trigger="mouseenter" tooltip-placement="left">{{keyRiskArea.PRODUCT_GROUP_COUNT}}</span></h3></td>
+                    <td style="vertical-align:middle; text-align: center"><h3><span class="label" ng-class="{'label-primary': keyRiskArea.RISK_COUNT > 0, 'label-default': keyRiskArea.RISK_COUNT == 0}" uib-tooltip="Number of risks in the Risk Area (the small digit shows the number of business processes the risks belong to)" tooltip-trigger="mouseenter" tooltip-placement="left">{{keyRiskArea.RISK_COUNT}} <span ng-if="keyRiskArea.BP_COUNT > 1" style="font-size: 12px; color: #A9F5A9"> | {{keyRiskArea.BP_COUNT}}</span></span></h3></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div ng-if="keyRiskAreas.length > pageSize" class="no-margins" layout="row" layout-align="center">
+            <ul uib-pagination total-items="keyRiskAreas.length" items-per-page="pageSize" max-size="10" ng-model="currentPage" ng-change="setCurrentPage(currentPage)" boundary-link-numbers="true" previous-text="<" next-text=">"></ul>
+        </div>
+
+</div>

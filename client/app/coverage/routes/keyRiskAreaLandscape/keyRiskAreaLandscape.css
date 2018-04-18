@@ -1,0 +1,93 @@
+.key-risk-area-title {
+    font-size: 15px;
+    font-weight: bold;
+} 
+
+.kra-coverage-10 {
+  background-color: #a50026;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-20 {
+  background-color: #d73027;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-30 {
+  background-color: #f46d43;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-40 {
+  background-color: #fdae61;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+/*
+.kra-coverage-50 {
+  background-color: #ffffbf;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+*/
+.kra-coverage-50 {
+  background-color: #d9ef8b;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-60 {
+  background-color: #a6d96a ;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-70 {
+  background-color: #66bd63;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-80 {
+  background-color: #1a9850;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-90 {
+  background-color: #006837;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+.kra-coverage-100 {
+  background-color: #006837;
+  color: #333;
+  cursor: pointer;
+  border-right: 1pt #ddd solid;
+  border-left: 1pt #ddd solid;  
+}
+    
+
+
+    
+
+
+   
+
+

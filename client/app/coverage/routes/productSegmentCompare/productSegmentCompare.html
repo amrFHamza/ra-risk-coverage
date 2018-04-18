@@ -1,0 +1,177 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/coverage-overview"><i class="fa fa-fw fa-asterisk"></i> Overview</a></li>
+  <li><a href="/coverage-heat-maps"><i class="fa fa-fw fa-th-large"></i> Heat map</a></li>
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>  
+  <li><a href="/product-segments?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-briefcase"></i> Product segments</a></li>  
+  <li class="active"><i class="fa fa-fw fa-exchange"></i> Compare product segments</a></li>
+<!--   <li><a href="/coverage-business-process"><i class="fa fa-fw fa-code-fork"></i> Business process</a></li>
+  <li><a href="/coverage-system"><i class="fa fa-fw fa-desktop"></i> Systems</a></li> -->
+</ol>
+<!-- Breadcrumbs -->
+
+<div layout="row" layout-align="space-between center">
+  <div flex>
+		<h3 class="sub-header">
+		    <span class="input-group btn-group pull-left">
+		      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled && entry.currentUser.userOpcoId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        <span class="caret"></span>
+		      </a>
+		    </span> 
+		    &nbsp;
+		    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+		    {{entry.state.data.title}} 
+		</h3> 
+  </div>
+
+</div>
+
+<!-- Main table -->
+<table class="table table-condensed">		
+	<thead ng-if="loadFinished">
+		<tr>
+			<td></td>
+			<td width="5px"></td>
+			<td></td>
+			<td width="1px"></td>
+			<td style="vertical-align: middle; text-align: center;"> 
+				<div layout="row" layout-align="center center">
+					<a class="btn btn-default btn-xs" ng-click="swapProductSegment(entry.OPCO_ID, productSegmentA.PRODUCT_SEGMENT_ID, 'A')" uib-tooltip="Swap product segment" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="100"><i class="fa fa-retweet"></i> </a>
+					<a ng-href="/risk-nodes?productSegmentId={{productSegmentA.PRODUCT_SEGMENT_ID}}" flex>
+						<strong>{{productSegmentA.LOB}} - {{productSegmentA.PRODUCT_GROUP}}</strong>
+						<div>{{productSegmentA.PRODUCT_SEGMENT}}</div>
+					</a>				
+				</div>
+			</td>
+			
+			<td style="vertical-align: middle; text-align: center;"> 
+				<div layout="row" layout-align="center center">
+					<a ng-href="/risk-nodes?productSegmentId={{productSegmentB.PRODUCT_SEGMENT_ID}}" flex>
+						<strong>{{productSegmentB.LOB}} - {{productSegmentB.PRODUCT_GROUP}}</strong>
+						<div>{{productSegmentB.PRODUCT_SEGMENT}}</div>
+					</a>
+					<a class="btn btn-default btn-xs" ng-click="swapProductSegment(entry.OPCO_ID, productSegmentB.PRODUCT_SEGMENT_ID, 'B')" uib-tooltip="Swap product segment" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="100"><i class="fa fa-retweet"></i> </a>
+				</div>
+			</td>
+
+		</tr>
+	</thead>
+
+  <tbody ng-if="!loadFinished">
+    <tr >
+        <td colspan="6">
+            <!-- Spinner -->
+              <div class="col-sm-12 text-center">
+                <br><br>
+                <i class="fa fa-spinner fa-pulse fa-3x"></i>
+              </div>
+            <!-- Spinner -->                
+        </td>
+    </tr>
+  </tbody>
+
+	<tbody ng-if="loadFinished">
+		<tr ng-repeat="systemGroup in riskNodesSystemGroup | toArray:false | orderBy:['ATTR.BUSINESS_PROCESS_ID', 'ATTR.BUSINESS_SUB_PROCESS_ID', 'ATTR.RISK_ID']">
+			<td style="vertical-align: middle; text-align: right;">{{$index+1}}.</td>
+			<td style="vertical-align: middle; text-align: left;" class="label-process-{{systemGroup.ATTR.BUSINESS_PROCESS_ID}}"></td>
+			<td>
+				<div class="btn-process-{{systemGroup.ATTR.BUSINESS_PROCESS_ID}}">
+					<strong>{{systemGroup.ATTR.BUSINESS_PROCESS}}</strong> 
+					<i class="fa fa-fw fa-dot-circle-o"></i> 
+					<span>{{systemGroup.ATTR.BUSINESS_SUB_PROCESS}}</span> 
+				</div>
+				<span style="font-size: 14px">
+					<strong>{{systemGroup.ATTR.RISK}}</strong>
+				</span>
+				<!-- <small class="btn-blue">({{systemGroup.ATTR.RISK_ID}})</small> -->
+				<div>{{systemGroup.ATTR.RISK_DESCRIPTION}}</div>
+			</td>
+
+			<td style="background: #EEE;"></td>
+
+			<!-- A side -->
+			<td style="text-align: right;">
+				<div layout="column" layout-align="center end">
+
+					<div ng-if="!riskNodesSystemGroupA[systemGroup.ATTR.RISK_ID].length" layout="row" layout-align="center center" flex>
+						<h4 class="sm-margins xxs-margins-h">
+							<span class="label label-warning">
+								No risk
+							</span>
+						</h4>
+						<div style="width: 44px;"></div>
+					</div>
+
+					<div ng-repeat="riskNode in riskNodesSystemGroupA[systemGroup.ATTR.RISK_ID] | orderBy: ['CLONE_OVER', 'SYSTEM_NAME']">
+						<div layout="row" layout-align="center center">
+
+							<button class="btn btn-xs btn-default" ng-click="deleteRiskNode(riskNode)" uib-tooltip="Delete risk node" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800" ng-disabled="isDisabled"><i class="fa fa-close"></i></button>
+
+							<h4 class="sm-margins xxs-margins-h">
+								<span class="label label-success pointer-row" ng-click="linkSystem([riskNode])" uib-tooltip="Link system" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800" ng-disabled="isDisabled">
+									<span ng-if="!riskNode.SYSTEM_ID"><i class="fa fa-desktop fa-fw"></i> Undefined</span>
+									<span ng-if="riskNode.SYSTEM_ID"><strong>{{riskNode.SYSTEM_NAME}}</strong></span>
+									<small class="btn-white">({{riskNode.RISK_NODE_ID}})</small>
+								</span>
+							</h4>
+							<h4 class="sm-margins xxs-margins-h" ng-class="{'pointer-row': riskNode.SUB_RISK_COUNT}" data-html="true" uib-popover-html="riskNode.SUB_RISKS_HTML" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false"><span class="label label-primary">{{riskNode.SUB_RISK_COUNT}}</span></h4>
+							<h4 class="sm-margins xxs-margins-h" ng-class="{'pointer-row': riskNode.RPN_COUNT}" data-html="true" uib-popover-html="riskNode.SUB_RISKS_LI_HTML" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false"><span class="label label-danger">{{riskNode.RPN_COUNT}}</span></h4>
+							<h4 class="sm-margins xxs-margins-h" ng-class="{'pointer-row': riskNode.CONTROL_COUNT}" data-html="true" uib-popover-html="riskNode.CONTROL_COUNT?riskNode.CONTROLS_LIST_HTML:''" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false">
+								<span class="label label-default">{{riskNode.CONTROL_COUNT}}</span>
+							</h4>
+							
+							<!-- Button arrow -->
+							<button ng-if="riskNode.CLONE" class="btn btn-xs btn-default sm-margins-h" ng-click="copyRiskNode(riskNode, productSegmentB.PRODUCT_SEGMENT_ID)" uib-tooltip="Copy risk node to product segment '{{productSegmentB.PRODUCT_SEGMENT}}'" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800" ng-disabled="isDisabled"><i class="fa" ng-class="{'fa-files-o':riskNode.CLONE_OVER, 'fa-clipboard':!riskNode.CLONE_OVER}"></i><i class="fa fa-arrow-right"></i></button>
+							<div ng-if="!riskNode.CLONE" style="width: 44px;"></div>
+							<!-- Button arrow -->
+
+						</div>
+					</div>
+				</div>
+			</td>
+
+			<!-- B side -->
+			<td style="text-align: left; border-left: 1px dashed green;">
+				<div layout="column" layout-align="center start">
+
+					<div ng-if="!riskNodesSystemGroupB[systemGroup.ATTR.RISK_ID].length" layout="row" layout-align="center center" flex>
+						<div style="width: 44px;"></div>
+						<h4 class="sm-margins xxs-margins-h">
+							<span class="label label-warning">
+								No risk
+							</span>
+						</h4>
+					</div>
+
+					<div ng-repeat="riskNode in riskNodesSystemGroupB[systemGroup.ATTR.RISK_ID] | orderBy: ['CLONE_OVER', 'SYSTEM_NAME']">
+						<div layout="row" layout-align="center center">
+
+							<!-- Button arrow -->
+							<button ng-if="riskNode.CLONE" class="btn btn-xs btn-default sm-margins-h" ng-click="copyRiskNode(riskNode, productSegmentA.PRODUCT_SEGMENT_ID)" uib-tooltip="Copy risk node to product segment '{{productSegmentA.PRODUCT_SEGMENT}}'" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800" ng-disabled="isDisabled"><i class="fa fa-arrow-left"></i><i class="fa" ng-class="{'fa-files-o':riskNode.CLONE_OVER, 'fa-clipboard':!riskNode.CLONE_OVER}"></i></button>
+							<div ng-if="!riskNode.CLONE" style="width: 44px;"></div>
+							<!-- Button arrow -->
+
+							<!-- <button class="btn btn-xs btn-default sm-margins-h" href=""><i class="fa fa-arrow-left"></i></button> -->
+
+							<h4 class="sm-margins xxs-margins-h" ng-class="{'pointer-row': riskNode.SUB_RISK_COUNT}" data-html="true" uib-popover-html="riskNode.SUB_RISKS_HTML" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false"><span class="label label-primary">{{riskNode.SUB_RISK_COUNT}}</span></h4>
+							<h4 class="sm-margins xxs-margins-h" ng-class="{'pointer-row': riskNode.RPN_COUNT}" data-html="true" uib-popover-html="riskNode.SUB_RISKS_LI_HTML" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false"><span class="label label-danger">{{riskNode.RPN_COUNT}}</span></h4>
+							<h4 class="sm-margins xxs-margins-h" ng-class="{'pointer-row': riskNode.CONTROL_COUNT}" data-html="true" uib-popover-html="riskNode.CONTROL_COUNT?riskNode.CONTROLS_LIST_HTML:''" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false">
+								<span class="label label-default">{{riskNode.CONTROL_COUNT}}</span>
+							</h4>
+							<h4 class="sm-margins xxs-margins-h">
+								<span class="label label-success pointer-row" ng-click="linkSystem([riskNode])" uib-tooltip="Link system" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800" ng-disabled="isDisabled">
+									<span ng-if="!riskNode.SYSTEM_ID"><i class="fa fa-desktop fa-fw"></i> Undefined</span>
+									<span ng-if="riskNode.SYSTEM_ID"><strong>{{riskNode.SYSTEM_NAME}}</strong></span>
+									<small class="btn-white">({{riskNode.RISK_NODE_ID}})</small>
+								</span>
+							</h4>
+
+							<button class="btn btn-xs btn-default" ng-click="deleteRiskNode(riskNode)" uib-tooltip="Delete risk node" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"  ng-disabled="isDisabled"><i class="fa fa-close"></i></button>
+						</div>
+					</div>
+				</div>
+			</td>
+
+		</tr>
+	</tbody>
+</table>

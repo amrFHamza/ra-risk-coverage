@@ -1,0 +1,205 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/risk-catalogue"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</a></li>
+  <li class="active"><span ng-if="risk.RISK_ID">{{risk.RISK}}</span><span ng-if="!risk.RISK_ID">New risk</span></li>
+  <li><a href="/key-risk-areas"><i class="fa fa-fw fa-map"></i> Key Risk Areas</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+
+<h3>
+	<span ng-if="risk.RISK_ID" class="input-group btn-group pull-left">
+		<a class="btn label-process-{{risk.BUSINESS_PROCESS_ID}} dropdown-toggle no-margins no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="isDisabled">
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a ui-sref="riskInfo({riskId:'newRisk'})"><i class="fa fa-exclamation-triangle fa-fw"></i> New risk</a></li>
+			<li ng-if="risk.RISK_ID"><a href="#" ng-click="deleteRisk(risk.RISK_ID)"><i class="fa fa-trash fa-fw"></i> Delete risk</a></li>
+		</ul>
+	</span> 
+	&nbsp;
+
+	<span ng-if="risk.BUSINESS_SUB_PROCESS_ID" class="btn-process-{{risk.BUSINESS_PROCESS_ID}}">
+		<strong>{{risk.BUSINESS_PROCESS}}</strong> 
+		<i class="fa fa-fw fa-dot-circle-o"></i> 
+		<span>{{risk.BUSINESS_SUB_PROCESS}}</span> 
+	</span>
+</h3>
+
+<form class="form-horizontal" name="datoForm">
+
+	<div class="panel panel-default md-whiteframe-4dp panel-process-{{risk.BUSINESS_PROCESS_ID}}">
+
+	  <div class="panel-heading no-margins">
+			<h4 class="no-margins">
+				<i class="fa fa-exclamation-triangle"></i> 
+				<strong>{{risk.RISK}}</strong> 
+			</h4>
+	  </div>
+
+	  <div class="panel-body" ng-cloak>
+
+      <!-- Solution -->
+      <div class="form-group">
+          <div class="col-sm-4">
+              <label for="riskPROCESS">Business process</label>
+              <select class="form-control" name="riskPROCESS" ng-options="process.BUSINESS_PROCESS_ID as process.BUSINESS_PROCESS for process in processes" ng-model="risk.BUSINESS_PROCESS_ID" ng-change="processChanged(risk.BUSINESS_PROCESS_ID)" ng-disabled="isDisabled" required>
+              </select>
+	            <div ng-messages="datoForm.riskPROCESS.$error"> 
+	              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+	            </div>               
+          </div>
+
+          <div class="col-sm-4">
+              <label for="riskSUBPROCESS">Business sub-process</label>
+              <select class="form-control" name="riskSUBPROCESS" ng-options="subProcess.BUSINESS_SUB_PROCESS_ID as subProcess.BUSINESS_SUB_PROCESS for subProcess in subProcesses | filter: {BUSINESS_PROCESS_ID: risk.BUSINESS_PROCESS_ID}" ng-model="risk.BUSINESS_SUB_PROCESS_ID" ng-change="subProcessChanged(risk.BUSINESS_SUB_PROCESS_ID)" ng-disabled="isDisabled" required>
+              	
+              </select>
+	            <div ng-messages="datoForm.riskSUBPROCESS.$error"> 
+	              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+	            </div>               
+          </div>
+
+          <div class="col-sm-4"  layout="column" layout-align="end end">
+		        <md-switch class="md-primary md-hue-1 no-margins" ng-model="entry.showMeasures" md-no-ink aria-label="Hide measures"> 
+		        	Show measures
+		        </md-switch>
+          </div>
+      </div>      
+      <!-- Solution -->
+
+      <!-- Risk -->
+      <div class="form-group">
+          <div class="col-sm-9">
+              <label for="riskRISK">Risk</label>
+            	<input type="text" name="riskRISK" minlength="3" maxlength="255" class="form-control" placeholder="Risk" ng-model="risk.RISK" required ng-disabled="isDisabled" autocomplete="off">
+              <div ng-messages="datoForm.riskRISK.$error">
+                <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              	<div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should at least 3 characters long</small></div>                
+              </div>            
+          </div>
+
+          <div class="col-sm-3">
+              <label for="riskCATEGORY">Risk category</label>
+              <select class="form-control" name="riskCATEGORY" ng-model="risk.RISK_CATEGORY" ng-disabled="isDisabled">
+	              <option value=""></option>
+	              <option value="Revenue Leakage">Revenue Leakage</option>
+	              <option value="Cost Leakage">Cost Leakage</option>
+	              <option value="Opportunity Loss">Opportunity Loss</option>
+              </select>
+          </div>
+
+      </div>
+      <!-- Risk -->     
+
+      <!-- Description -->
+      <div class="form-group">
+          <div class="col-sm-12">
+              <label for="riskDESCRIPTION">Risk description</label>
+              <textarea name="riskDESCRIPTION" type="text" class="form-control" placeholder="Risk description" ng-model="risk.RISK_DESCRIPTION" rows="1" ng-disabled="isDisabled" msd-elastic></textarea>          
+          </div>
+      </div>
+      <!-- Description -->
+
+      <!-- Sub-risks -->
+			<button ng-if="!isDisabled" type="button" class="btn btn-xs btn-default sm-margins" ng-click="addSubRisk()"> <i class="fa fa-plus"></i> Add sub-risk</button> 
+		  <table ng-if="subRisks.length" class="table table-condensed table-striped">		
+		    <thead>
+		        <tr>
+		            <th width="30px"></th>
+		            <th width="50px"></th>
+		            <th width="5px"></th>
+		            <th style="vertical-align: middle; text-align: left; padding-left: 7px;"> Sub-risk</th>
+		            <th width="20px"></th>
+		            <th width="110px" style="vertical-align: middle; text-align: center;">Likelihood </th>
+		            <th width="110px" style="vertical-align: middle; text-align: center;">Impact </th>
+		            <th width="50px" style="vertical-align: middle; text-align: center;">Source</th>
+		            <th width="60px" style="vertical-align: middle; text-align: center;">Relevant</th>
+		            <th width="60px" style="vertical-align: middle; text-align: center;">Required</th>
+		            <th width="30px" style="vertical-align: middle; text-align: center;"></th>
+		            <th width="30px" style="vertical-align: middle; text-align: center;"></th>
+		        </tr>
+		    </thead>
+		    <tbody ng-repeat="subRisk in subRisks">				    	
+					<tr ng-class="{'btn-not-relevant active':subRisk.RELEVANT=='N'}" >
+						<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}}|</span></td>			
+						<td style="vertical-align: middle; text-align: left;"><strong ng-if='subRisk.SUB_RISK_ID'>{{subRisk.SUB_RISK_ID}}</strong> <span ng-if='!subRisk.SUB_RISK_ID' ng-class="{'btn-red': !subRisk.SUB_RISK.length, 'btn-green': subRisk.SUB_RISK.length > 0}"><strong>NEW</strong></span></td>
+						<td class="label-process-{{risk.BUSINESS_PROCESS_ID}}"></td>
+						<td style="vertical-align: middle; text-align: left; padding-left: 7px;">
+							<input ng-class="{'btn-not-relevant active':subRisk.RELEVANT=='N'}" type="text" name="subRiskSUBRISK{{$index}}" class="form-control input" ng-model="subRisk.SUB_RISK" ng-disabled="subRisk.RELEVANT !== 'Y' || isDisabled" required autocomplete="off">
+						</td>
+						<td>
+							<div ng-messages="datoForm['subRiskSUBRISK' + $index].$error"> 
+	              <div ng-message="required"><span class="btn-red"> <i class="fa fa-asterisk"></i> </span></div>
+	            </div>
+						</td>
+						<td style="vertical-align: middle; text-align: center;">
+     					<span style="font-size: 15px; letter-spacing: 0px; cursor:pointer;" uib-rating ng-model="subRisk.BASE_LIKELIHOOD" max="5" state-on="'fa fa-circle'" state-off="'fa fa-circle-thin'" read-only="isDisabled"></span>
+     				</td>
+						<td style="vertical-align: middle; text-align: center;">
+     					<span style="font-size: 15px; letter-spacing: 0px; cursor:pointer;" uib-rating ng-model="subRisk.BASE_IMPACT" max="5" state-on="'fa fa-circle'" state-off="'fa fa-circle-thin'" read-only="isDisabled"></span>
+						</td>
+						<td style="vertical-align: middle; text-align: center;">{{subRisk.SOURCE}}</td>
+						<td style="vertical-align: middle; text-align: center;">
+		          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="subRisk.RELEVANT" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk relevant" ng-disabled="isDisabled"> 
+		          </md-checkbox>									
+						</td>
+						<td style="vertical-align: middle; text-align: center;">
+		          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="subRisk.REQUIRED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk required" ng-disabled="isDisabled"> 
+		          </md-checkbox>									
+						</td>						
+						<td style="vertical-align: middle; text-align: center;"><a ng-if="subRisk.SUB_RISK_ID" class="btn btn-xs btn-primary" ng-disabled="isDisabled" ng-click="deleteSubRisk(subRisk.SUB_RISK_ID)" uib-tooltip="Delete sub-risk" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"> <i class="fa fa-trash"></i> </a></td>
+						<td style="vertical-align: middle; text-align: center;"><a ng-if="subRisk.SUB_RISK_ID" class="btn btn-xs btn-primary" ng-disabled="isDisabled" ng-click="linkMeasureToSubRisk(subRisk.SUB_RISK_ID)" uib-tooltip="Link measure" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"> <i class="fa fa-plus"></i> </a></td>
+					</tr>
+					<tr ng-if="getMeasures(subRisk.SUB_RISK_ID).length && subRisk.RELEVANT=='Y' && entry.showMeasures">
+							<td></td>
+							<td></td>
+							<td></td>
+							<td colspan="9">
+								<!-- Measures table -->
+							  <table class="table table-condensed">		
+							    <tbody>				    	
+										<tr ng-class="{'btn-not-relevant active':measure.RELEVANT=='N'}" ng-repeat="measure in getMeasures(subRisk.SUB_RISK_ID)">
+											<td style="width:20px; vertical-align: middle; text-align: right;">
+												<i class="fa fa-2x fa-fw" ng-class="{'fa-check-circle btn-red':measure.REQUIRED == 'Y', 'fa-check-circle-o btn-yellow':measure.REQUIRED != 'Y'}"></i>
+											</td>		
+											<td width="5px" ng-class="{'label-grey': measure.RELEVANT == 'N', 'label-yellow': measure.REQUIRED == 'N', 'label-red': measure.REQUIRED == 'Y'}"></td>
+											<td style="width:70px; vertical-align: middle; text-align: center;"><strong ng-if='measure.MEASURE_ID'>{{measure.TMF_ID}}</strong> <span ng-if='!measure.MEASURE_ID' ng-class="{'btn-red': !measure.SUB_RISK.length, 'btn-green': measure.SUB_RISK.length > 0}"><strong>NEW</strong></span></td>
+											<td style="width:2px; border-left: 1px solid;"></td>
+											<td style="vertical-align: middle; text-align: left;" flex>
+												<strong>{{measure.MEASURE_NAME}}</strong> <br/>
+												<span class="btn-grey no-margins">
+													{{measure.MEASURE_DESCRIPTION}} 
+													<span ng-if="measure.TMF_REFERENCE" class="btn-blue">Ref. {{measure.TMF_REFERENCE}}</span> 
+													<i class="fa fa-fw fa-caret-right"></i> {{measure.MEASURE_TYPE}}
+												</span>
+											</td>
+											<td style="width:70px; vertical-align: middle; text-align: center;">{{measure.SOURCE}}</td>
+											<td style="width:10px; vertical-align: middle; text-align: center;"><a ng-if="measure.MEASURE_ID" class="btn btn-xs btn-primary" ng-disabled="isDisabled" ng-click="deleteSubRiskMeasureLink(subRisk.SUB_RISK_ID, measure.MEASURE_ID)" uib-tooltip="Unlink measure" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"> <i class="fa fa-minus"></i> </a></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+					</tr>					
+				</tbody>
+			</table>
+
+			<br/>
+			
+	  </div> 
+
+	  <!-- Buttons -->
+	  <div class="panel-footer no-margins">
+
+	    <div class="form-group">
+	      <div class="col-sm-12">
+	        <button ng-if="!isDisabled && datoForm.$dirty" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+	        <button type="button" class="btn btn-default" ng-click="cancel()">Back</button>
+	      </div>
+	    </div>
+	  </div>
+	  <!-- Buttons -->
+
+	</div>
+
+</form>

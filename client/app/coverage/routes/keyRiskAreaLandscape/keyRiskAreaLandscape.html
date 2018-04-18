@@ -1,0 +1,92 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/coverage-overview"><i class="fa fa-fw fa-asterisk"></i> Overview</a></li>
+  <li><a href="/coverage-heat-maps"><i class="fa fa-fw fa-th-large"></i> Heat map</a></li>
+  <li class="active"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>  
+  <li><a href="/product-segments?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-briefcase"></i> Product segments</a></li>  
+	<!--   
+	<li><a href="/coverage-business-process"><i class="fa fa-fw fa-code-fork"></i> Business process</a></li>
+  <li><a href="/coverage-system"><i class="fa fa-fw fa-desktop"></i> Systems</a></li> 
+	-->
+</ol>
+<!-- Breadcrumbs -->
+
+<div layout="row" layout-align="space-between center">
+  <div flex>
+		<h3 class="sub-header">
+		    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+		    {{entry.state.data.title}} 
+		</h3> 
+  </div>
+  <div layout="row">
+    <md-switch class="md-primary md-hue-1" ng-true-value="'Y'" ng-false-value="'N'" ng-model="entry.showRiskAreaExpand" aria-label="Expand">
+        <span> Show all risk areas</span>
+    </md-switch>
+    <md-switch class="md-primary md-hue-1" ng-true-value="'Y'" ng-false-value="'N'" ng-model="entry.showRiskAreaDetails" aria-label="Break apart">
+        <span> Show details by process</span>
+    </md-switch>
+  </div>    
+</div>
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+			  <!-- Filters -->
+			  <div class="small no-margins" ng-if="!_.size(entry.searchKeyRiskArea)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li class="filter-alert"> None </li>		          
+			      </ul>
+			  </div>
+			  <div class="small no-margins" ng-if="_.size(entry.searchKeyRiskArea)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li ng-repeat="(element, filter) in entry.searchKeyRiskArea" class="filter-alert" ng-if="filter">
+			              <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+			              {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+			          </li>
+			      </ul>
+			  </div>
+			  <!-- Filters -->
+
+        <table class="table responsive">
+            <thead>
+                <tr>
+                    <th width="10px" style="text-align:right"></th>
+                    <th width="330px">
+                    		<input class="no-borders-title" type="text" ng-model="entry.searchKeyRiskArea.KEY_RISK_AREA" placeholder="Key Risk Area"/>
+                    	</th>
+                    <th class="col-md-1 label-process-{{businessProcess.BUSINESS_PROCESS_ID}}" ng-repeat="businessProcess in businessProcesses" style="margin-right: 5px;" flex>
+											{{businessProcess.BUSINESS_PROCESS}}
+										</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!keyRiskAreas.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>            
+                <tr ng-if="!keyRiskAreas.length && loadFinished"><td colspan="7"><h4>No key risk areas found. Please try changing the filtering criteria.</h4></td></tr>
+                <tr ng-if="keyRiskArea.COVERAGE !== null || entry.showRiskAreaExpand === 'Y'" class="animation" ng-class="{'btn-not-relevant active': keyRiskArea.COVERAGE == null}" ng-repeat="keyRiskArea in keyRiskAreas | filter: entry.searchKeyRiskArea">
+                    <td style="vertical-align:middle; text-align:right">{{$index + 1}}. </td>                
+                    <td class="pointer-row" style="vertical-align:middle; text-align:left" ng-click="keyRiskAreaInfo(keyRiskArea.KEY_RISK_AREA_ID)">
+                      <span class="key-risk-area-title"><strong>{{keyRiskArea.KEY_RISK_AREA}}</strong></span>
+                      <span ng-if="keyRiskArea.COVERAGE !== null" class="badge label-default pull-right">{{keyRiskArea.COVERAGE | number:2}} %</span>
+                    </td>
+
+                    <td ng-if="entry.showRiskAreaDetails === 'N'" ng-class="'kra-coverage-' + getKeyRiskArea(keyRiskArea.KEY_RISK_AREA_ID, businessProcess.BUSINESS_PROCESS_ID).CSS_CLASS" ng-repeat="businessProcess in businessProcesses" style="margin-right: 5px;" flex data-html="true" popover-title="{{dato.NAME}}" uib-popover-html="popoverHtmlDetails(keyRiskArea.KEY_RISK_AREA_ID, businessProcess.BUSINESS_PROCESS_ID)" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="true">
+											
+										</td> 
+                    <td ng-if="entry.showRiskAreaDetails === 'Y'" ng-class="'kra-coverage-' + getKeyRiskAreaDetails(keyRiskArea.KEY_RISK_AREA_ID, businessProcess.BUSINESS_PROCESS_ID).CSS_CLASS" ng-repeat="businessProcess in businessProcesses" style="margin-right: 5px;" flex data-html="true" popover-title="{{dato.NAME}}" uib-popover-html="popoverHtmlDetails(keyRiskArea.KEY_RISK_AREA_ID, businessProcess.BUSINESS_PROCESS_ID)" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="true">
+											
+										</td> 										                   
+                </tr>
+            </tbody>
+        </table>
+
+</div>

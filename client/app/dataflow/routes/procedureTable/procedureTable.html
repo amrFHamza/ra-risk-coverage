@@ -1,0 +1,130 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/system-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-desktop"></i> Systems</a></li>    
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li class="active"><i class="fa fa-cogs"></i> Procedures</li>
+  <li ng-if="procedure.TYPE === 'T'"><a href="/dato-info/{{procedure.OPCO_ID}}/{{procedure.NAME}}"><i class="fa fa-edit"></i> Edit dato <strong>{{procedure.NAME}}</strong></a></li> 
+  <li><a href="/scheduler-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-clock-o"></i> Schedulers</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="procedureInfo({procedureId:'newJob'})"><i class="fa fa-cog fa-fw"></i> New job</a></li>
+        <li><a ui-sref="procedureInfo({procedureId:'newControl'})"><i class="fa fa-area-chart fa-fw"></i> New control</a></li>
+        <li><a ui-sref="procedureInfo({procedureId:'newReport'})"><i class="fa fa-puzzle-piece fa-fw"></i> New report solution</a></li>
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+        <!-- Filters -->
+        <div class="small no-margins" ng-if="!entry.searchProcedure">
+            <ul class="list-inline no-margins">
+                <li><strong>Filters: </strong></li>
+                <li class="filter-alert"> None </li>
+            </ul>
+        </div>
+
+        <div class="small no-margins" ng-if="entry.searchProcedure">
+            <ul class="list-inline no-margins">
+                <li><strong>Filters: </strong></li>
+                <li ng-repeat="(element, filter) in entry.searchProcedure" class="filter-alert" ng-if="filter">
+                    <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+                    {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+                </li>
+            </ul>
+        </div>
+        <!-- Filters -->
+
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th width="10px" style="text-align:right">#</th>
+                    <th width="40px">Type</th>
+                    <th width="130px">Subtype</th>
+                    <th width="5px"></th>
+                    <th>Name / Description</th>
+                    <th width="20px" class="text-center">Risk coverage</th>
+                    <th width="20px">Status</th>
+                    <th width="20px">Freq.</th>
+                </tr>
+                <tr>                
+                    <th></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchProcedure.TYPE" placeholder="j/c/s/t"/></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchProcedure.SUB_TYPE" placeholder="Subtype"/></th>
+                    <th></th>
+                    <th><span layout="row"><input class="no-borders-title" flex="30" type="text" ng-model="entry.searchProcedure.NAME" placeholder="Name" focus-me="true"/> <span class="xs-padding">&nbsp;</span> <input class="no-borders-title" flex type="text" ng-model="entry.searchProcedure.DESCRIPTION" placeholder="Description"/></span></th>
+                    <th><div layout="row" layout-align="center center"><md-switch class="md-primary md-hue-1 no-margins" ng-model="entry.searchProcedure.IN_COVERAGE_MODEL" ng-true-value="'Y'" ng-false-value="'N'" aria-label="Used in coverage"></md-switch></div></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchProcedure.STATUS_CODE" placeholder="a/i/d/p"/></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchProcedure.FREQUENCY" placeholder="Freq"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!filteredProcedures.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>            
+                <tr ng-if="!filteredProcedures.length && loadFinished"><td colspan="7"><h4>No procedures found. Please try changing the filtering criteria. You can create a new procedure item from the menu above.</h4></td></tr>
+                <tr class="animation pointer-row" ng-class="{'btn-not-relevant':procedure.RELEVANT=='N'}" ng-repeat="procedure in filteredProcedures | startFrom: (currentPage-1) * pageSize  | limitTo:pageSize" ng-click="procedureInfo(procedure.PROCEDURE_ID)" >
+                    <td style="vertical-align:middle; text-align:right">{{$index + 1 + (currentPage-1) * pageSize}}. </td>                
+                    <td style="vertical-align:middle; text-align:center">
+                        <i class="fa fa-fw fa-lg" ng-class="{   'fa-cog':procedure.TYPE == 'J', 
+                                                                'fa-area-chart':procedure.TYPE == 'C',
+                                                                'fa-cube':procedure.TYPE == 'T',
+                                                                'fa-puzzle-piece':procedure.TYPE == 'S',
+                        }"></i> 
+                    </td>                
+                    <td style="vertical-align:middle">{{procedure.SUB_TYPE}} {{procedure.TYPE_TEXT | lowercase}}</td>
+                    <td class="node-{{procedure.TYPE}}"></td>                
+                    <td style="vertical-align:middle; padding-left:10px;">                            
+                            <strong>{{procedure.NAME}}</strong></br>
+                            <span ng-if="procedure.DESCRIPTION">{{procedure.DESCRIPTION}}</br></span>
+                                <small>
+                                    <span ng-if="procedure.TYPE == 'S' && procedure.SOLUTION_CONTACT_ID"><strong>Contact:</strong> {{entry.lookup.getContactById(procedure.SOLUTION_CONTACT_ID).NAME}}</span>
+                                    <span ng-if="procedure.TYPE == 'S' && procedure.SOX_RELEVANT == 'Y'"><strong>Sox Relevant</strong></span>
+                                    
+                                    <span ng-if="procedure.TYPE == 'J' && procedure.CODE_LOCATION"><strong>Code location:</strong> {{procedure.CODE_LOCATION}} <strong ng-if="procedure.JOB_PARAMETERS">Parameters:</strong> {{procedure.JOB_PARAMETERS}}</span>
+                                    
+                                    <span ng-if="procedure.SCHEDULE_NAME"><strong>Schedule:</strong> {{procedure.SCHEDULE_NAME}}</span>
+                                    <span ng-if="procedure.SCHEDULE_TYPE"><strong>Schedule type:</strong> {{procedure.SCHEDULE_TYPE_TEXT}}</span>
+                                    <span ng-if="procedure.FREQUENCY"><strong>Frequency:</strong> {{procedure.FREQUENCY_TEXT}}</span>
+                                </small>
+                    </td>
+                    <td style="vertical-align:middle; text-align: center">
+                        <div ng-if="procedure.IN_COVERAGE_MODEL == 'Y'">
+                            <div class="label label-default" layout="row" layout-align="space-between center">
+                                <div uib-tooltip="Risk nodes with this control" tooltip-trigger="mouseenter" tooltip-placement="left"><h5><strong> {{procedure.CVG_RN_CNT}} | </strong></h5></div>
+                                <div layout="column" layout-align="space-between center" flex>
+                                    <span style="font-size: 12px; color: #A9F5A9;" uib-tooltip="Risk coverage contribution" tooltip-trigger="mouseenter" tooltip-placement="left"> <i class="fa fa-fw fa-umbrella" aria-hidden="true"></i> {{procedure.CTRL_COVERAGE | number:4}} %</span>
+                                    <span ng-if="procedure.CTRL_COVERAGE_OVERLAP > 0" style="font-size: 12px; color: #FAAC58; margin-top: 3px" uib-tooltip="Overlap with other controls" tooltip-trigger="mouseenter" tooltip-placement="left"> <i class="fa fa-fw fa-umbrella" aria-hidden="true"></i> {{procedure.CTRL_COVERAGE_OVERLAP | number:4}} %</span>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="vertical-align:middle; text-align: center"><i class="fa fa-2x fa-fw" ng-class="{'fa-check-square btn-green':procedure.STATUS_CODE == 'A', 'fa-minus-square btn-red':procedure.STATUS_CODE == 'I', 'fa-pencil-square btn-blue':procedure.STATUS_CODE == 'D', 'fa-plus-square btn-grey':procedure.STATUS_CODE == 'P'}"></i></td>
+                    <td style="vertical-align:middle; text-align: center"><h4><span class="label btn-day">{{procedure.FREQUENCY}}</span></h4></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div ng-if="filteredProcedures.length > pageSize" class="no-margins" layout="row" layout-align="center">
+            <ul uib-pagination total-items="filteredProcedures.length" items-per-page="pageSize" max-size="10" ng-model="currentPage" ng-change="setCurrentPage(currentPage)" boundary-link-numbers="true" previous-text="<" next-text=">"></ul>
+        </div>
+
+</div>

@@ -1,0 +1,119 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/system-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-desktop"></i> Systems</a></li>  
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interface catalogue</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasource catalogue</a></li>
+  <li><a href="/procedure-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-cogs"></i> Procedure catalogue</a></li>
+  <li><a href="/scheduler-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-clock-o"></i> Scheduler catalogue</a></li>
+  <li class="active">Scheduler {{scheduler.NAME}}</li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="schedulerInfo({schedulerId:'new'})"><i class="fa fa-clock-o fa-fw"></i> New scheduler</a></li>
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<form class="form-horizontal" name="datoForm">
+<div ng-if="scheduler.OPCO_ID">
+<div class="panel panel-default md-whiteframe-4dp panel-{{scheduler.TYPE}}">
+  
+  <div class="panel-heading no-margins">
+    <h4 class="no-margins">
+                        <i class="fa fa-fw fa-lg" ng-class="{   'fa-database':scheduler.TYPE == 'D', 
+                                                                'fa-windows':scheduler.TYPE == 'W', 
+                                                                'fa-desktop':scheduler.TYPE == 'A', 
+                                                                'fa-user':scheduler.TYPE == 'M', 
+                                                                'fa-terminal':scheduler.TYPE == 'U', 
+                        }"></i> 
+      Scheduler
+      <strong>
+        {{scheduler.NAME}}
+      </strong> 
+      <small>{{entry.lookup.getOpcoById(scheduler.OPCO_ID).OPCO_NAME}}</small>
+      
+      <span class="label pull-right btn-day">{{scheduler.FREQUENCY}}</span>
+
+    </h4> 
+  </div>
+  <div class="panel-body" ng-cloak>
+
+      <!-- Procedure -->
+      <div class="form-group">
+          <div class="col-sm-3">
+            <label for="schedulerSTATUS">Scheduler type</label>
+            <select name="schedulerSTATUS" class="form-control" ng-model="scheduler.TYPE" ng-disabled="isDisabled" required>
+              <option value="A">Application</option>
+              <option value="W">Windows</option>
+              <option value="U">UX/Crontab</option>
+              <option value="D">Database</option>
+              <option value="M">Manual</option>
+            </select>
+            <div ng-messages="datoForm.schedulerSTATUS.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+            </div>                 
+          </div>  
+
+          <div class="col-sm-6">
+            <label for="schedulerNAME">Scheduler name</label>
+            <input type="text" name="schedulerNAME" minlength="3" maxlength="255" class="form-control" placeholder="Name" ng-model="scheduler.NAME" required ng-disabled="isDisabled" autocomplete="off">
+            <div ng-messages="datoForm.schedulerNAME.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              <div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should be unique and at least 3 characters long</small></div>
+            </div>             
+          </div>  
+
+          <div class="col-sm-3">
+            <label for="schedulerFREQUENCY">Frequency</label>
+            <select name="schedulerFREQUENCY" class="form-control" ng-model="scheduler.FREQUENCY" ng-disabled="isDisabled" required>
+              <option value="A">Ad-hoc</option>
+              <option value="H">Hourly</option>
+              <option value="D">Daily</option>
+              <option value="W">Weekly</option>
+              <option value="M">Monthly</option>
+              <option value="Y">Yearly</option>
+            </select>
+            <div ng-messages="datoForm.schedulerFREQUENCY.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+            </div> 
+          </div> 
+
+      </div>
+
+			<!-- Description -->
+      <div class="form-group">
+
+          <div class="col-sm-12">
+              <label for="schedulerCOMMENT">Description</label>
+              <textarea name="schedulerCOMMENT" type="text" class="form-control" placeholder="Description" ng-model="scheduler.COMMENT" rows="3" ng-disabled="isDisabled"></textarea>         
+          </div>
+
+      </div>
+			<!-- Description -->
+
+    </div> 
+
+    <!-- Buttons -->
+    <div class="panel-footer no-margins">
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <button ng-if="!isDisabled" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+          <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Buttons -->
+
+</div>
+</div>
+</form>

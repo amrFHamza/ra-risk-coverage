@@ -1,0 +1,65 @@
+<form class="form-horizontal" name="datoForm">
+
+  <div class="panel-heading no-margins">
+		<h4 class="no-margins">
+			<i class="fa fa-briefcase"></i> 
+			<strong ng-if="productSegment.PRODUCT_SEGMENT">{{productSegment.PRODUCT_SEGMENT}}</strong> 
+			<strong ng-if="!productSegment.PRODUCT_SEGMENT">Edit product segment</strong> 
+		</h4>
+  </div>
+
+	<div class="panel-body" ng-cloak>
+
+      <div ng-if="!risk.RISK_ID" class="form-group">
+          <div class="col-sm-12">
+              <label for="productGROUP">Product group</label>
+              <select class="form-control" name="productGROUP" ng-options="productGroup.PRODUCT_GROUP_ID as (productGroup.LOB + ' - ' + productGroup.PRODUCT_GROUP) for productGroup in productGroups" ng-model="productSegment.PRODUCT_GROUP_ID" ng-disabled="isDisabled" required>
+              </select>
+	            <div ng-messages="datoForm.productGROUP.$error"> 
+	              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+	            </div>               
+          </div>
+      </div>    
+
+      <div class="form-group">
+          <div class="col-sm-9">
+              <label for="productSEGMENT">Product segment name</label>
+            	<input type="text" name="productSEGMENT" minlength="3" maxlength="255" class="form-control" placeholder="Product segment" ng-model="productSegment.PRODUCT_SEGMENT" required ng-disabled="isDisabled" autocomplete="off">
+              <div ng-messages="datoForm.productSEGMENT.$error">
+                <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              	<div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should at least 3 characters long</small></div>                
+              </div>            
+          </div>
+
+          <div class="col-sm-3">
+              <label for="segmentVALUE">Segment value (<i class="fa fa-euro"></i>)</label>
+            	<input type="number" name="segmentVALUE" lang="de" class="form-control text-right" placeholder="0" ng-model="productSegment.PS_VALUE" required ng-disabled="isDisabled" autocomplete="off">
+              <div ng-messages="datoForm.segmentVALUE.$error">
+                <div ng-message="required"><small class="label label-danger">Value required</small></div>
+              </div>             	
+          </div>          
+      </div>
+
+      <div class="form-group">
+          <div class="col-sm-12">
+              <label for="productVALREF">Value refference</label>
+            	<textarea type="text" name="productVALREF" rows="3" class="form-control" placeholder="Value reference" ng-model="productSegment.VALUE_REFFERENCE" ng-disabled="isDisabled" autocomplete="off"></textarea>
+          </div>
+      </div>
+
+	</div>
+
+  <!-- Buttons -->
+  <div class="panel-footer no-margins">
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <button ng-if="!isDisabled" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+  <!-- Buttons -->
+
+</form>

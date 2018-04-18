@@ -1,0 +1,41 @@
+.panel-F > .panel-heading, .node-F {
+  fill: #FFDCDC;
+  background-color: #FFDCDC !important;
+  color: #333;
+}
+
+.panel-E > .panel-heading, .node-E {
+  fill: #DCFFDC;
+  background-color: #DCFFDC !important;
+  color: #333;
+}
+
+.panel-D > .panel-heading, .node-D {
+  fill: #DCDCFF;
+  background-color: #DCDCFF !important;
+  color: #333;
+}
+
+.panel-W > .panel-heading, .node-W {
+  fill: #FFDCEE;
+  background-color: #FFDCEE !important;
+  color: #333;
+}
+
+.panel-A > .panel-heading, .node-A {
+  fill: #BDFAB2;
+  background-color: #BDFAB2 !important;
+  color: #333;
+}
+
+.panel-M > .panel-heading, .node-M {
+  fill: #FEE7BE;
+  background-color: #FEE7BE !important;
+  color: #333;
+}
+
+.panel-U > .panel-heading, .node-U {
+  fill: #F89A9A;
+  background-color: #F89A9A !important;
+  color: #333;
+}

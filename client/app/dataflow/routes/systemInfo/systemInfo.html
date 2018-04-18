@@ -1,0 +1,97 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/system-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-desktop"></i> Systems</a></li> 	
+  <li class="active"><i class="fa fa-desktop"></i> System <strong>{{system.NAME}}</strong></li>
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li><a href="/procedure-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-cogs"></i> Procedures</a></li>
+  <li ng-if="procedure.TYPE === 'T'"><a href="/dato-info/{{procedure.OPCO_ID}}/{{procedure.NAME}}"><i class="fa fa-edit"></i> Edit dato <strong>{{procedure.NAME}}</strong></a></li> 
+  <li><a href="/scheduler-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-clock-o"></i> Systems</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="interfaceInfo({interfaceId:'new'})"><i class="fa fa-plug fa-fw"></i> New system</a></li>
+        <li class="divider"></li>
+        <li><a ng-href="#" ng-click="clone(system.SYSTEM_ID)"><i class="fa fa-clone fa-fw"></i> Clone</a></li>
+        <li><a ng-href="#" ng-click="delete(system.SYSTEM_ID)"><i class="fa fa-trash fa-fw"></i> Delete</a></li>        
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<form class="form-horizontal" name="datoForm">
+<div ng-if="system.OPCO_ID">
+<div class="panel panel-default md-whiteframe-4dp">
+  
+  <div class="panel-heading no-margins">
+    <h4 class="no-margins">
+			<i class="fa fa-fw fa-lg fa-desktop"></i> 
+      System
+      <strong>
+        {{system.NAME}}
+      </strong> 
+      <small>{{entry.lookup.getOpcoById(system.OPCO_ID).OPCO_NAME}}</small>
+      
+      <span class="label pull-right btn-day">{{system.FREQUENCY}}</span>
+
+    </h4> 
+  </div>
+  <div class="panel-body" ng-cloak>
+
+      <!-- Procedure -->
+      <div class="form-group">
+
+          <div class="col-sm-6">
+            <label for="systemNAME">System name</label>
+            <input type="text" name="systemNAME" minlength="3" maxlength="255" class="form-control" placeholder="Name" ng-model="system.NAME" required ng-disabled="isDisabled" autocomplete="off">
+            <div ng-messages="datoForm.systemNAME.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              <div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should be unique and at least 3 characters long</small></div>
+            </div>             
+          </div>  
+      </div>
+
+			<!-- Description -->
+      <div class="form-group">
+          <div class="col-sm-12">
+              <label for="systemCOMMENT">Description</label>
+              <textarea name="systemCOMMENT" type="text" class="form-control" placeholder="Description" ng-model="system.DESCRIPTION" rows="3" ng-disabled="isDisabled"></textarea>         
+          </div>
+      </div>
+			<!-- Description -->
+
+			<!-- Docu -->
+      <div class="form-group">
+          <div class="col-sm-12">
+            <label for="systemNAME">Documentation link</label>
+            <input type="text" name="systemDOCU_LINK" minlength="3" maxlength="255" class="form-control" placeholder="Documentation link" ng-model="system.DOCU_LINK" ng-disabled="isDisabled" autocomplete="off">
+          </div>  
+
+      </div>
+			<!-- Docu -->
+
+    </div> 
+
+    <!-- Buttons -->
+    <div class="panel-footer no-margins">
+
+      <div class="form-group">
+        <div class="col-sm-12">
+          <button ng-if="!isDisabled" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+          <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <!-- Buttons -->
+
+</div>
+</div>
+</form>

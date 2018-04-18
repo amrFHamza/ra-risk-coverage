@@ -1,0 +1,75 @@
+<div class="panel panel-default md-padding">
+
+    <!-- Filters -->
+    <div class="small no-margins" ng-if="!entry.searchControl">
+        <ul class="list-inline no-margins">
+            <li><strong>Filters: </strong></li>
+            <li class="filter-alert"> None </li>
+        </ul>
+    </div>
+
+    <div class="small no-margins" ng-if="entry.searchControl">
+        <ul class="list-inline no-margins">
+            <li><strong>Filters: </strong></li>
+            <li ng-repeat="(element, filter) in entry.searchControl" class="filter-alert" ng-if="filter">
+                <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+                {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+            </li>
+        </ul>
+    </div>
+    <!-- Filters -->
+
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th width="10px" style="text-align:right">#</th>
+                    <th width="5px"></th>
+                    <th>Control</th>
+                    <th width="20px">Freq</th>
+                    <th width="20px">Status</th>
+                </tr>
+                <tr>                
+                    <th></th>
+                    <th></th>
+                    <th><span layout="row"><input class="no-borders-title" type="text" ng-model="entry.searchControl.CONTROL_NAME" placeholder="Name" focus-me="true" /> &nbsp; <input class="no-borders-title" type="text" ng-model="entry.searchControl.DESCRIPTION" placeholder="Description"/></span></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchControl.FREQUENCY" placeholder=""/></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchControl.STATUS_CODE" placeholder="a/i/d"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!filteredControls.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>
+                <tr ng-if="!filteredControls.length && loadFinished">
+                    <td colspan="7">
+                        <h4>No controls to show.</h4>
+                    </td>
+                </tr>
+                <tr class="animation pointer-row" ng-class="{'btn-not-relevant':control.RELEVANT=='N'}" ng-repeat="control in filteredControls | startFrom: (currentPage-1) * pageSize  | limitTo:pageSize" ng-click="selectControl(control)" >
+                    <td style="vertical-align:middle; text-align:right">{{$index + 1 + (currentPage-1) * pageSize}}. </td>                
+                    <td class="node-{{control.CONTROL_TYPE}}"></td>                
+                    <td style="vertical-align:middle; padding-left:10px;">
+                        <div>
+                            <strong><i class="fa fa-fw fa-lg" ng-class="{'fa-line-chart':control.CONTROL_TYPE == 'M', 'fa-area-chart':control.CONTROL_TYPE == 'C'}"></i> {{control.CONTROL_NAME}}</strong>
+                            <small>{{control.STATUS_CODE_TEXT}}</small>
+                        </div>
+                        <span ng-if="control.DESCRIPTION">{{control.DESCRIPTION}}</br></span>
+                        <span ng-if="control.SAME_SYSTEM" class="label label-default">Systems match</span>
+                    </td>
+                    <td style="vertical-align:middle; text-align: center"><h4><span class="label btn-day">{{control.FREQUENCY}}</span></h4></td>               
+                    <td style="vertical-align:middle; text-align: center"><i class="fa fa-2x fa-fw" ng-class="{'fa-check-square btn-green':control.STATUS_CODE == 'A', 'fa-square-o btn-red':control.STATUS_CODE == 'I', 'fa-pencil-square btn-blue':control.STATUS_CODE == 'D', 'fa-minus-square btn-grey':control.STATUS_CODE == 'P'}"></i></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div ng-if="filteredControls.length > pageSize" class="no-margins" layout="row" layout-align="center">
+            <ul uib-pagination total-items="filteredControls.length" items-per-page="pageSize" max-size="10" ng-model="currentPage" ng-change="setCurrentPage(currentPage)" boundary-link-numbers="true" previous-text="<" next-text=">"></ul>
+        </div>
+</div>

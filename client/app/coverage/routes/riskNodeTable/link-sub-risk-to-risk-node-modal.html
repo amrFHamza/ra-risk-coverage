@@ -1,0 +1,45 @@
+<div class="md-whiteframe-4dp">
+	<form ng-submit="submit()">
+
+		<div class="modal-body no-margins">
+			<h4>Sub-risks that can be linked</h4>
+			<!-- Main table -->
+		    <table class="table table-condensed table-hover sm-margins">		
+	        <tbody>
+						<tr class="animation pointer-row" ng-repeat="subRisk in subRisks | filter: {'RELEVANT': 'Y'}" ng-click="submit(subRisk)">
+							<td width="30px" class="cvg-tablecell-center"><strong>{{subRisk.SUB_RISK_ID}}</strong></td>
+							<td>
+								<div>
+									{{subRisk.SUB_RISK}}
+								</div>
+								<div class="sm-margins" layout="row">
+									<div style="margin-right: 10px;">
+										<span><strong>L: </strong></span>
+	     							<span style="font-size: 12px; letter-spacing: 0px; cursor:pointer;" uib-rating ng-model="subRisk.LIKELIHOOD" max="5" state-on="'fa fa-circle'" state-off="'fa fa-circle-thin'" read-only="true"></span>
+									</div>
+									<div>
+										<span><strong>I: </strong></span>
+	     							<span style="font-size: 12px; letter-spacing: 0px; cursor:pointer;" uib-rating ng-model="subRisk.IMPACT" max="5" state-on="'fa fa-circle'" state-off="'fa fa-circle-thin'" read-only="true"></span>
+									</div>														
+								</div>
+							</td>											
+						</tr>
+						<tr ng-if="(riskNode.SUB_RISKS | filter:{'RN_SUB_RISK_ID': 'NA'}).length" ng-class="{'danger':!subRisk.RN_SUB_RISK_ID}" ng-click="linkSubRisk(riskNode)">
+							<td colspan="4">
+								<a class="btn btn-block"><i class="fa fa-plus"></i> Link sub-risk</a>
+							</td>
+						</tr>												
+					</tbody>
+				</table>				
+			<!-- Main table -->
+    </div>
+
+		<div class="modal-footer no-margins">
+      <div class="input-group">
+				<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+				<!-- <button ng-if="selectedMeasures.length" type="submit" class="btn btn-primary">Add ({{selectedMeasures.length}})</button> -->
+      </div>
+	   </div>
+
+	</form>
+</div>

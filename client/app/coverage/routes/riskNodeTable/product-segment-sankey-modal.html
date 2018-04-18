@@ -1,0 +1,28 @@
+<form class="form-horizontal" name="datoForm">
+
+  <div class="panel-heading no-margins">
+		<h4 class="no-margins">
+			<i class="fa fa-briefcase"></i> 
+			<strong ng-if="productSegment.PRODUCT_SEGMENT">{{productSegment.PRODUCT_SEGMENT}}</strong> 
+		</h4>
+  </div>
+
+	<div class="panel-body" ng-cloak>
+    <div layout="row" layout-align="center center" flex>
+      <sankey-diagram config="sankeyDiagramConfig"></sankey-diagram>    
+    </div>
+	</div>
+
+  <!-- Buttons -->
+  <div class="panel-footer no-margins">
+
+    <div class="form-group">
+      <div class="col-sm-12">
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+  <!-- Buttons -->
+
+</form>

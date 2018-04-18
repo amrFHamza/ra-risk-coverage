@@ -1,0 +1,133 @@
+/* grey */
+.btn-process-0, .btn-process-0:hover, .btn-process-0 > a
+{
+  color: #CCC;
+}
+.label-process-0
+{
+  background-color: #CCC !important;
+  color: #FFF;
+}
+.panel-process-0 > .panel-heading {
+  fill: #CCC;
+  background-color: #CCC !important;
+  color: #FFF;
+}
+
+
+/*Product and Offer management*/
+.btn-process-10, .btn-process-10:hover, .btn-process-10 > a
+{
+  color: #61BB46;
+}
+.label-process-10
+{
+  background-color: #61BB46 !important;
+  color: #FFF;
+}
+.panel-process-10 > .panel-heading {
+  fill: #61BB46;
+  background-color: #61BB46 !important;
+  color: #FFF;
+}
+
+
+
+/*Order Entry and Provisioning*/
+.btn-process-30, .btn-process-30:hover, .btn-process-30 > a
+{
+  color: #FDBB27;
+}
+.label-process-30
+{
+  background-color: #FDBB27 !important;
+  color: #FFF;
+}
+.panel-process-30 > .panel-heading {
+  fill: #FDBB27;
+  background-color: #FDBB27 !important;
+  color: #FFF;
+}
+
+
+
+/*Network and usage Management*/
+.btn-process-40, .btn-process-40:hover, .btn-process-40 > a
+{
+  color: #F5821F;
+}
+.label-process-40
+{
+  background-color: #F5821F !important;
+  color: #FFF;
+}
+.panel-process-40 > .panel-heading {
+  fill: #F5821F;
+  background-color: #F5821F !important;
+  color: #FFF;
+}
+
+
+/*Rating and Billing*/
+.btn-process-60, .btn-process-60:hover, .btn-process-60 > a
+{
+  color: #E03A3E;
+}
+.label-process-60
+{
+  background-color: #E03A3E !important;
+  color: #FFF;
+}
+.panel-process-60 > .panel-heading {
+  fill: #E03A3E;
+  background-color: #E03A3E !important;
+  color: #FFF;
+}
+
+/*Finance and Accounting*/
+.btn-process-90, .btn-process-90:hover, .btn-process-90 > a
+{
+  color: #963D97;
+}
+.label-process-90
+{
+  background-color: #963D97 !important;
+  color: #FFF;
+}
+.panel-process-90 > .panel-heading {
+  fill: #963D97;
+  background-color: #963D97 !important;
+  color: #FFF;
+}
+
+/*Customer management*/
+.btn-process-20, .btn-process-20:hover, .btn-process-20 > a
+{
+  color: #009DDC;
+}
+.label-process-20
+{
+  background-color: #009DDC !important;
+  color: #FFF;
+}
+.panel-process-20 > .panel-heading {
+  fill: #009DDC;
+  background-color: #009DDC !important;
+  color: #FFF;
+}
+
+/*Partner management*/
+.btn-process-80, .btn-process-80:hover, .btn-process-80 > a
+{
+  color: #5AC8FA;
+}
+.label-process-80
+{
+  background-color: #5AC8FA !important;
+  color: #FFF;
+}
+.panel-process-80 > .panel-heading {
+  fill: #5AC8FA;
+  background-color: #5AC8FA !important;
+  color: #FFF;
+}

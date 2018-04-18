@@ -1,0 +1,10 @@
+node_modules
+client/bower_components
+.tmp
+.idea
+npm-debug.log
+/server/config/local.env.js
+this.sublime-workspace
+server/utils/db.js
+server/db/rrc_a1.sql
+start.cmd

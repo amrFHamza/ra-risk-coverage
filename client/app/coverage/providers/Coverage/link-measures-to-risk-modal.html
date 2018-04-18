@@ -1,0 +1,55 @@
+<div class="md-whiteframe-4dp">
+	<form ng-submit="submit()">
+
+		<div class="modal-body no-margins">
+			<h4>Measures that can be linked to this sub-risk</h4>
+			<!-- Main table -->
+		  <table ng-if="measures.length" class="table table-condensed table-hover">		
+		    <thead>
+		        <tr>
+		            <th width="30px"><a class="btn btn-xs btn-default" ng-click="selectAll()">Select all</a></th>
+		            <th width="80px" style="vertical-align: middle; text-align: center;">TMF_ID</th>
+		            <th width="5px"></th>
+		            <th style="vertical-align: middle; text-align: left; padding-left: 7px;"> <span layout="row"><input class="no-borders-title" flex type="text" ng-model="entry.searchMeasure.MEASURE_NAME" placeholder="Measure" focus-me="true"/> <span class="xs-padding">&nbsp;</span> <input class="no-borders-title" flex type="text" ng-model="entry.searchMeasure.MEASURE_DESCRIPTION" placeholder="Description"/></span></th>
+		            <th width="50px" style="vertical-align: middle; text-align: center;">Source</th>
+		            <th width="60px" style="vertical-align: middle; text-align: center;">Relevant</th>
+		            <th width="60px" style="vertical-align: middle; text-align: center;">Required</th>
+		        </tr>
+		    </thead>
+
+		    <tbody>				    	
+					<tr class="animation pointer-row" ng-class="{'info': measure.SELECTED == 'Y'}" ng-repeat="measure in measures | filter: entry.searchMeasure" ng-click="$event.originalEvent.checkBoxClick || ((measure.SELECTED=='Y'?measure.SELECTED='N':measure.SELECTED='Y') && updateSelected())">
+						<td style="vertical-align: middle; text-align: center;">
+		          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="measure.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="updateSelected()"> 
+		          </md-checkbox>							
+						</td>		        
+						<td style="vertical-align: middle; text-align: center;"><span>{{$index + 1}} | <strong ng-if='measure.TMF_ID'>{{measure.TMF_ID}}</strong> <span ng-if='!measure.MEASURE_ID' ng-class="{'btn-red': !measure.SUB_RISK.length, 'btn-green': measure.SUB_RISK.length > 0}"><strong>NEW</strong></span></td>
+						<td ng-class="{'label-grey': measure.RELEVANT == 'N', 'label-yellow': measure.REQUIRED == 'N', 'label-red': measure.REQUIRED == 'Y'}"></td>
+						<td style="vertical-align: middle; text-align: left; padding-left: 7px;">
+							{{measure.MEASURE_NAME}} <br/> 
+							<span class="btn-grey no-margins">{{measure.MEASURE_DESCRIPTION}} <span ng-if="measure.TMF_REFERENCE" class="btn-blue">Ref. {{measure.TMF_REFERENCE}}</span> <i class="fa fa-fw fa-caret-right"> </i> {{measure.MEASURE_TYPE}}</span>
+						</td>
+						<td style="vertical-align: middle; text-align: center;">{{measure.SOURCE}}</td>
+						<td style="vertical-align: middle; text-align: center;">
+		          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="measure.RELEVANT" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Measure relevant" disabled> 
+		          </md-checkbox>									
+						</td>
+						<td style="vertical-align: middle; text-align: center;">
+		          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="measure.REQUIRED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Measure required" disabled> 
+		          </md-checkbox>									
+						</td>								
+					</tr>
+				</tbody>
+			</table>			
+			<!-- Main table -->
+    </div>
+
+		<div class="modal-footer no-margins">
+      <div class="input-group">
+				<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+				<button ng-if="selectedMeasures.length" type="submit" class="btn btn-primary">Add ({{selectedMeasures.length}})</button>
+      </div>
+	   </div>
+
+	</form>
+</div>

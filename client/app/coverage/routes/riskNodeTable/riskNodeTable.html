@@ -1,0 +1,543 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/coverage-overview"><i class="fa fa-fw fa-asterisk"></i> Overview</a></li>
+  <li><a href="/coverage-heat-maps"><i class="fa fa-fw fa-th-large"></i> Heat map</a></li>  
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>  
+  <li><a href="/product-segments?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-briefcase"></i> Product segments</a></li>
+  <li class="active"> <strong>{{productSegment.LOB}}</strong>, {{productSegment.PRODUCT_GROUP}} - {{productSegment.PRODUCT_SEGMENT}}</a></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<!-- Highlights -->
+<div ng-if="loadFinished" layout="row" layout-align="space-between stretch">
+
+	<!-- BOX 1 -->
+	<div class="panel panel-default md-whiteframe-4dp md-padding" flex="30" layout="column" layout-align="center center" style="cursor: pointer;" ng-click="editProductSegment(productSegment)">
+	  <div class="text-center">
+	  	<h4 class="sub-header"><strong>{{productSegment.LOB}} - {{productSegment.PRODUCT_GROUP}}</strong></h4>
+	  </div>
+	  <div class="text-center">
+	  	<h4><span>{{productSegment.PRODUCT_SEGMENT}}</span></h4>
+	  </div>
+	</div>
+
+	<!-- BOX 2 -->
+	<div class="panel panel-default md-whiteframe-4dp md-padding" flex="30" layout="column" layout-align="center center">
+	  <div class="text-center">
+	  	<h3 class="sub-header sm-margins"> <i class="fa fa-euro"></i> <strong>{{productSegment.PS_VALUE | number:0}}</strong></h3>
+	  </div>
+	  <div class="text-center">
+	  	<h4 class="sm-margins"><span>{{productSegment.PS_TOTAL_VALUE_RATIO | number:4}}%</span></h4>
+	  </div>
+		<div class="sm-margins" style="width: 100%;">
+			<uib-progressbar ng-if="!entry.showMeasureCoverage" class="no-margins" type="primary" max="100" value="productSegment.COVERAGE">
+				<span style="color: #333">{{productSegment.COVERAGE|number:2}}%</span>
+			</uib-progressbar>
+
+			<uib-progressbar ng-if="entry.showMeasureCoverage" class="no-margins" type="warning" max="100" value="productSegment.MEASURE_COVERAGE">
+				<span style="color: #333">{{productSegment.MEASURE_COVERAGE|number:2}}%</span>
+			</uib-progressbar>
+
+
+		</div>		  
+	</div>
+
+	<!-- BOX 3 -->
+	<div class="panel panel-default md-whiteframe-4dp md-padding" flex="30" layout="row" layout-align="space-around">
+		<div layout="column" layout-align="center center">
+			<span>Risk nodes</span>
+			<h2><span class="label label-primary">{{productSegment.RISK_COUNT}}</span></h2>
+		</div>
+		<div layout="column" layout-align="center center">
+			<span>RPN</span>
+			<h2><span class="label label-danger">{{productSegment.RPN_COUNT}}</span></h2>
+		</div>
+		<div layout="column" layout-align="center center">
+			<span>Controls</span>
+			<h2 ng-if="productSegment.CONTROL_COUNT"><span class="label label-default">{{productSegment.CONTROL_COUNT}}</span></h2>
+			<h2 ng-if="!productSegment.CONTROL_COUNT"><span class="label label-default">n/a</span></h2>
+		</div>	
+		<div layout="column" layout-align="center center">
+			<span>Risk flow</span>
+			<h2>
+				<span class="label label-white" style="cursor: pointer; border-color: #000 solid 10px" ng-click="showSankeyDiagram(productSegment)">
+					<i class="fa fa-random btn-black"></i> 
+				</span>
+			</h2>
+		</div>		
+	</div>
+
+</div>
+<!-- Highlights -->
+
+<div layout="row" layout-align="space-between center">
+  <div flex>
+		<h3 class="sub-header">
+		    <span class="input-group btn-group pull-left">
+		      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        <span class="caret"></span>
+		      </a>
+		      <ul class="dropdown-menu">
+		        <li><a ng-href="#" ng-click="editProductSegment(productSegment)"><i class="fa fa-briefcase fa-fw"></i> Edit product segment info</a></li>
+		        <li class="divider"></li>
+						<li><a ng-href="#" ng-click="compareProductSegments(productSegment.OPCO_ID, productSegment.PRODUCT_SEGMENT_ID)"><i class="fa fa-exchange fa-fw"></i> Compare with other product segment</a></li>		        
+		        <li><a ng-href="#" ng-click="cloneOtherProductSegment(productSegment.OPCO_ID, productSegment.PRODUCT_SEGMENT_ID)"><i class="fa fa-clone fa-fw"></i> Clone all from other product segment</a></li>
+		        <li><a ng-href="#" ng-click="addRiskNodes(productSegment, riskNodes)"><i class="fa fa-plus fa-fw"></i> Add risk nodes</a></li>
+		        <li class="divider" ng-if="selectedRiskNodes.length"></li>
+						<li ng-if="selectedRiskNodes.length"><a ng-href="#" ng-click="deleteSelectedRiskNodes(selectedRiskNodes)"><i class="fa fa-trash fa-fw"></i> Delete selected nodes</a></li>
+		      </ul>
+		    </span> 
+		    &nbsp;
+		    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+		    {{entry.state.data.title}}
+		    <span ng-if="!entry.showMeasureCoverage"> - risk coverage</span>
+		    <span ng-if="entry.showMeasureCoverage"> - measure coverage</span>    
+		</h3> 
+  </div>
+
+  <div>
+    <md-switch class="md-primary md-hue-1 no-margins" ng-model="entry.showMeasureCoverage" ng-disabled="true" md-no-ink aria-label="Show measure coverage"> 
+    	<span ng-if="!entry.showMeasureCoverage">Risk coverage</span>
+    	<span ng-if="entry.showMeasureCoverage">Measure coverage</span>
+    </md-switch>	
+  </div>  
+
+</div>
+
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+		<!-- Process buttons -->
+		<div ng-if="loadFinished" class="sm-margins" layout="row" layout-align="space-between center">
+			<a class="btn btn-sm btn-default" ng-click="setFilterBusinessProcess(0)" style="margin-right: 5px;" flex>All</a>
+			<a class="btn btn-sm btn-default label-process-{{businessProcess.BUSINESS_PROCESS_ID}}" style="margin-right: 5px;" ng-repeat="businessProcess in businessProcesses" ng-click="setFilterBusinessProcess(businessProcess.BUSINESS_PROCESS)"  flex>
+				{{businessProcess.BUSINESS_PROCESS}}
+			</a>
+		</div>
+	
+		<div layout="row">
+			<div flex>
+			  <!-- Filters -->
+			  <div class="small sm-margins" ng-if="!_und.size(entry.searchRiskNode)">
+			      <ul class="list-inline sm-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li class="filter-alert"> None </li>
+						    <li><strong>Risks: </strong></li>
+						    <li>{{_und.size(filteredRiskNodesSystemGroup)}}</li>
+						    <li><strong>Risk nodes: </strong></li>
+						    <li>{{_und.size(filteredRiskNodes)}}</li>		
+			      </ul>
+			  </div>
+			  <div class="small sm-margins" ng-if="_und.size(entry.searchRiskNode)">
+			      <ul class="list-inline sm-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li ng-repeat="(element, filter) in entry.searchRiskNode" class="filter-alert" ng-if="filter">
+			              <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+			              {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+			          </li>
+						    <li><strong>Risks: </strong></li>
+						    <li>{{_und.size(filteredRiskNodesSystemGroup)}}</li>			          
+						    <li><strong>Risk nodes: </strong></li>
+						    <li>{{_und.size(filteredRiskNodes)}}</li>
+			      </ul>
+			  </div>
+			  <!-- Filters -->
+			</div>
+		</div>	
+
+		<!-- Main table -->
+    <table class="table table-condensed">		
+      <thead>
+          <tr>
+		          <th width="30px"></th>
+              <th width="30px"></th>
+              <th width="5px"></th>
+              <th style="vertical-align: middle; text-align: left; padding-left:10px;">Risk</th>
+              <th width="70px" style="vertical-align: middle; text-align: center;">Sub-risks</th>
+              <th width="70px" style="vertical-align: middle; text-align: center;">RPN</th>
+              <th width="70px" style="vertical-align: middle; text-align: center;">Controls</th>
+              <th style="vertical-align: middle; text-align: left;">System</th>
+              <th width="200px" style="vertical-align: middle; text-align: center;">
+              	<span ng-if="!entry.showMeasureCoverage">Risk coverage</span>
+    						<span ng-if="entry.showMeasureCoverage">Measure coverage</span>              	
+              </th>
+          </tr>
+	        <tr>
+	            <td>
+						    <span class="input-group btn-group" flex>
+							      <a class="button btn btn-sm btn-default dropdown-toggle" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			          			<i class="fa fa-lg fa-check-square"></i>
+							        <i class="fa fa-caret-down"></i>
+							      </a>
+							      <ul class="dropdown-menu">
+
+							        <li><a ng-href="#" ng-click="selectAll()"><i class="fa fa-check-square fa-fw"></i> Select all</a></li>
+							        <li><a ng-href="#" ng-click="unselectAll()"><i class="fa fa-square-o fa-fw"></i> Unselect all</a></li>
+		        					<li class="divider"></li>
+		        					<li><a ng-href="#" ng-click="compareProductSegments(productSegment.OPCO_ID, productSegment.PRODUCT_SEGMENT_ID)"><i class="fa fa-exchange fa-fw"></i> Compare with other product segment</a></li>
+		        					<li><a ng-href="#" ng-click="cloneOtherProductSegment(productSegment.OPCO_ID, productSegment.PRODUCT_SEGMENT_ID)"><i class="fa fa-clone fa-fw"></i> Clone all from other product segment</a></li>
+		        					<li><a ng-href="#" ng-click="addRiskNodes(productSegment, riskNodes)"><i class="fa fa-plus fa-fw"></i> Add risk nodes</a></li>
+							        <li class="divider" ng-if="selectedRiskNodes.length"></li>
+							        <li ng-if="selectedRiskNodes.length"><a ng-href="#" ng-click="deleteSelectedRiskNodes(selectedRiskNodes)"><i class="fa fa-trash fa-fw"></i> Delete selected nodes</a></li>
+							      </ul>
+						    </span> 	
+	            </td>
+	            <td></td>
+	            <td></td>
+	            <td>
+	            	<span layout="row">
+	            		<!-- <input class="no-borders-title" type="text" ng-model="entry.searchRiskNode.BUSINESS_PROCESS"  placeholder="Business process"/> &nbsp; -->
+	            		<!-- <input class="no-borders-title" type="text" ng-model="entry.searchRiskNode.BUSINESS_SUB_PROCESS"  placeholder="Business sub-process"/> &nbsp; -->
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskNode.RISK"  placeholder="Risk"/>
+	            	</span>
+	            </td>
+	            <td></td>
+	            <td></td>
+	            <td></td>
+	            <td><input class="no-borders-title" type="text" ng-model="entry.searchRiskNode.SYSTEM_NAME"  placeholder="System"/></td>
+	            <td></td>
+	        </tr>
+      </thead>
+      <tbody ng-if="!loadFinished">
+        <tr >
+            <td colspan="9">
+                <!-- Spinner -->
+                  <div class="col-sm-12 text-center">
+                    <br><br>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                  </div>
+                <!-- Spinner -->                
+            </td>
+        </tr>
+      </tbody>
+      <tbody ng-if="!_und.size(filteredRiskNodes) && loadFinished">
+        <tr>
+            <td colspan="9">
+                <h4>No risk nodes found.</h4>
+            </td>
+        </tr>   
+      </tbody>
+      <tbody id="{{riskNode.ATTR.RISK_ID}}" ng-repeat="riskNode in filteredRiskNodesSystemGroup | toArray:false | orderBy:['BUSINESS_PROCESS_ID', 'BUSINESS_SUB_PROCESS_ID', 'RISK_ID', 'RISK_NODE_ID']">
+				<tr class="animation pointer-row" ng-class="{'info':riskNode.ATTR.SELECTED=='Y', 'active':riskNode.SHOW_INFO}" ng-click="$event.originalEvent.checkBoxClick || $event.originalEvent.systemClick || riskNodeInfo(riskNode)">
+					<td style="vertical-align: middle; text-align: center;">
+	          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="riskNode.ATTR.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="updateSelected()" ng-disabled="isDisabled"> 
+	          </md-checkbox>							
+					</td>
+					<td style="vertical-align: middle; text-align: center;"><span>{{$index + 1}}</span></td>			
+					<td style="vertical-align: middle; text-align: left;" class="label-process-{{riskNode.ATTR.BUSINESS_PROCESS_ID}}"></td>
+
+
+					<!-- Main line - Colapsed -->
+					<td ng-if="!riskNode.SHOW_INFO" style="vertical-align: middle; text-align: left; padding-left:10px;">
+						<div class="btn-process-{{riskNode.ATTR.BUSINESS_PROCESS_ID}}">
+							<strong>{{riskNode.ATTR.BUSINESS_PROCESS}}</strong> 
+							<i class="fa fa-fw fa-dot-circle-o"></i> 
+							<span>{{riskNode.ATTR.BUSINESS_SUB_PROCESS}}</span> 
+						</div>
+						<span style="font-size: 14px">
+							<strong>{{riskNode.ATTR.RISK}}</strong>
+						</span>
+						<small class="btn-blue">({{riskNode.ATTR.RISK_ID}})</small>
+						<span ng-if="!riskNode.ATTR.RISK_ID">
+							<span class="btn-red">No risks defined for this sub-process</span> <span ng-if="riskNode.ATTR.RISK_DESCRIPTION"> <i class="fa fa-fw fa-caret-right"></i> <span class="btn-grey">{{riskNode.ATTR.RISK_DESCRIPTION}}</span></span>
+						</span>
+						<div>{{riskNode.ATTR.RISK_DESCRIPTION}}</div>
+					</td>
+					<td ng-if="!riskNode.SHOW_INFO" style="vertical-align: middle; text-align: center;" ><h4><span class="label label-primary">{{riskNode.ATTR.SUB_RISK_COUNT}}</span></h4></td>
+					<td ng-if="!riskNode.SHOW_INFO" style="vertical-align: middle; text-align: center;" ><h4><span class="label label-danger">{{riskNode.ATTR.RPN_COUNT}}</span></h4></td>
+					<td ng-if="!riskNode.SHOW_INFO" style="vertical-align: middle; text-align: center;" ><h4 data-html="true" uib-popover-html="riskNode.ATTR.CONTROLS_LIST" popover-trigger="mouseenter" popover-placement="top" popover-append-to-body="false"><span class="label label-default">{{riskNode.ATTR.CONTROL_COUNT}}</span></h4></td>
+					<td ng-if="!riskNode.SHOW_INFO" style="vertical-align: middle; text-align: left;" >
+						<a ng-repeat="systemRiskNode in riskNode | orderBy: ['RISK_NODE_ID']" class="btn btn-sm" style="margin-right: 3px; margin-bottom: 3px;" ng-class="{'btn-default':!systemRiskNode.SYSTEM_ID, 'btn-success':systemRiskNode.SYSTEM_ID}" ng-click="$event.originalEvent.systemClick=true; linkSystem([systemRiskNode])" ng-disabled="isDisabled || selectedRiskNodes.length" flex>
+							<span ng-if="!systemRiskNode.SYSTEM_ID"><i class="fa fa-desktop fa-fw"></i> Link system</span>
+							<div ng-if="systemRiskNode.SYSTEM_ID"><strong>{{systemRiskNode.SYSTEM_NAME}}</strong></div>
+						</a>
+					</td>
+					<td ng-if="!riskNode.SHOW_INFO" style="vertical-align: middle;">
+						<span layout-align="center center">
+	    				<uib-progressbar ng-if="!entry.showMeasureCoverage" style="margin: 7px;" type="primary" max="100" value="riskNode.ATTR.COVERAGE">
+	    					<span style="color: #333">{{riskNode.ATTR.COVERAGE | number:2}}%</span>
+	    				</uib-progressbar>
+
+	    				<uib-progressbar ng-if="entry.showMeasureCoverage" style="margin: 7px;" type="warning" max="100" value="riskNode.ATTR.MEASURE_COVERAGE">
+	    					<span style="color: #333">{{riskNode.ATTR.MEASURE_COVERAGE | number:2}}%</span>
+	    				</uib-progressbar>
+
+	    			</span>
+					</td>
+					<!--/ Main line - Colapsed -->
+
+					<!-- Main line - Expanded -->
+					<td ng-if="riskNode.SHOW_INFO" colspan="6" style="vertical-align: middle; text-align: left; padding-left:10px;">
+						<div class="btn-process-{{riskNode.ATTR.BUSINESS_PROCESS_ID}}">
+							<strong>{{riskNode.ATTR.BUSINESS_PROCESS}}</strong> 
+							<i class="fa fa-fw fa-dot-circle-o"></i> 
+							<span>{{riskNode.ATTR.BUSINESS_SUB_PROCESS}}</span> 
+						</div>
+						<span style="font-size: 14px">
+							<strong>{{riskNode.ATTR.RISK}}</strong>
+						</span>
+						<small class="btn-blue">({{riskNode.ATTR.RISK_ID}})</small>
+						<span ng-if="!riskNode.ATTR.RISK_ID">
+							<span class="btn-red">No risks defined for this sub-process</span> <span ng-if="riskNode.ATTR.RISK_DESCRIPTION"> <i class="fa fa-fw fa-caret-right"></i> <span class="btn-grey">{{riskNode.ATTR.RISK_DESCRIPTION}}</span></span>
+						</span>
+						<div ng-if="riskNode.SHOW_INFO">{{riskNode.ATTR.RISK_DESCRIPTION}} </div>
+					</td>
+					<!--/ Main line - Expanded -->
+
+				</tr>
+				<tr  class="animation" ng-class="{'info':riskNode.SELECTED=='Y', '':riskNode.SHOW_INFO}" ng-if="riskNode.SHOW_INFO">
+					<td style="border-top: none;" ng-class="{'info':riskNode.ATTR.SELECTED=='Y', 'active':riskNode.SHOW_INFO}"></td>
+					<td style="border-top: none;" ng-class="{'info':riskNode.ATTR.SELECTED=='Y', 'active':riskNode.SHOW_INFO}"></td>
+					<td style="border-top: none; vertical-align: middle; text-align: left;" class="label-process-{{riskNode.BUSINESS_PROCESS_ID}}"></td>
+					<td colspan="7" style="">
+
+						<!-- System tabs -->
+					  <uib-tabset active="riskNode.active" justified="true" layout="column" flex>
+					    <uib-tab ng-repeat="systemRiskNode in riskNode | orderBy: ['RISK_NODE_ID']" index="$index" deselect="updateRiskNode(systemRiskNode)">
+					      <uib-tab-heading>
+
+									<span style="width: 10px; height: 10px;" class="btn-black pull-right" >
+									  <a ng-if="riskNode.active == $index && _und.size(riskNode)>1 && !isDisabled" href="#" ng-click="deleteSystemRiskNodes([systemRiskNode], riskNode.active, (riskNode.length-1))" uib-tooltip="Delete risk node" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800">
+	 										<i class="fa fa-lg fa-times"></i>
+									  </a>
+									</span>	
+
+									<a ng-if="!systemRiskNode.SYSTEM_ID" class="btn" href="#" ng-click="linkSystem([systemRiskNode], 0)" ng-disabled="isDisabled || selectedRiskNodes.length">
+										<strong style="font-size: 15px;">
+											<i class="fa fa-desktop fa-fw"></i> Link system 
+										</strong>
+										<small class="btn-blue">({{systemRiskNode.RISK_NODE_ID}})</small>
+									</a>
+
+									<span ng-if="systemRiskNode.SYSTEM_ID" layout="row" layout-align="center center">
+										<a ng-if="riskNode.active == $index && !isDisabled" href="#" ng-click="linkSystem([systemRiskNode], $index)">
+											<strong style="font-size: 15px;">
+												<i class="fa fa-desktop fa-fw"></i> {{systemRiskNode.SYSTEM_NAME}}
+											</strong>
+											<small class="btn-blue">({{systemRiskNode.RISK_NODE_ID}})</small>
+										</a>
+										<span ng-if="riskNode.active != $index || isDisabled">
+											<strong class="btn-black" style="font-size: 15px;">
+												<i class="fa fa-desktop fa-fw"></i> {{systemRiskNode.SYSTEM_NAME}} 
+											</strong>
+											<small class="btn-blue">({{systemRiskNode.RISK_NODE_ID}})</small>
+										</span>										
+									</span>
+
+									<span layout="row" layout-align="center center">
+										<h5><span style="margin: 2px;" class="label label-primary">{{systemRiskNode.SUB_RISK_COUNT}}</span></h5>
+										<h5><span style="margin: 2px;" class="label label-danger">{{systemRiskNode.RPN_COUNT}}</span></h5>
+										<h5><span style="margin: 2px;" class="label label-default">{{systemRiskNode.CONTROL_COUNT}}</span></h5>
+	
+				    				<uib-progressbar ng-if="!entry.showMeasureCoverage" style="margin: 7px;" type="primary" max="100" value="systemRiskNode.COVERAGE" flex>
+				    					<span style="color: #333">{{systemRiskNode.COVERAGE | number:2}}%</span>
+				    				</uib-progressbar>
+
+				    				<uib-progressbar ng-if="entry.showMeasureCoverage" style="margin: 7px;" type="warning" max="100" value="systemRiskNode.MEASURE_COVERAGE" flex>
+				    					<span style="color: #333"> {{systemRiskNode.MEASURE_COVERAGE | number:2}}% </span>
+				    				</uib-progressbar>
+									</span>
+					      </uib-tab-heading>					    	
+					    	
+								<!-- START: Node info -->
+
+								<div style="margin: 7px;" layout="row" layout-align="space-between" flex>
+									<!-- CONTROLS -->
+								  <div layout="column" style="margin-right: 10px;" flex>
+								  	<span>
+											<strong>Controls</strong> 
+											(<a class="pointer-row" data-html="true" uib-popover-html="popoverHtml('effectiveness')" popover-trigger="outsideClick" popover-placement="right-top" popover-append-to-body="false"><small>Control effectiveness guideline</small></a>)
+										</span>											
+									    <table class="table table-condensed sm-margins">		
+								        <tbody>
+					
+													<tr ng-class="{'danger': control.SELECTED=='Y'}" ng-repeat="control in systemRiskNode.CONTROLS">
+														<td width="30px" style="padding: 5px 0px 0px 5px !important;">
+															<md-checkbox class="no-margins" ng-model="control.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Control selected" ng-change="riskNodeControlCheck(control, systemRiskNode)" ng-disabled="isDisabled" uib-tooltip="Link mode" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"></md-checkbox>
+														</td>
+														<td style="padding-left: 5px">
+															<div>
+																<span ng-if="control.STATUS_CODE != 'A'" class="label label-danger">{{control.STATUS_CODE_TEXT}}</span>
+																<strong>
+																	<i class="fa" ng-class="{'fa-line-chart': control.CONTROL_TYPE === 'M', 'fa-area-chart': control.CONTROL_TYPE === 'C'}"></i>  
+																	<a style="color: black" ng-if="control.CONTROL_TYPE == 'M'" ng-href="/metric-info/{{control.OPCO_ID}}/{{control.CONTROL_REF}}">{{control.CONTROL_NAME}}</a> 
+																	<a style="color: black" ng-if="control.CONTROL_TYPE == 'C'" ng-href="/procedure-info?procedureId={{control.CONTROL_REF}}">{{control.CONTROL_NAME}}</a>
+																</strong>
+																<i class="fa fa-fw" ng-class="{'fa-check-square btn-green':control.STATUS_CODE == 'A', 'fa-square-o btn-red':control.STATUS_CODE == 'I', 'fa-pencil-square btn-blue':control.STATUS_CODE == 'D', 'fa-minus-square btn-grey':control.STATUS_CODE == 'P'}"></i>
+															</div>
+															<div>
+																{{control.DESCRIPTION}} 
+																<small class="btn-blue">({{control.RN_CONTROL_ID}})</small>
+															</div>
+															<div style="height: 48px;">
+																<div layout="row" style="padding-top: 10px;" layout-align="start center" ng-show="!showControlEffectivenessSlider">
+											    				<span>
+											    					<strong>Effectiveness</strong> 											
+											    					: &nbsp;
+																	</span>
+											    				<uib-progressbar class="danger no-margins" type="primary" max="100" value="control.EFFECTIVENESS" flex>
+											    					<span style="color: #333">{{control.EFFECTIVENESS}}%</span>
+											    				</uib-progressbar>	
+																	<a class="btn btn-xs btn-default" ng-click="showControlEffectivenessSlider=!showControlEffectivenessSlider" ng-disabled="riskNodeControlLinkMode || isDisabled" uib-tooltip="Set control effectiveness" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-pencil"></i></a>
+				    										</div>
+																<div layout="row" layout-align="start center" ng-show="showControlEffectivenessSlider">
+																	<md-slider class="md-primary md-hue-1 no-margins" md-discrete ng-model="control.EFFECTIVENESS" step="10" min="0" max="100" flex ng-change="updateRiskNode(systemRiskNode)" aria-label="Control Effectiveness"></md-slider>
+																	<span style="width: 50px;" class="text-center"><strong>{{control.EFFECTIVENESS}}%</strong></span>
+																	<a class="btn btn-xs btn-default" ng-click="showControlEffectivenessSlider = !showControlEffectivenessSlider" uib-tooltip="Cancel" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-times"></i></a>
+																</div>
+															</div>
+															<div style="margin-bottom: 5px;" ng-if="control.SELECTED=='Y' && riskNodeControlLinkMode && control.STATUS_CODE != 'A' && control.CONTROL_TYPE === 'C'" class="btn-danger sm-padding"> <strong>Warning: Control not active</strong> - the effect on risk coverage will be automatically calculated when this control is put in production.</div>
+															<div style="margin-bottom: 5px;" ng-if="control.SELECTED=='Y' && riskNodeControlLinkMode && control.STATUS_CODE != 'A' && control.CONTROL_TYPE === 'M'" class="btn-danger sm-padding"> <strong>Warning: Metric not fine-tuned</strong> - the effect on risk coverage will be automatically calculated when this metric is put in production.</div>
+														</td>
+														<td width="30px" class="text-center" style="padding: 5px 0px 0px 0px !important;">
+															<a ng-if="!riskNodeControlLinkMode && !isDisabled" class="btn btn-xs btn-default" ng-click="unlinkControl(control.RN_CONTROL_ID, systemRiskNode, riskNode.active)" uib-tooltip="Unlink control from risk node" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-minus"></i></a>
+															<i class="fa fa-2x fa-square" ng-style="{'color': getColor(control.RN_CONTROL_ID)}"></i>
+														</td>		
+
+														<!-- color stripe -->
+														<!-- <td width="7px" ng-style="{'background-color': getColor(control.RN_CONTROL_ID)}"></td> -->
+													</tr>
+
+					        				<tr ng-if="riskNodeControlLinkMode" class="active">
+								        		<td colspan="4">
+															<a class="btn btn-xs btn-block btn-danger sm-margins" ng-click="riskNodeControlUnCheck(systemRiskNode)"> Close control link mode </a>
+								        		</td>
+								        	</tr>
+
+													<tr ng-if="!riskNodeControlLinkMode && !isDisabled" class="warning" ng-click="cloneControlsFromOtherRiskNode(systemRiskNode, riskNode.active)">
+														<td colspan="4">
+															<a class="btn btn-xs btn-block"><i class="fa fa-clone"></i> Copy controls from other risk node</a>
+														</td>											
+													</tr>
+
+													<tr ng-if="!riskNodeControlLinkMode && !isDisabled" class="success" ng-click="linkControl(systemRiskNode)">
+														<td colspan="4">
+															<a class="btn btn-xs btn-block"><i class="fa fa-plus"></i> Control</a>
+														</td>											
+													</tr>
+
+
+												</tbody>
+											</table>								
+								  </div>
+
+									<!-- SUB-RISK -->
+								  <div layout="column" style="margin-right: 10px;" flex>
+									  	<span>
+									  		<strong>Sub-risks</strong>
+									  		(<a class="pointer-row" data-html="true" uib-popover-html="popoverHtml('impact')" popover-trigger="outsideClick" popover-placement="right-top" popover-append-to-body="false"><small>Risk likelihood and impact guideline</small></a>)
+									  	</span>
+									    <table class="table table-condensed sm-margins">		
+								        <tbody>
+													<tr ng-class="{'danger': subRisk.SELECTED=='Y'}" ng-if="subRisk.RN_SUB_RISK_ID !== 'NA'" ng-repeat="subRisk in systemRiskNode.SUB_RISKS | orderBy: ['SUB_RISK_ID']" ng-class="{'danger':subRisk.RN_SUB_RISK_ID == 'NA'}">
+														<td width="40px" class="text-center">
+															<div layout="column" layout-align="center center">
+																<strong >{{subRisk.SUB_RISK_ID}}</strong>
+																<md-checkbox ng-if="riskNodeControlLinkMode" class="no-margins" ng-model="subRisk.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk link" ng-change="riskNodeSubRiskCheck(subRisk, systemRiskNode)"></md-checkbox>
+																<small ng-if="!riskNodeControlLinkMode" class="btn-blue">{{subRisk.SOURCE}}</small>
+															</div>
+														</td>
+														<td>
+															<div>
+																{{subRisk.SUB_RISK}} <small class="btn-blue">({{subRisk.RN_SUB_RISK_ID}})</small>
+															</div>
+															<div class="sm-margins" layout="row">
+																<div style="margin-right: 15px;">
+																	<span>
+																		<strong>L:</strong>
+																	</span>
+								     							<span style="font-size: 12px; letter-spacing: 0px; cursor:pointer;" uib-rating ng-model="subRisk.LIKELIHOOD" max="5" state-on="'fa fa-circle'" state-off="'fa fa-circle-thin'" read-only="riskNodeControlLinkMode || isDisabled" ng-change="updateRiskNode(systemRiskNode)" flex uib-tooltip="Set likelihood" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"></span>
+																</div>
+																<div>
+																	<span>
+																		<strong>I:</strong>
+																	</span>
+								     							<span style="font-size: 12px; letter-spacing: 0px; cursor:pointer;" uib-rating ng-model="subRisk.IMPACT" max="5" state-on="'fa fa-circle'" state-off="'fa fa-circle-thin'" read-only="riskNodeControlLinkMode || isDisabled" ng-change="updateRiskNode(systemRiskNode)" flex uib-tooltip="Set impact" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"></span>
+																</div>														
+															</div>
+															<div ng-if="subRisk.FIXED == 'Y'" class="sm-margins"><md-switch class="md-primary md-hue-1 no-margins" ng-model="subRisk.FIXED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk coverage fixed" ng-change="unlockSubRiskCoverage(subRisk, systemRiskNode)" ng-disabled="riskNodeControlLinkMode || isDisabled" uib-tooltip="Click to unlock" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800">Coverage locked on <strong>{{subRisk.COVERAGE}}%</strong></md-switch></div>
+															<div ng-if="subRisk.FIXED == 'N'" style="height: 48px;">
+																<div layout="row" style="padding-top: 5px;" layout-align="start center" ng-show="!showSubriskCoverageSlider">
+																	<span><strong>Sub-risk coverage:</strong> &nbsp; </span>
+											    				<uib-progressbar class="no-margins" type="primary" max="100" value="subRisk.COVERAGE" flex>
+											    					<span style="color: #333">{{subRisk.COVERAGE}}%</span>
+											    				</uib-progressbar>	
+																	<a class="btn btn-xs btn-default" ng-click="showSubriskCoverageSlider=!showSubriskCoverageSlider" ng-disabled="riskNodeControlLinkMode || !getLinkedControlsR(subRisk, systemRiskNode).length || isDisabled" uib-tooltip="Set coverage to a fixed value" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-pencil"></i></a>
+				    										</div>
+																<div layout="row" layout-align="start center" ng-show="showSubriskCoverageSlider">
+																	<md-slider class="md-primary md-hue-1 no-margins" md-discrete ng-model="subRisk.COVERAGE" step="10" min="0" max="100" flex ng-change="manualUpdateSubRiskCoverage(subRisk, systemRiskNode)" aria-label="Sub-risk coverage"></md-slider>
+																	<span style="width: 50px;" class="text-center"><strong>{{subRisk.COVERAGE}}%</strong></span>
+																	<a class="btn btn-xs btn-default" ng-click="showSubriskCoverageSlider=!showSubriskCoverageSlider"><i class="fa fa-times"></i></a>
+																</div>
+															</div>
+
+															<!-- MEASURES -->
+														  <div layout-align="start start">
+																<a ng-repeat="measure in getSubRiskMeasures(subRisk.SUB_RISK_ID, systemRiskNode.MEASURES)"  
+																		class="btn btn-xs btn-default xs-margins"  
+																		data-html="true" uib-popover-html="getSubRiskMeasurePopover(measure)"
+																		popover-trigger="mouseenter" popover-placement="top-right" popover-append-to-body="false">
+																	<i class="fa fa-lg" ng-class="{'fa-check-circle btn-red':measure.REQUIRED == 'Y', 'fa-check-circle-o btn-yellow':measure.REQUIRED != 'Y'}"></i> | 
+																	{{measure.TMF_ID}}
+																</a>
+														  </div>															
+														</td>
+
+														<td width="30px" class="text-center" style="padding: 5px 0px 0px 0px !important;">
+															<button ng-if="!riskNodeControlLinkMode && !isDisabled && subRisk.REQUIRED == 'N'" class="btn btn-xs btn-default" ng-click="unlinkSubRisk(subRisk.RN_SUB_RISK_ID, systemRiskNode)" uib-tooltip="Unlink sub-risk" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-minus"></i></button>
+															<button ng-if="subRisk.REQUIRED == 'Y'" class="btn btn-xs btn-danger" uib-tooltip="Mandatory sub-risk" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800">M</button>
+															<i class="fa fa-2x fa-square" ng-style="{color:getColor(ctrl)}" ng-repeat="ctrl in getLinkedControlsR(subRisk, systemRiskNode)"></i>													
+														</td>
+
+													</tr>
+
+													<tr ng-if="(systemRiskNode.SUB_RISKS | filter:{'RN_SUB_RISK_ID': 'NA'}).length && !riskNodeControlLinkMode && !isDisabled" class="success" ng-click="linkSubRisk(systemRiskNode)">
+														<td colspan="4">
+															<a class="btn btn-xs btn-block" ng-disabled="riskNodeControlLinkMode || isDisabled"><i class="fa fa-plus"></i> Sub-risk</a>
+														</td>
+													</tr>
+
+												</tbody>
+											</table>						  	
+								  </div>
+								</div>
+								<!-- Start Comment -->
+								<div style="margin: 7px;" layout="column">
+									<div>
+										
+									<button ng-if="!systemRiskNode.COMMENT && !systemRiskNode.commentMode && !isDisabled" type="button" class="btn btn-xs btn-warning" ng-click="addRiskNodeComment(systemRiskNode)"><i class="fa fa-edit fa-fw"></i> Add comment</button>
+									</div>
+								
+									<div ng-if="systemRiskNode.commentMode || systemRiskNode.COMMENT" layout="row" layout-align="start center" class="alert alert-warning">
+							      <span ng-if="(systemRiskNode.commentMode || systemRiskNode.COMMENT) && isDisabled"> {{systemRiskNode.COMMENT}} </span>
+							      <textarea ng-if="(systemRiskNode.commentMode || systemRiskNode.COMMENT) && !isDisabled" type="text" name="test" class="form-control btn-red" placeholder="Risk node comment" ng-model="systemRiskNode.COMMENT" rows="1" ng-disabled="isDisabled" flex focus-me="true"></textarea>
+							      <span ng-if="systemRiskNode.COMMENT">
+							      	<span>&nbsp;</span>
+							      	<button  type="button" class="btn btn-sm btn-warning " ng-click="saveRiskNodeComment(systemRiskNode)" ng-if="!isDisabled" ng-disabled="isDisabled" uib-tooltip="Save comment" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-save fa-fw"></i> </button>
+							      </span>
+							      <span>
+							      	<span>&nbsp;</span>
+							      	<button type="button" class="btn btn-sm btn-default " ng-click="deleteRiskNodeComment(systemRiskNode)" ng-disabled="isDisabled" uib-tooltip="Remove comment" tooltip-trigger="mouseenter" tooltip-placement="top" tooltip-popup-delay="800"><i class="fa fa-times fa-fw"></i> </button>
+							     	</span>
+									</div>
+								</div>
+								<!-- End Comment -->
+      <!-- END: Node info -->
+
+					    </uib-tab>
+					    <uib-tab index="100" ng-click="addSystem(riskNode)" ng-if="_und.size(riskNode)>0 && riskNode[0].SYSTEM_ID && !isDisabled">
+								<uib-tab-heading>
+									<div layout="row" layout-align="center center" class="text-center">
+										<i class="fa fa-plus"></i> Add system 
+									</div>
+								</uib-tab-heading>
+							</uib-tab>
+					  </uib-tabset>
+
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- Main table -->
+
+</div>

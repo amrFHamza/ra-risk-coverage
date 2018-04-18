@@ -1,0 +1,58 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li class="active"><i class="fa fa-fw fa-asterisk"></i> Overview</li>
+  <li><a href="/coverage-heat-maps"><i class="fa fa-fw fa-th-large"></i> Heat map</a></li>
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>
+  <li><a href="/product-segments?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-briefcase"></i> Product segments</a></li>
+<!--   <li><a href="/coverage-business-process"><i class="fa fa-fw fa-code-fork"></i> Business process</a></li>
+  <li><a href="/coverage-system"><i class="fa fa-fw fa-desktop"></i> Systems</a></li> -->
+</ol>
+<!-- Breadcrumbs -->
+
+  <div flex>
+    <h3 class="sub-header">
+        <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+        {{entry.state.data.title}} 
+    </h3> 
+  </div>
+
+
+  <div>
+    <!-- Spinner -->
+      <div ng-if="!loadFinished" class="col-sm-12 text-center">
+        <br><br>
+        <i class="fa fa-spinner fa-pulse fa-3x"></i>
+      </div>
+    <!-- Spinner -->
+         
+      <div class="col-sm-12">
+        <h4 class="sub-header">
+            Total coverage
+        </h4>      
+        <c3-chart id="cvgOverviewTotal" config="cvgOverviewChartOptionsTotal" data="cvgOverviewDailyChartDataTotal"></c3-chart>
+      </div>
+
+      <div class="col-sm-12">
+        <h4 class="sub-header">
+            Lines of business  
+        </h4>      
+        <c3-chart id="cvgOverviewLOB" config="cvgOverviewChartOptionsLOB" data="cvgOverviewDailyChartDataLOB"></c3-chart>
+      </div>
+
+      <div class="col-sm-12">
+        <h4 class="sub-header">
+            Product groups  
+        </h4>      
+        <c3-chart id="cvgOverviewPG" config="cvgOverviewChartOptionsPG" data="cvgOverviewDailyChartDataPG"></c3-chart>
+      </div>
+
+      <div class="col-sm-12">
+        <h4 class="sub-header">
+            Value coverage flow
+        </h4>     
+        <!-- START: Draw directed force graph -->
+        <sankey-diagram config="sankeyDiagramConfig" flex></sankey-diagram>
+        <!-- END: Draw directed force graph -->
+      </div>
+    
+  </div>

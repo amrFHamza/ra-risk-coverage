@@ -1,0 +1,258 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/risk-catalogue"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</a></li>
+  <li><a href="/key-risk-areas"><i class="fa fa-fw fa-map"></i> Key Risk Areas</a></li>
+  <li class="active">
+  	<span ng-if="keyRiskArea.KEY_RISK_AREA_ID"><i class="fa fa-fw fa-object-group"></i> {{keyRiskArea.KEY_RISK_AREA}}</span>
+  	<span ng-if="!keyRiskArea.KEY_RISK_AREA_ID"><i class="fa fa-fw fa-object-group"></i> New key risk area</span>
+  </li>
+  <li><a href="/ra-landscape?opcoId={{entry.OPCO_ID}}"><i class="fa fa-fw fa-map-o"></i> RA Landscape</a></li>    
+</ol>
+<!-- Breadcrumbs -->
+
+<h3>
+	<span class="input-group btn-group pull-left">
+		<a class="btn btn-primary dropdown-toggle no-margins no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="isDisabled">
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li ng-if="keyRiskArea.KEY_RISK_AREA_ID"><a ui-sref="keyRiskAreaInfo({keyRiskAreaId:'newKeyriskArea'})"><i class="fa fa-object-group fa-fw"></i> New key risk area</a></li>
+			<li ng-if="keyRiskArea.KEY_RISK_AREA_ID"><a href="#" ng-click="deleteKeyRiskArea(keyRiskArea.KEY_RISK_AREA_ID)"><i class="fa fa-trash fa-fw"></i> Delete this key risk area</a></li>
+		</ul>
+	</span> 
+    &nbsp;
+    <strong class="btn-blue">Global</strong>
+    {{entry.state.data.title}} 
+</h3>
+
+<form class="form-horizontal" name="datoForm">
+
+	<div class="panel panel-default md-whiteframe-4dp panel-process-{{keyRiskArea.BUSINESS_PROCESS_ID}}">
+
+	  <div class="panel-heading no-margins">
+			<h3 class="no-margins">
+				<i class="fa fa-object-group"></i> 
+				<strong>{{keyRiskArea.KEY_RISK_AREA}}</strong> 
+			</h3>
+	  </div>
+
+	  <div class="panel-body" ng-cloak>
+
+      <!-- Description -->
+      <div class="form-group">
+
+          <div class="col-sm-6">
+            <label for="riskName">Key risk area</label>
+            <input type="text" name="datasourceKRA" minlength="5" maxlength="50" ng-model="keyRiskArea.KEY_RISK_AREA" placeholder="Key Risk Area" class="form-control" ng-disabled="isDisabled" required autocomplete="off">
+            <div ng-messages="datoForm.datasourceKRA.$error"> 
+              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              <div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should at least 5 characters long</small></div>
+            </div> 
+          </div>
+
+          <div class="col-sm-12">
+              <label for="datasourceDESCRIPTION">Key risk area description</label>
+              <textarea name="datasourceDESCRIPTION" type="text" class="form-control" placeholder="Risk description" ng-model="keyRiskArea.KEY_RISK_AREA_DESCRIPTION" rows="1" ng-disabled="isDisabled" msd-elastic required autocomplete="off"></textarea>          
+	            <div ng-messages="datoForm.datasourceDESCRIPTION.$error"> 
+	              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+	            </div>               
+          </div>
+
+      </div>
+      <!-- Description -->
+
+
+      <!-- Product groups -->
+      <md-content layout="row" layout-align="top space-around">
+        <md-card flex class="md-whiteframe-2dp">
+          <md-card-header layout-align="start center" class="xs-padding panel-header-grey">
+            <i class="fa fa-fw fa-download fa-rotate-270 fa-2x"></i>
+            <strong>Product groups</strong>
+            <div flex="5"></div>            
+            <button class="btn btn-xs btn-default" ng-if="keyRiskArea.KEY_RISK_AREA_ID" ng-click="linkProductGroup()" ng-disabled="isDisabled">Link product group <i class="fa fa-plus fa-fw"></i></button>
+            <button class="btn btn-xs btn-default" ng-if="countSelectedProductGroups" ng-click="unlinkProductGroup()" ng-disabled="isDisabled">Unlink <strong>{{countSelectedProductGroups}}</strong> product group<span ng-if="countSelectedProductGroups > 1">s</span> <i class="fa fa-minus fa-fw"></i></button>
+            <div flex></div>            
+          </md-card-header>
+          <md-card-content class="sm-padding" layout="column" flex>
+						<!-- Main table -->
+						<table class="table table-hover table-condensed">		
+						  <thead>
+						      <tr>
+						          <th width="10px"></th>
+						          <th width="30px"></th>
+						          <th width="30px"></th>
+						          <th width="5px"></th>
+						          <th style="vertical-align: middle; text-align: left; padding-left:10px;">Product group</th>
+						      </tr>
+						  </thead>
+						  <tbody>
+						    <tr ng-if="!keyRiskAreaProductGroups.length && !loadFinished && keyRiskArea.KEY_RISK_AREA_ID">
+						        <td colspan="9">
+						            <!-- Spinner -->
+						              <div class="col-sm-12 text-center">
+						                <br><br>
+						                <i class="fa fa-spinner fa-pulse fa-3x"></i>
+						              </div>
+						            <!-- Spinner -->                
+						        </td>
+						    </tr>   
+						    <tr ng-if="(!keyRiskAreaProductGroups.length && loadFinished) || !keyRiskArea.KEY_RISK_AREA_ID">
+						        <td colspan="9">
+						            <h4>No product groups linked</h4>
+						        </td>
+						    </tr>   
+
+								<tr class="animation pointer-row" ng-class="{'info':productGroup.SELECTED=='Y'}" ng-repeat="productGroup in keyRiskAreaProductGroups" ng-click="$event.originalEvent.checkBoxClick || ((productGroup.SELECTED=='Y'?productGroup.SELECTED='N':productGroup.SELECTED='Y') && clickProductGroupCheckbox())">
+									<td style="vertical-align: middle; text-align: center;">
+						        <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="productGroup.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="clickProductGroupCheckbox()" ng-disabled="isDisabled"> 
+						        </md-checkbox>							
+									</td>
+									<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}} |</span></td>			
+									<td style="vertical-align: middle; text-align: center;"><strong ng-if='productGroup.PRODUCT_GROUP_ID'>{{productGroup.PRODUCT_GROUP_ID}}</strong> <span ng-if='!productGroup.PRODUCT_GROUP_ID' ng-class="{'btn-red': !productGroup.PRODUCT_GROUP_ID.length, 'btn-green': productGroup.PRODUCT_GROUP_ID.length > 0}"><strong>ERR</strong></span></td>
+									<td style="vertical-align: middle; text-align: left;" class="label-process-0"></td>
+									<td style="vertical-align: middle; text-align: left; padding-left:10px;">
+										<span style="font-size: 16px" ng-style="{color: getColor(productGroup.LOB)}">
+											<strong>{{productGroup.LOB}}</strong> 
+										</span>
+										<span ng-if="productGroup.PRODUCT_GROUP_ID">
+											<span style="font-size: 14px">
+												<i class="fa fa-fw fa-dot-circle-o"></i>
+												<strong>{{productGroup.PRODUCT_GROUP}}</strong> 
+											</span>	
+										</span>
+										<span ng-if="!productGroup.PRODUCT_GROUP_ID">
+											<span class="btn-red">No product groups linked</span> <span ng-if="productGroup.RISK_DESCRIPTION"> <i class="fa fa-fw fa-caret-right"></i> <span class="btn-grey">{{productGroup.RISK_DESCRIPTION}}</span></span>
+										</span>						
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- Main table -->
+
+          </md-card-content>
+        </md-card>        
+
+      </md-content>
+      <!-- Product groups -->
+
+      <!-- Risks -->
+      <md-content layout="row" layout-align="top space-around">
+        <md-card flex class="md-whiteframe-2dp">
+          <md-card-header layout-align="start center" class="xs-padding panel-header-grey">
+            <i class="fa fa-fw fa-download fa-rotate-270 fa-2x"></i>
+            <strong>Risks</strong>
+            <div flex="5"></div>            
+            <button class="btn btn-xs btn-default" ng-if="keyRiskArea.KEY_RISK_AREA_ID" ng-click="linkRisk(keyRiskAreaRisks)" ng-disabled="isDisabled">Link new risk <i class="fa fa-plus fa-fw"></i></button>
+            <button class="btn btn-xs btn-default" ng-if="countSelectedRisks" ng-click="unlinkRisk()" ng-disabled="isDisabled">Unlink <strong>{{countSelectedRisks}}</strong> risk<span ng-if="countSelectedRisks > 1">s</span> <i class="fa fa-minus fa-fw"></i></button>
+            <div flex></div>            
+		        <md-switch class="md-primary md-hue-1 no-margins" ng-model="entry.expandSubRisk" md-no-ink aria-label="Expand sub-risks"> 
+		        	Show sub-risks
+		        </md-switch>	            
+          </md-card-header>
+          <md-card-content class="sm-padding" layout="column" flex>
+
+						<!-- Main table -->
+						<table class="table table-hover table-condensed">		
+						  <thead>
+						      <tr>
+						          <th width="10px"></th>
+						          <th width="30px"></th>
+						          <th width="30px"></th>
+						          <th width="5px"></th>
+						          <th style="vertical-align: middle; text-align: left; padding-left:10px;">Risk</th>
+						          <th width="80px" style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">Sub-risks</th>
+						          <th width="80px" style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">Measures</th>
+						          <th width="50px" style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">Source</th>
+						      </tr>
+						  </thead>
+						  <tbody>
+						    <tr ng-if="!keyRiskAreaRisks.length && !loadFinished && keyRiskArea.KEY_RISK_AREA_ID">
+						        <td colspan="9">
+						            <!-- Spinner -->
+						              <div class="col-sm-12 text-center">
+						                <br><br>
+						                <i class="fa fa-spinner fa-pulse fa-3x"></i>
+						              </div>
+						            <!-- Spinner -->                
+						        </td>
+						    </tr>   
+						    <tr ng-if="(!keyRiskAreaRisks.length && loadFinished) || !keyRiskArea.KEY_RISK_AREA_ID">
+						        <td colspan="9">
+						            <h4>No risks linked in this area.</h4>
+						        </td>
+						    </tr>   
+
+								<tr class="animation pointer-row" ng-class="{'info':risk.SELECTED=='Y'}" ng-repeat="risk in keyRiskAreaRisks" ng-click="$event.originalEvent.checkBoxClick || ((risk.SELECTED=='Y'?risk.SELECTED='N':risk.SELECTED='Y') && clickRiskCheckbox())">
+									<td style="vertical-align: middle; text-align: center;">
+						        <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="risk.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="clickRiskCheckbox()" ng-disabled="isDisabled"> 
+						        </md-checkbox>							
+									</td>
+									<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}} |</span></td>			
+									<td style="vertical-align: middle; text-align: center;"><strong ng-if='risk.RISK_ID'>{{risk.RISK_ID}}</strong> <span ng-if='!risk.RISK_ID' ng-class="{'btn-red': !risk.RISK_ID.length, 'btn-green': risk.RISK_ID.length > 0}"><strong>ERR</strong></span></td>
+									<td style="vertical-align: middle; text-align: left;" class="label-process-{{risk.BUSINESS_PROCESS_ID}}"></td>
+									<td style="vertical-align: middle; text-align: left; padding-left:10px;">
+										<span style="font-size: 14px" class="btn-process-{{risk.BUSINESS_PROCESS_ID}}">
+											<strong>{{risk.BUSINESS_PROCESS}}</strong> 
+											<i class="fa fa-fw fa-dot-circle-o"></i> 
+											<span>{{risk.BUSINESS_SUB_PROCESS}}</span> 
+										</span>
+										<small class="btn-grey">(ID# {{risk.BUSINESS_SUB_PROCESS_ID}})</small>
+										<br/>
+										<span ng-if="risk.RISK_ID">
+											<span style="font-size: 14px">
+												<strong>{{risk.RISK}}</strong> 
+											</span>	
+											<div ng-if="entry.expandSubRisk" layout="row">
+												<div style="width: 20px">
+												</div>
+												<div flex>
+											    <table class="table table-condensed sm-margins">		
+										        <tbody>				    	
+															<tr  class="info" ng-repeat="subRisk in getSubRisks(risk.RISK_ID)">
+																<td width="30px" style="vertical-align: middle; text-align: right;">{{$index + 1}}|</td>
+																<td width="30px" class="cvg-tablecell-center"><strong>{{subRisk.SUB_RISK_ID}}</strong></td>
+																<td>{{subRisk.SUB_RISK}}</td>
+																<td width="50px" class="cvg-tablecell-center">{{subRisk.BASE_LIKELIHOOD}}</td>
+																<td width="50px" class="cvg-tablecell-center">{{subRisk.BASE_IMPACT}}</td>
+																<td width="50px" class="cvg-tablecell-center">{{subRisk.SOURCE}}</td>
+							                  <td width="20px" class="cvg-tablecell-center"><i class="fa fa-lg fa-fw btn-grey" ng-class="{'fa-check-square':subRisk.RELEVANT=='Y', 'fa-square-o':subRisk.RELEVANT=='N'}"></i></td>									
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</span>
+										<span ng-if="!risk.RISK_ID">
+											<span class="btn-red">No risks defined for this sub-process</span> <span ng-if="risk.RISK_DESCRIPTION"> <i class="fa fa-fw fa-caret-right"></i> <span class="btn-grey">{{risk.RISK_DESCRIPTION}}</span></span>
+										</span>						
+									</td>
+									<td style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk"><h4><span class="label label-process-{{risk.BUSINESS_PROCESS_ID}}">{{risk.SUB_RISK_COUNT}}</span></h4></td>
+									<td style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk"><h4><span class="label label-default">{{risk.MEASURES_COUNT}}</span></h4></td>
+									<td style="vertical-align: middle; text-align: center;" ng-if="!entry.expandSubRisk">{{risk.SOURCE}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- Main table -->
+
+          </md-card-content>
+        </md-card>        
+
+      </md-content>
+      <!-- Risks -->      
+    </div> 
+
+	  <!-- Buttons -->
+	  <div class="panel-footer no-margins">
+
+	    <div class="form-group">
+	      <div class="col-sm-12">
+	        <button ng-if="!isDisabled" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+	        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+	      </div>
+	    </div>
+	  </div>
+	  <!-- Buttons -->
+
+	</div>
+
+</form>

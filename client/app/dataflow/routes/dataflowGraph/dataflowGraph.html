@@ -1,0 +1,192 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li><a href="/procedure-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-cogs"></i> Procedures</a></li>
+  <li class="active"><i class="fa fa-sitemap"></i> Dataflow <strong>{{infoElement.NAME}}</strong></li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<md-content layout="row">  
+  
+  <div >
+    <!-- START: Draw directed force graph -->
+    <directed-graph config="directedGraphConfig" flex></directed-graph>
+    <!-- END: Draw directed force graph -->
+  </div>
+   
+  <div class="panel panel-default md-whiteframe-4dp md-padding" layout="column" flex>
+
+    <div class="panel-heading no-margins pointer-row" ng-click="directedGraphConfig.nodeDoubleClick({'objectClass': infoElement.objectClass, 'objectId': infoElement.objectId, 'type': infoElement.TYPE})">
+		<h4 class="no-margins btn-blue"><strong>{{infoElement.NAME}}</strong> <small>{{infoElement.TYPE_TEXT}}</small></h4>
+    </div>
+
+    <div flex>
+
+            <table class="table table-hover">
+
+            <tr ng-if="infoElement.TYPE_TEXT">
+                <td width="100px"><strong>Type:</strong></td> 
+                <td>
+                  <i class="fa fa-fw fa-lg" ng-class="{'fa-cog':infoElement.TYPE == 'J', 'fa-area-chart':infoElement.TYPE == 'C', 'fa-line-chart':infoElement.TYPE == 'R', 'fa-cube':infoElement.TYPE == 'T', 'fa-puzzle-piece':infoElement.TYPE == 'S', 'fa-database':infoElement.TYPE == 'D', 'fa-file-text-o':infoElement.TYPE == 'F', 'fa-envelope':infoElement.TYPE == 'E'}"></i>
+                  {{infoElement.SUB_TYPE}} {{infoElement.TYPE_TEXT}}  
+                </td>
+            </tr>
+
+            <tr ng-if="infoElement.STATUS_CODE">
+                <td><strong>Status:</strong></td> 
+                <td><span><i class="fa fa-lg fa-fw" ng-class="{'fa-check-square btn-green':infoElement.STATUS_CODE == 'A', 'fa-minus-square btn-red':infoElement.STATUS_CODE == 'I', 'fa-pencil-square btn-blue':infoElement.STATUS_CODE == 'D', 'fa-plus-square btn-grey':infoElement.STATUS_CODE == 'P'}"></i></span> {{infoElement.STATUS_CODE_TEXT}}</td>
+            </tr>
+
+        <!-- <br ng-if="infoElement.DESCRIPTION" /> -->
+
+            <tr ng-if="infoElement.DESCRIPTION">
+                <td><strong>Description:</strong></td> 
+                <td><span>{{infoElement.DESCRIPTION}}</span></td>
+            </tr>
+
+        <!-- <br ng-if="infoElement.TYPE == 'J'" /> -->
+
+            <tr ng-if="infoElement.SOLUTION_CONTACT_ID">
+                <td><strong>Contact:</strong></td> 
+                <td><span>{{entry.lookup.getContactById(infoElement.SOLUTION_CONTACT_ID).NAME}}</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.SOX_RELEVANT == 'Y'">
+                <td><strong>Sox relevant:</strong></td>
+                <td><span>Yes</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.CODE_LOCATION">
+                <td><strong>Code location:</strong></td> 
+                <td><span>{{infoElement.CODE_LOCATION}}</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.JOB_PARAMETERS">
+                <td><strong>Parameters:</strong></td> 
+                <td><span>{{infoElement.JOB_PARAMETERS}}</span></td>
+            </tr>
+        
+        <!-- <br ng-if="infoElement.SCHEDULE_NAME" /> -->
+
+            <tr ng-if="infoElement.SCHEDULE_NAME">
+                <td><strong>Schedule:</strong></td> 
+                <td>
+                    <span>
+                        {{infoElement.SCHEDULE_NAME}}
+                        {{infoElement.SCHEDULE_TYPE_TEXT}}
+                    </span>
+                </td>
+            </tr>
+
+            <tr ng-if="infoElement.FREQUENCY">
+                <td><strong>Frequency:</strong></td> 
+                <td>
+                  <span class="label btn-day">{{infoElement.FREQUENCY}}</span> {{infoElement.FREQUENCY_TEXT}}
+                </td>
+            </tr>
+
+        <!-- <br ng-if="infoElement.TYPE == 'D'" /> -->
+
+            <tr ng-if="infoElement.OWNER">
+                <td><strong>Owner:</strong></td> 
+                <td><span>{{infoElement.OWNER}}</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.COMMENT">
+                <td><strong>Comment:</strong></td> 
+                <td><span>{{infoElement.COMMENT}}</span></td>
+            </tr>
+
+        <!-- <br ng-if="infoElement.TYPE == 'F'" /> -->
+
+            <tr ng-if="infoElement.HOST">
+                <td><strong>Host:</strong></td> 
+                <td><span>{{infoElement.HOST}}</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.DIRECTORY">
+                <td><strong>Dir:</strong></td> 
+                <td><span>{{infoElement.DIRECTORY}}</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.FILEMASK">
+                <td><strong>Mask:</strong></td> 
+                <td><span>{{infoElement.FILEMASK}}</span></td>
+            </tr>
+            
+            <tr ng-if="infoElement.FORMAT">
+                <td><strong>Format:</strong></td> 
+                <td><span>{{infoElement.FORMAT}}</span></td>
+            </tr>        
+
+            <tr ng-if="infoElement.COMPRESSION">
+                <td><strong>Compression:</strong></td> 
+                <td><span>{{infoElement.COMPRESSION}}</span></td>
+            </tr>
+
+        <!-- <br ng-if="infoElement.TYPE == 'S'" /> -->
+
+            <tr ng-if="infoElement.SUBJECT">
+                <td><strong>Subject:</strong></td> 
+                <td><span>{{infoElement.SUBJECT}}</span></td>
+            </tr>
+
+            <tr ng-if="infoElement.RECIPIENTS">
+                <td><strong>Recipients:</strong></td> 
+                <td><span>{{infoElement.RECIPIENTS}}</span></td>
+            </tr>
+
+            <tr ng-if="infoElement.RETENTION_POLICY">
+                <td><strong>Retention:</strong></td> 
+                <td><span>{{infoElement.RETENTION_POLICY}}</span></td>
+            </tr>
+            
+        <!-- <br ng-if="infoElement.INTERFACE_ID" /> -->
+
+            <tr ng-if="infoElement.INTERFACE_ID">
+                <td><strong>Interface:</strong></td> 
+                <td>
+                    <span>
+                      {{infoElement.INTERFACE_NAME}} 
+                      <a class="button btn-xs btn-default" ui-sref="interfaceInfo({interfaceId: infoElement.INTERFACE_ID})" ng-click="$event.stopPropagation()"><i class="fa fa-plug"></i></a>
+                    </span>
+                </td>
+            </tr>
+            
+            <tr ng-if="infoElement.SYSTEM_NAME">
+                <td><strong>System:</strong></td> 
+                <td><span>{{infoElement.SYSTEM_NAME}}</span></td>
+            </tr>
+
+            <tr ng-if="infoElement.CONNECTION_INFO">
+                <td><strong>Info:</strong></td> 
+                <td><span>{{infoElement.CONNECTION_INFO}}</span></td>
+            </tr>
+
+            <tr ng-if="infoElement.CONTACT_NAME">
+                <td><strong>Contact:</strong></td> 
+                <td><span>{{infoElement.CONTACT_NAME}}</span></td>
+            </tr>
+
+            <tr ng-if="infoElement.EXPERT_NAME">
+                <td><strong>Expert:</strong></td> 
+                <td><span>{{infoElement.EXPERT_NAME}}</span></td>
+            </tr>
+
+        </table>
+    </div>
+
+    <div ng-if="directedGraphConfig.linksBackup.length > 1">
+        <a class="btn btn-primary btn-sm" ng-click="restoreLinks()"> <i class="fa fa-undo"></i> Back ({{directedGraphConfig.linksBackup.length-1}})</a>
+    </div>
+
+  </div>
+
+</md-content>
+

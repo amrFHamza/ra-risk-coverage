@@ -1,0 +1,71 @@
+<div class="panel panel-default md-padding">
+
+
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Copy controls from <strong><span ng-if="riskNodes.length == 10">(top 10 shown)</span></strong></th>
+                    <th>System</th>
+                    <th style="text-align:center">#Controls</th>
+                    <th style="text-align:center">#Metrics</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-if="!riskNodes.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>
+                <tr ng-if="!riskNodes.length && loadFinished">
+                    <td colspan="7">
+                        <h4>No controls on this risk found in any of the existing risk nodes.</h4>
+                    </td>
+                </tr>
+                <tr ng-repeat="(rowId, riskNode) in riskNodes" class="pointer-row" ng-click="selectRiskNode(riskNode)">
+                    <td style="vertical-align: middle; text-align: left; padding: 0px !important;" ng-style="{background: getColor(riskNode.PRODUCT_SEGMENT_ID)}" width="6px">
+                      &nbsp;
+                    </td>             
+                    <td style="vertical-align:middle; text-align:left;">
+                      <div class="btn-block">
+                        <strong>{{riskNode.LOB}}</strong> 
+                        <i class="fa fa-fw fa-dot-circle-o"></i> 
+                        <span>{{riskNode.PRODUCT_GROUP}}</span> 
+                      </div>
+                      <span style="font-size: 14px">
+                            <strong>{{riskNode.PRODUCT_SEGMENT}}</strong>
+                      </span>
+                      <div>
+                          <span ng-if="riskNode.SAME_PRODUCT_SEGMENT" class="label label-default">Product segments match</span>                      
+                          <span ng-if="riskNode.SAME_PRODUCT_GROUP" class="label label-default">Product groups match</span>                      
+                          <span ng-if="riskNode.SAME_SYSTEM && riskNode.SYSTEM_ID" class="label label-default">Systems match</span>
+                      </div>
+                    </td> 
+
+                    <td style="vertical-align:middle; text-align:left; min-width: 100px;">
+                      <span ng-if="!riskNode.SYSTEM_NAME" class="btn btn-sm btn-block btn-danger">
+                        <span ><i class="fa fa-desktop fa-fw"></i> <strong>No system</strong></span>
+                      </span>
+                      <span ng-if="riskNode.SYSTEM_NAME" class="btn btn-sm btn-block btn-success">
+                        <div ng-if="riskNode.SYSTEM_NAME">
+                            <strong>{{riskNode.SYSTEM_NAME}}</strong>
+                        </div>
+                      </span> 
+                    </td>
+                    <td style="vertical-align: middle; text-align: center;">
+                      <h4><span class="label label-default">{{riskNode.CTRL_COUNT}}</span></h4>
+                    </td> 
+                    <td style="vertical-align: middle; text-align: center;">
+                      <h4><span class="label label-default">{{riskNode.METRIC_COUNT}}</span></h4>
+                    </td> 
+                </tr>
+            </tbody>
+        </table>
+
+</div>

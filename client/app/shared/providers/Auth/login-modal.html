@@ -1,0 +1,36 @@
+<div class="md-whiteframe-4dp">
+	<form ng-submit="submit()">
+
+		<div class="modal-body">
+			<h4>Sign In</h4>
+			<br>
+	        <div class="input-group">
+	          <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+	          <input class="form-control" type="email" name="email" ng-model="form.email" placeholder="Email address">
+	        </div>
+	        <br>
+	        <div class="input-group">
+	          <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+	          <input class="form-control" type="password" name="password" ng-model="form.password" placeholder="Password">
+	        </div>	        
+	        <br>
+			<div class="input-group">
+		        <div ng-if="entry.currentUser.userAuthFailed > 0" class="alert-danger">    
+		        	Incorrect password! Count: ({{entry.currentUser.userAuthFailed}}). Please try again or contact your RA Risk Coverage tool admin.
+		        </div>
+		       	<div ng-if="entry.currentUser.userAuthFailed == 0">    
+		        	&nbsp;
+		        </div>  	
+		    </div>
+      	</div>
+
+
+		<div class="modal-footer">
+	        <div class="input-group">
+				<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+				<button type="submit" class="btn btn-primary">Sign In</button>
+	        </div>
+	    </div>
+
+	</form>
+</div>

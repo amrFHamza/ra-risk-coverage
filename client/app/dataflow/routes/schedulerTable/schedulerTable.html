@@ -1,0 +1,101 @@
+<!-- Breadcrumbs -->
+<ol class="breadcrumb">
+  <li><a href="/system-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-desktop"></i> Systems</a></li>    
+  <li><a href="/interface-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-plug"></i> Interfaces</a></li>
+  <li><a href="/datasource-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-database"></i> Datasources</a></li>
+  <li><a href="/procedure-catalogue?opcoId={{entry.OPCO_ID}}"><i class="fa fa-cogs"></i> Procedures</a></li>
+  <li ng-if="procedure.TYPE === 'T'"><a href="/dato-info/{{procedure.OPCO_ID}}/{{procedure.NAME}}"><i class="fa fa-edit"></i> Edit dato <strong>{{procedure.NAME}}</strong></a></li> 
+  <li class="active"><i class="fa fa-clock-o"></i> Schedulers</li>
+</ol>
+<!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+    <span class="input-group btn-group pull-left">
+      <a class="btn btn-primary dropdown-toggle no-margins no-padding" ng-disabled="isDisabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ui-sref="schedulerInfo({schedulerId:'new'})"><i class="fa fa-clock-o fa-fw"></i> New scheduler</a></li>
+      </ul>
+    </span> 
+    &nbsp;
+    <strong class="btn-blue">{{entry.OPCO_NAME}}</strong>
+    {{entry.state.data.title}} 
+</h3> 
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+    <!-- Filters -->
+    <div class="small no-margins" ng-if="!entry.searchScheduler">
+        <ul class="list-inline no-margins">
+            <li><strong>Filters: </strong></li>
+            <li class="filter-alert"> None </li>
+        </ul>
+    </div>
+
+    <div class="small no-margins" ng-if="entry.searchScheduler">
+        <ul class="list-inline no-margins">
+            <li><strong>Filters: </strong></li>
+            <li ng-repeat="(element, filter) in entry.searchScheduler" class="filter-alert" ng-if="filter">
+                <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+                {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+            </li>
+        </ul>
+    </div>
+    <!-- Filters -->
+
+    <div class="table-responsive" >
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th width="10px" style="text-align:right">#</th>
+                    <th width="40px">Type</th>
+                    <th width="80px"></th>
+                    <th width="5px"></th>
+                    <th>Scheduler</th>
+                    <th width="80px">Freq</th>
+                </tr>
+                <tr>                
+                    <th></th>
+                    <th></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchScheduler.TYPE_TEXT" placeholder="Type"/></th>
+                    <th></th>
+                    <th><span layout="row"><input class="no-borders-title" flex="30" type="text" ng-model="entry.searchScheduler.NAME" placeholder="Name" focus-me="true"/> &nbsp; <input class="no-borders-title" flex type="text" ng-model="entry.searchScheduler.COMMENT" placeholder="Comment"/></span></th>
+                    <th><input class="no-borders-title" type="text" ng-model="entry.searchScheduler.FREQUENCY" placeholder="Freq" focus-me="true"/></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!schedulers.length && !loadFinished">
+                    <td colspan="7">
+                        <!-- Spinner -->
+                          <div class="col-sm-12 text-center">
+                            <br><br>
+                            <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                          </div>
+                        <!-- Spinner -->                
+                    </td>
+                </tr>               
+                <tr ng-if="!schedulers.length && loadFinished"><td colspan="7"><h4>No schedulers exist yet. You can create a new scheduler from the menu above.</h4></td></tr>
+                <tr class="animation pointer-row" ng-repeat="scheduler in schedulers | filter:entry.searchScheduler" ng-click="schedulerInfo(scheduler.SCHEDULE_ID)" >
+                    <td style="vertical-align:middle; text-align:right">{{$index + 1}}. </td>                
+                    <td style="vertical-align:middle; text-align:center">
+                        <i class="fa fa-fw fa-lg" ng-class="{   'fa-database':scheduler.TYPE == 'D', 
+                                                                'fa-windows':scheduler.TYPE == 'W', 
+                                                                'fa-desktop':scheduler.TYPE == 'A', 
+                                                                'fa-user':scheduler.TYPE == 'M', 
+                                                                'fa-terminal':scheduler.TYPE == 'U', 
+                        }"></i> 
+                    </td>                
+                    <td style="vertical-align:middle">{{scheduler.TYPE_TEXT}}</td>
+                    <td class="node-{{scheduler.TYPE}}"></td>
+                    <td style="vertical-align:middle; padding-left:10px;">
+                        <span ng-if="scheduler.NAME"><strong>{{scheduler.NAME}}</strong></span>
+                        <span ng-if="scheduler.COMMENT"></br>{{scheduler.COMMENT}}</span>
+                    </td>  
+                    <td style="vertical-align:middle; text-align: center"><h4><span class="label btn-day">{{scheduler.FREQUENCY}}</span></h4></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
