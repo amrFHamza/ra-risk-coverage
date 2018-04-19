@@ -30,8 +30,7 @@ export default function(app) {
       });
   }());
 
-  app.use('/files', express.static(path.join(__dirname, '../shared/archive')));
-  app.use('/images', express.static(path.join(__dirname, '../shared/images')));
+  app.use('/images', express.static(path.join(__dirname, '../static/images')));
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets|files)/*')

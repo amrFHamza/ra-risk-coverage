@@ -2,7 +2,7 @@
 
 This project is a fork of the *Dataflow* and *RA Risk Coverage modeling* tools which are part of the Revenue Assurance toolset used in **A1 Telekom Austria Group**. 
 
-It is an attempt to build a community around the idea of designing standard and open tool that supports risk based approach of doing cost and revenue assurance in telecom industry. The main purpose of the A1 RA Risk Coverage model is to provide a framework for risks modeling of individual business processess and product segments by guiding the process of risk assessment, helping in understanding the risks and assisting in decisions for controlling and reducing the identified risks. It also implements easy to grasp methodology for quantifying revenue assurance risk coverage and residual risk aggregated on various levels.
+It is an attempt to build a community around the idea of designing standard and open tool that supports risk based approach of doing cost and revenue assurance in telecom industry. The main purpose of the A1 RA Risk Coverage model is to provide a framework for risks modeling of individual business processess and product segments by guiding the process of risk assessment, helping to understand the risks and assisting in decisions for controlling and reducing the identified risks. It also implements easy to grasp methodology for quantifying revenue assurance risk coverage and residual risk aggregated on various levels.
 
 The main features include:
 
@@ -73,8 +73,9 @@ Follwoing are the locations of the two data models:
 
 ### Data model
 
-![RA Risk Coverage data model](client/static/rrc_data_model.png?raw=true "RA Risk Coverage data model")
+![RA Risk Coverage data model](static/images/rrc_data_model.png?raw=true "RA Risk Coverage data model")
+![RA Risk Coverage data model detailed](static/images/rrc_data_model_detailed.png?raw=true "RA Risk Coverage data model detailed")
 
 ### Look and feel
 
-![Look and feel](client/static/look_and_feel.png?raw=true "Look and feel")
+![Look and feel](static/images/look_and_feel.png?raw=true "Look and feel")
