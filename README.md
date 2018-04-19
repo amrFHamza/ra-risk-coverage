@@ -12,10 +12,8 @@ The main features include:
 - **Risk coverage visualisation and analysis** (provides means to set priorities and plan risk mitigation strategies)
 
 The risk modeling tool comes out of the box with two (mutually exclusive) data models based on different risk catalogues, whcih are de-facto risk management standards in telecom industry:
-- *TMF RA Risk Inventory* ([more information](https://www.tmforum.org/resources/best-practice/gb941e-revenue-assurance-coverage-model-risk-inventory-v1-4-1/))
-- *RAG RA Risk Catalogue* ([more information](https://riskandassurancegroup.org/))
-
-**Note:** The risk catalogues provided are subject of separate licenses and not covered under the licensing terms of this project.
+- **RAG RA Risk Catalogue** ([more information](https://riskandassurancegroup.org/)), available under [Creative Commons Attribution-Non Commercial-No Derivatives International 4.0 Licence](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)
+- **TM Forum RA Risk Inventory** ([more information](https://www.tmforum.org/resources/best-practice/gb941e-revenue-assurance-coverage-model-risk-inventory-v1-4-1/)), Copyright © TM Forum 2014.
 
 ## Getting Started
 
@@ -26,7 +24,6 @@ The risk modeling tool comes out of the box with two (mutually exclusive) data m
 - [MySQL (^5.7.21)](https://dev.mysql.com/downloads/mysql/)
 - [Bower](https://bower.io/) (`npm install --global bower`)
 - [Grunt](http://gruntjs.com/) (`npm install --global grunt-cli`)
-
 
 ### Set-up and run
 
@@ -60,8 +57,8 @@ After the prerequisites are installed:
 	```
 
 Follwoing are the locations of the two data models:
-- TMF data model `server/db/rrc_tmf.sql`
 - RAG data model `server/db/rrc_rag.sql`
+- TMF data model `server/db/rrc_tmf.sql`
 
 6. Sign-in using the pre-set user/pasword set: `test@example.com` / `password` 
 
@@ -76,6 +73,6 @@ Follwoing are the locations of the two data models:
 ![RA Risk Coverage data model](static/images/rrc_data_model.png?raw=true "RA Risk Coverage data model")
 ![RA Risk Coverage data model detailed](static/images/rrc_data_model_detailed.png?raw=true "RA Risk Coverage data model detailed")
 
-### Look and feel
+### Screenshots
 
 ![Look and feel](static/images/look_and_feel.png?raw=true "Look and feel")
