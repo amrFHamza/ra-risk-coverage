@@ -575,7 +575,7 @@ export function getApiEndpoint(req, res, next) {
     db.query(`
 							select
 								bsp.BUSINESS_SUB_PROCESS source,
-								bp.BUSINESS_PROCESS target, 
+								concat(bp.BUSINESS_PROCESS, ' ') target, 
 								ifnull(sum(cvgGetRiskNodeRPN(rn.RISK_NODE_ID)),0) value
 							from CVG_RISK_NODE rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
@@ -584,7 +584,7 @@ export function getApiEndpoint(req, res, next) {
 							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
-								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') = ?
+								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
 							group by 	
 								bsp.BUSINESS_SUB_PROCESS,
 								bp.BUSINESS_PROCESS
@@ -592,7 +592,7 @@ export function getApiEndpoint(req, res, next) {
 							union all 
 
 							select
-								bp.BUSINESS_PROCESS source,
+								concat(bp.BUSINESS_PROCESS, ' ') source,
 								ifnull(s.NAME, 'No system assigned') target,
 								ifnull(sum(cvgGetRiskNodeRPN(rn.RISK_NODE_ID)), 0) value
 							from CVG_RISK_NODE rn
@@ -604,7 +604,7 @@ export function getApiEndpoint(req, res, next) {
 							where 1=1
 								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
 							group by
-								bp.BUSINESS_PROCESS,
+								concat(bp.BUSINESS_PROCESS, ' '),
 								ifnull(s.NAME, 'No system assigned')
 
 							union all

@@ -16,7 +16,7 @@ constructor($scope, Entry, Coverage, $filter, $timeout, $state, $stateParams, Co
     $scope.isDisabled = $scope.entry.isDisabled();
     $scope._und = _;
 
-    if ($stateParams.opcoId === undefined) {
+    if ($stateParams.opcoId === undefined && $scope.entry.OPCO_ID) {
       $state.go('productSegmentTable', {opcoId: $scope.entry.OPCO_ID}, {reload: true});
     }
     
@@ -237,7 +237,7 @@ constructor($scope, Entry, Coverage, $filter, $timeout, $state, $stateParams, Co
         }
 
         $state.go('productSegmentTable', {opcoId: $scope.entry.OPCO_ID} );
-      }, 300); 
+      }, 500); 
     });     
 
     // Watch filter change
