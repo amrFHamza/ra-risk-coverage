@@ -32,7 +32,7 @@
           </div>
 
           <div class="col-sm-3">
-              <label for="segmentVALUE">Segment value (<i class="fa fa-euro"></i>)</label>
+              <label for="segmentVALUE">Segment value (<strong>{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</strong>)</label>
             	<input type="number" name="segmentVALUE" lang="de" class="form-control text-right" placeholder="0" ng-model="productSegment.VALUE" required ng-disabled="isDisabled" autocomplete="off">
               <div ng-messages="datoForm.segmentVALUE.$error">
                 <div ng-message="required"><small class="label label-danger">Value required</small></div>

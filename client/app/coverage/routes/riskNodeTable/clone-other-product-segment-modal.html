@@ -57,7 +57,7 @@
        
           <td style="vertical-align: middle; text-align: right;">
               <div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
-                <i class="fa fa-euro"></i> <strong>{{productSegment.PS_VALUE | number:0}} </strong> 
+                <strong>{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</strong> <strong>{{productSegment.PS_VALUE | number:0}} </strong> 
               </div>
               <div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
                 ( {{productSegment.PS_TOTAL_VALUE_RATIO | number:4}}% )

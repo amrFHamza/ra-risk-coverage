@@ -21,7 +21,7 @@ class OverviewComponent {
 	  // Sankey Diagram
 		$scope.sankeyDiagramConfig = {};
 		$scope.sankeyDiagramConfig.links = [];
-    $scope.sankeyDiagramConfig.units = 'EUR';
+    $scope.sankeyDiagramConfig.units = $scope.entry.lookup.getOpcoById($scope.entry.OPCO_ID).CURRENCY;
     $scope.sankeyDiagramConfig.width = 'window';
 
     var cvgOverviewChartOptions = {
@@ -172,7 +172,7 @@ class OverviewComponent {
         $scope.cvgOverviewChartOptionsLOB.size.height = 185;
         $scope.cvgOverviewChartOptionsLOB.axis.y.max = _.max($scope.lobs, function(e){ return e.LOB_VALUE; }).LOB_VALUE;
         $scope.cvgOverviewChartOptionsLOB.axis.y.tick.format = function (d) { return Number(d/1000000).toFixed(2); };
-        $scope.cvgOverviewChartOptionsLOB.axis.y.label = '\'M EUR';
+        $scope.cvgOverviewChartOptionsLOB.axis.y.label = '\'M ' + $scope.sankeyDiagramConfig.units;
         $scope.cvgOverviewChartOptionsLOB.data.labels.format = function (v, l, i, j) { 
           if (l === 'Value Covered') {
             return Number(($scope.cvgOverviewDailyChartDataLOB[i+1][1]*100) / ($scope.cvgOverviewDailyChartDataLOB[i+1][1] + $scope.cvgOverviewDailyChartDataLOB[i+1][2])).toFixed(2) + ' %';
@@ -189,7 +189,7 @@ class OverviewComponent {
         $scope.cvgOverviewChartOptionsPG.size.height = 600;        
         $scope.cvgOverviewChartOptionsPG.axis.y.max = $scope.cvgOverviewChartOptionsLOB.axis.y.max;
         $scope.cvgOverviewChartOptionsPG.axis.y.tick.format = function (d) { return Number(d/1000000).toFixed(2); };
-        $scope.cvgOverviewChartOptionsPG.axis.y.label = '\'M EUR';
+        $scope.cvgOverviewChartOptionsPG.axis.y.label = '\'M ' + $scope.sankeyDiagramConfig.units;
 
         //Update chart
         setTimeout (function () {

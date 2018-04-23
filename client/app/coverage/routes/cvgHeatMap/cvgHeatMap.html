@@ -25,7 +25,7 @@
 
       <md-switch ng-if="entry.searchHeatMap.mapValue != 'Controls'" class="md-primary md-hue-1 no-margins" ng-model="entry.searchHeatMap.showRPN" aria-label="Show monetary value" ng-change="updateFilters(false)">
           <span ng-if="entry.searchHeatMap.showRPN">RPN</span>
-          <span ng-if="!entry.searchHeatMap.showRPN">EUR</span>
+          <span ng-if="!entry.searchHeatMap.showRPN">{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</span>
       </md-switch>
     </div>
 

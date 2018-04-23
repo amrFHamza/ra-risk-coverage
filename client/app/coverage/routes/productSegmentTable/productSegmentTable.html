@@ -19,7 +19,7 @@
 						<span style="font-size: 10px;">({{lob.LOB_COUNT}})</span>
 					</h4>
 				</div>
-				<div><i class="fa fa-euro"></i> <strong>{{lob.PS_VALUE | number:0}}</strong></div>
+				<div><strong>{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</strong> <strong>{{lob.PS_VALUE | number:0}}</strong></div>
 				<div>( {{lob.PS_TOTAL_VALUE_RATIO | number:4}}% )</div>
 				<div layout="row" layout-align="center center">
   				<uib-progressbar ng-if="!entry.showMeasureCoverage" class="danger sm-margins" type="success" max="100" value="lob.COVERAGE" flex>
@@ -46,7 +46,7 @@
 						<span style="font-size: 10px;">({{productGroup.LOB_COUNT}})</span>
 					</div>
 				</h5>
-				<div><i class="fa fa-euro"></i> <strong>{{productGroup.PS_VALUE | number:0}}</strong></div>
+				<div><strong>{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</strong> <strong>{{productGroup.PS_VALUE | number:0}}</strong></div>
 				<div>( {{productGroup.PS_TOTAL_VALUE_RATIO | number:4}}% )</div>
 				<div layout="row" layout-align="center center">
   				<uib-progressbar ng-if="!entry.showMeasureCoverage" class="sm-margins" type="success" max="100" value="productGroup.COVERAGE" flex>
@@ -210,7 +210,7 @@
 					</td>					
 					<td style="vertical-align: middle; text-align: right;">
 							<div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
-								<i class="fa fa-euro"></i> <strong>{{productSegment.PS_VALUE | number:0}} </strong> 
+								<strong>{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</strong> <strong>{{productSegment.PS_VALUE | number:0}} </strong> 
 							</div>
 							<div ng-class="{'btn-grey': productSegment.PS_TOTAL_VALUE_RATIO < 0.1, 'btn-red': productSegment.PS_TOTAL_VALUE_RATIO >= 3}">
 								( {{productSegment.PS_TOTAL_VALUE_RATIO | number:4}}% )

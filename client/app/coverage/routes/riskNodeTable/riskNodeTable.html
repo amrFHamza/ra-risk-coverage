@@ -24,7 +24,7 @@
 	<!-- BOX 2 -->
 	<div class="panel panel-default md-whiteframe-4dp md-padding" flex="30" layout="column" layout-align="center center">
 	  <div class="text-center">
-	  	<h3 class="sub-header sm-margins"> <i class="fa fa-euro"></i> <strong>{{productSegment.PS_VALUE | number:0}}</strong></h3>
+	  	<h3 class="sub-header sm-margins"> <strong>{{entry.lookup.getOpcoById(entry.OPCO_ID).CURRENCY}}</strong> <strong>{{productSegment.PS_VALUE | number:0}}</strong></h3>
 	  </div>
 	  <div class="text-center">
 	  	<h4 class="sm-margins"><span>{{productSegment.PS_TOTAL_VALUE_RATIO | number:4}}%</span></h4>
