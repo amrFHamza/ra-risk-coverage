@@ -29,11 +29,30 @@ The risk modeling tool comes out of the box with two (mutually exclusive) data m
 
 After the prerequisites are installed:
 
-1. Run `npm install` to install server dependencies.
+1. Clone this repository using `git` command from the terminal:
+	```shell
+	git clone https://github.com/a1telekom/ra-risk-coverage.git
+	```
+	this will create directory named `ra-risk-coverage` in your working directory.
 
-2. Run `bower install` to install front-end dependencies.
+2. Change the working directory to the newly created location: 
+	```shell
+	cd ra-risk-coverage
+	```
 
-3. Create the database connection config file `server/utils/db.js` with the content below, and be sure to set your correct MySQL server parameters: 
+3. To install the server dependencies:
+	```shell
+	npm install
+	```
+
+4. To install the front-end dependencies:
+	```shell
+	bower install
+	```
+
+5. Create the database connection config file `server/utils/db.js` with the content below, and be sure to set your correct MySQL server parameters
+
+	File `server/utils/db.js`:
 	```javascript
 	var mysql = require('mysql');
 	var pool = mysql.createPool({
@@ -45,22 +64,28 @@ After the prerequisites are installed:
 	});
 	module.exports = pool;
 	``` 
-	*(or use the example file `db.js.spec` that is included in the same directory)*
+	*(or rename and edit the included example file `server/utils/db.js.spec`)*
 
-4. Run `grunt serve` to start the development server. It should automatically open the client in your browser when ready.
+6. To start the development server:
+	```shell
+	grunt serve
+	```
+	It should automatically open the client in your browser when ready.
 
-5. At first time use you should be automatically redirected to the **Settings** page (`http://localhost:9000/settings`) where one of the pre-bundled databases need to be imported.
+7. On first use you should be automatically redirected to the **Settings** page (`http://localhost:9000/settings`) where one of the pre-bundled databases need to be imported. 
 
-	This part can be performed manually using ``mysql`` DB import functionality. For example to import the RAG based data model:
-	```bash
+	This part can be performed manually using ``mysql`` DB import functionality. For example to import the RAG based data model into MySQL database server running on the localhost:
+	```shell
 	mysql -u user -p -h localhost < server/db/rrc_rag.sql
 	```
 
-Follwoing are the locations of the two data models:
-- RAG data model `server/db/rrc_rag.sql`
-- TMF data model `server/db/rrc_tmf.sql`
+	Following are the locations of the two data models:
+	- RAG data model `server/db/rrc_rag.sql`
+	- TMF data model `server/db/rrc_tmf.sql`
 
-6. Sign-in using the pre-set user/pasword set: `test@example.com` / `password` 
+	Note that unrelated to which data model is chosen - new DB schema named `tag` will be created in the MySQL DB.  
+
+8. Sign-in using the pre-set user/pasword set: `test@example.com` / `password` 
 
 ### Build for production
 
