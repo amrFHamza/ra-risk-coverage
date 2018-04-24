@@ -40,7 +40,7 @@ After the prerequisites are installed:
 	cd ra-risk-coverage
 	```
 
-3. To install the server dependencies:
+3. To install the server dependencies run:
 	```shell
 	npm install
 	```
@@ -50,42 +50,52 @@ After the prerequisites are installed:
 	bower install
 	```
 
-5. Create the database connection config file `server/utils/db.js` with the content below, and be sure to set your correct MySQL server parameters
+5. Create DB user for the application:
+	```shell
+	mysql -u root -p -h localhost
+	```
 
-	File `server/utils/db.js`:
+	```sql
+	CREATE USER 'rrc_user' IDENTIFIED BY 'rrc_password';
+	GRANT ALL PRIVILEGES ON tag.* TO 'rrc_user'; 
+	```
+
+6. Create DB connection config file `server/utils/db.js` and be sure to set *your* MySQL server parameters for *user* and *password* created in the previous step. You can use included example file `server/utils/db.js.spec` or copy the following template to create new `server/utils/db.js` file:
+
 	```javascript
 	var mysql = require('mysql');
 	var pool = mysql.createPool({
 		connectionLimit	: 10,
 		host : 'localhost',
 		database : 'tag',
-		user : 'user',
-		password : 'password'
+		user : 'rrc_user',
+		password : 'rrc_password'
 	});
 	module.exports = pool;
 	``` 
+
 	*(or rename and edit the included example file `server/utils/db.js.spec`)*
 
-6. To start the development server:
+7. Select one of the two included data models and create a new DB schema using `mysql` import functionality. e.g. to import the RAG based data model into MySQL database server running on the localhost:
 	```shell
-	grunt serve
-	```
-	It should automatically open the client in your browser when ready.
-
-7. On first use you should be automatically redirected to the **Settings** page (`http://localhost:9000/settings`) where one of the pre-bundled databases need to be imported. 
-
-	This part can be performed manually using ``mysql`` DB import functionality. For example to import the RAG based data model into MySQL database server running on the localhost:
-	```shell
-	mysql -u user -p -h localhost < server/db/rrc_rag.sql
+	mysql -u rrc_user -p -h localhost < server/db/rrc_rag.sql
 	```
 
 	Following are the locations of the two data models:
-	- RAG data model `server/db/rrc_rag.sql`
-	- TMF data model `server/db/rrc_tmf.sql`
+	- RAG data model: `server/db/rrc_rag.sql`
+	- TMF data model: `server/db/rrc_tmf.sql`
 
-	Note that unrelated to which data model is chosen - new DB schema named `tag` will be created in the MySQL DB.  
+	Unrelated to which data model is chosen - new DB schema named `tag` will be created in the MySQL DB. If `tag` schema already exists it will be overwritten.
 
-8. Sign-in using the pre-set user/pasword set: `test@example.com` / `password` 
+	It's also possible to use the tool UI to import the data model from the *Settings* page (`http://localhost:9000/settings`).
+
+8. To start the development server:
+	```shell
+	grunt serve
+	```
+	It should automatically open your default browser when ready. If you can - avoid IE especially versions less then IE 11.
+
+9. When prompted for user and password, sign-in using the pre-set user / pasword: `test@example.com` / `password`.
 
 ### Build for production
 
