@@ -2388,7 +2388,13 @@ BEGIN
 			SELECT rnc.RISK_NODE_ID FROM cvg_risk_node_control rnc
 			where rnc.CONTROL_ID in (select CVG_CONTROL_ID from dfl_control_catalogue where PROCEDURE_ID = old.PROCEDURE_ID)
         );
-        
+
+		update cvg_control a
+		set 
+			a.CTRL_COVERAGE = round(cvgGetControlCoverage(a.CONTROL_ID), 4), 
+			a.CTRL_COVERAGE_OVERLAP = round(cvgGetControlCoverageOverlap(a.CONTROL_ID), 4)
+		where a.CONTROL_ID in (select CVG_CONTROL_ID from dfl_control_catalogue where PROCEDURE_ID = old.PROCEDURE_ID);
+                
     end if;
 END */;;
 DELIMITER ;

@@ -21,7 +21,7 @@ class OverviewComponent {
 	  // Sankey Diagram
 		$scope.sankeyDiagramConfig = {};
 		$scope.sankeyDiagramConfig.links = [];
-    $scope.sankeyDiagramConfig.units = $scope.entry.lookup.getOpcoById($scope.entry.OPCO_ID).CURRENCY;
+    $scope.sankeyDiagramConfig.units = (typeof $scope.entry.OPCO_ID !== 'undefined')?($scope.entry.lookup.getOpcoById($scope.entry.OPCO_ID).CURRENCY):'EUR';
     $scope.sankeyDiagramConfig.width = 'window';
 
     var cvgOverviewChartOptions = {

@@ -13,6 +13,8 @@ var async = require("async");
 
 export function getApiEndpoint(req, res, next) {
 
+  var terminal = null;
+
   if (req.params.apiEndpoint === "getSettings") { 
     db.query("select 1", function(err, row) {
       if(err !== null) {
@@ -27,7 +29,7 @@ export function getApiEndpoint(req, res, next) {
   else if (req.params.apiEndpoint === "importRiskCatalogue") {
     if (req.query.riskCatalogue === 'TMF') {
 
-      var terminal = require('child_process').spawn('mysql', [
+      terminal = require('child_process').spawn('mysql', [
           '-u' + db.config.connectionConfig.user,
           '-p' + db.config.connectionConfig.password,
           '-h' + db.config.connectionConfig.host,
@@ -52,7 +54,7 @@ export function getApiEndpoint(req, res, next) {
     }
     else if (req.query.riskCatalogue === 'RAG') {
 
-      var terminal = require('child_process').spawn('mysql', [
+      terminal = require('child_process').spawn('mysql', [
           '-u' + db.config.connectionConfig.user,
           '-p' + db.config.connectionConfig.password,
           '-h' + db.config.connectionConfig.host,
@@ -77,7 +79,7 @@ export function getApiEndpoint(req, res, next) {
     } 
     else if (req.query.riskCatalogue === 'A1TA') {
 
-      var terminal = require('child_process').spawn('mysql', [
+      terminal = require('child_process').spawn('mysql', [
           '-u' + db.config.connectionConfig.user,
           '-p' + db.config.connectionConfig.password,
           '-h' + db.config.connectionConfig.host,
