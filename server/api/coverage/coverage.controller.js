@@ -377,6 +377,70 @@ export function getApiEndpoint(req, res, next) {
 	      }
     });
   }   
+  else if (req.params.apiEndpoint === "getMeasures") {
+    db.query(`SELECT 
+								m.MEASURE_ID, 
+								m.BUSINESS_PROCESS_ID, 
+								bp.BUSINESS_PROCESS, 
+								m.BUSINESS_SUB_PROCESS_ID, 
+								bsp.BUSINESS_SUB_PROCESS, 
+								m.MEASURE_TYPE, 
+								m.MEASURE_NAME, 
+								m.MEASURE_DESCRIPTION, 
+								m.TMF_REFERENCE, 
+								m.TMF_ID, 
+								m.SOURCE,
+								m.RELEVANT,
+								m.REQUIRED,
+								'N' SELECTED 
+							from cvg_measure m
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = m.BUSINESS_PROCESS_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = m.BUSINESS_SUB_PROCESS_ID
+							order by m.RELEVANT desc, m.REQUIRED desc
+								`,
+    	[],
+    	function (err, row) {
+	      if(err !== null) {
+	      	console.log(err);
+	        next(err);
+	      }
+	      else {
+	        res.json(row);
+	      }
+    });
+  }  
+  else if (req.params.apiEndpoint === "getMeasureInfo") {
+    db.query(`SELECT 
+								m.MEASURE_ID, 
+								m.BUSINESS_PROCESS_ID, 
+								bp.BUSINESS_PROCESS, 
+								m.BUSINESS_SUB_PROCESS_ID, 
+								bsp.BUSINESS_SUB_PROCESS, 
+								m.MEASURE_TYPE, 
+								m.MEASURE_NAME, 
+								m.MEASURE_DESCRIPTION, 
+								m.TMF_REFERENCE, 
+								m.TMF_ID, 
+								m.SOURCE,
+								m.RELEVANT,
+								m.REQUIRED,
+								'N' SELECTED 
+							from cvg_measure m
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = m.BUSINESS_PROCESS_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = m.BUSINESS_SUB_PROCESS_ID
+							where m.MEASURE_ID = ?
+								`,
+    	[req.query.measureId],
+    	function (err, row) {
+	      if(err !== null) {
+	      	console.log(err);
+	        next(err);
+	      }
+	      else {
+	        res.json(row[0]);
+	      }
+    });
+  }    
   else if (req.params.apiEndpoint === "getMeasuresForRiskId") {
     db.query(`SELECT 
     						r.RISK_ID,
@@ -1914,7 +1978,43 @@ export function postApiEndpoint(req, res, next) {
 										res.json({success: true});
 									}
 								});  		
-  }  
+  }    
+  else if (req.params.apiEndpoint === "postMeasure") {
+  	//New Key Risk Area
+  	if (typeof req.body.measure.MEASURE_ID === 'undefined') {
+  		// console.log('New');
+  		// Insert
+			db.query(`INSERT INTO cvg_measure 
+								(BUSINESS_PROCESS_ID, BUSINESS_SUB_PROCESS_ID, MEASURE_TYPE, MEASURE_NAME, MEASURE_DESCRIPTION, TMF_REFERENCE, TMF_ID, RELEVANT, REQUIRED, SOURCE)
+								VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				[req.body.measure.BUSINESS_PROCESS_ID, req.body.measure.BUSINESS_SUB_PROCESS_ID, req.body.measure.MEASURE_TYPE, req.body.measure.MEASURE_NAME, req.body.measure.MEASURE_DESCRIPTION, req.body.measure.TMF_REFERENCE, req.body.measure.TMF_ID, req.body.measure.RELEVANT, req.body.measure.REQUIRED, req.body.measure.SOURCE],
+				function(err, row) {
+					if(err) {
+					  console.log(err);
+					  next(err);
+					} 
+					else {
+						res.json({success: true, MEASURE_ID: row.insertId});
+					}																		
+				});
+  	}
+  	else {
+  		// console.log('Edit');
+			db.query(`update cvg_measure 
+								set BUSINESS_PROCESS_ID=?, BUSINESS_SUB_PROCESS_ID=?, MEASURE_TYPE=?, MEASURE_NAME=?, MEASURE_DESCRIPTION=?, TMF_REFERENCE=?, TMF_ID=?, RELEVANT=?, REQUIRED=?, SOURCE=?
+								where MEASURE_ID=?`,
+					[req.body.measure.BUSINESS_PROCESS_ID, req.body.measure.BUSINESS_SUB_PROCESS_ID, req.body.measure.MEASURE_TYPE, req.body.measure.MEASURE_NAME, req.body.measure.MEASURE_DESCRIPTION, req.body.measure.TMF_REFERENCE, req.body.measure.TMF_ID, req.body.measure.RELEVANT, req.body.measure.REQUIRED, req.body.measure.SOURCE, req.body.measure.MEASURE_ID],
+					function(err, row) {
+						if(err) {
+						  console.log(err);
+						  next(err);
+						}
+						else {
+							res.json({success: true});
+						}
+					});  		
+  	}
+  }
   else {
   	  	res.json({success: false, error: 'Method not found: ' + req.params.apiEndpoint});
   }  
@@ -2004,6 +2104,19 @@ export function deleteApiEndpoint(req, res, next) {
   else if (req.params.apiEndpoint === "deleteKeyRiskArea") {
     db.query("delete from cvg_key_risk_area where KEY_RISK_AREA_ID=?", 
     	[req.query.keyRiskAreaId],
+    	function (err, row) {
+	      if(err !== null) {
+	      	console.log(err);
+	        next(err);
+	      }
+	      else {
+					res.json({success: true});
+	      }
+    });
+  }
+  else if (req.params.apiEndpoint === "deleteMeasure") {
+    db.query("delete from cvg_measure where MEASURE_ID=?", 
+    	[req.query.measureId],
     	function (err, row) {
 	      if(err !== null) {
 	      	console.log(err);

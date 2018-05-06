@@ -81,6 +81,7 @@ class RiskTableComponent {
         }
         timer = $timeout(function(){ 
 
+          $scope.loadFinished = false;     
           // remove filters with blank values
           $scope.entry.searchRiskCatalogue = _.pick($scope.entry.searchRiskCatalogue, function(value, key, object) {
             return value !== '' && value !== null;
@@ -90,8 +91,8 @@ class RiskTableComponent {
             //delete $scope.entry.searchRiskCatalogue;
             $scope.entry.searchRiskCatalogue = {};
           }
-                
           $scope.filteredRisks = $filter('filter') ($scope.risks, $scope.entry.searchRiskCatalogue);
+          $scope.loadFinished = true;     
         }, 400);
     };
     $scope.$watch('entry.searchRiskCatalogue', timeoutFilterChange, true);      

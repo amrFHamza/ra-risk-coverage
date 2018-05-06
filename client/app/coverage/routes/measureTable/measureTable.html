@@ -1,7 +1,147 @@
 <!-- Breadcrumbs -->
 <ol class="breadcrumb">
   <li><a href="/risk-catalogue"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</a></li>
-  <li class="active"><i class="fa fa-fw fa-wrench"></i> Generic measures</li>
+  <li class="active"><i class="fa fa-fw fa-check-circle"></i> Measure catalogue</li>
   <li><a href="/key-risk-areas"><i class="fa fa-fw fa-map"></i> Key Risk Areas</a></li>
 </ol>
 <!-- Breadcrumbs -->
+
+<h3 class="sub-header">
+	<span class="input-group btn-group pull-left">
+		<a class="btn btn-primary dropdown-toggle no-margins no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="isDisabled">
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a ui-sref="measureInfo({measureId:'newMeasure'})"><i class="fa fa-check-circle fa-fw"></i> New measure</a></li>
+		</ul>
+	</span> 
+	&nbsp;
+  <strong class="btn-blue">Global</strong>		
+	{{entry.state.data.title}} 
+</h3> 
+
+
+<div class="panel panel-default md-whiteframe-4dp md-padding">
+
+		<!-- Process buttons -->
+		<div class="sm-margins" layout="row" layout-align="space-between center">
+			<a class="btn btn-sm btn-default" ng-click="setFilterBusinessProcess(0)" style="margin-right: 5px;" flex>All</a>
+			<a class="btn btn-sm btn-default label-process-{{businessProcess.BUSINESS_PROCESS_ID}}" ng-repeat="businessProcess in businessProcesses" ng-click="setFilterBusinessProcess(businessProcess.BUSINESS_PROCESS)" style="margin-right: 5px;" flex>
+				{{businessProcess.BUSINESS_PROCESS}}
+			</a>
+		</div>
+	
+		<div layout="row">
+			<div flex>
+			  <!-- Filters -->
+			  <div class="small no-margins" ng-if="!_und.size(entry.searchRiskCatalogue)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li class="filter-alert"> None </li>
+						    <li><strong>Measures: </strong></li>
+						    <li>{{filteredMeasures.length}}</li>			          
+			      </ul>
+			  </div>
+			  <div class="small no-margins" ng-if="_und.size(entry.searchRiskCatalogue)">
+			      <ul class="list-inline no-margins">
+			          <li><strong>Filter: </strong></li>
+			          <li ng-repeat="(element, filter) in entry.searchRiskCatalogue" class="filter-alert" ng-if="filter">
+			              <a ng-click="removeFilter(element)" class="btn-xs  close" style="font-size: 10px; vertical-align: text-top;" data-dismiss="alert"><i class="fa fa-times"></i></a>
+			              {{element}} <em>is like</em> <strong>"{{filter}}"</strong>
+			          </li>
+						    <li><strong>Measures: </strong></li>
+						    <li>{{filteredMeasures.length}}</li>
+			      </ul>
+			  </div>
+			  <!-- Filters -->
+			</div>
+
+		</div>	
+
+		<!-- Main table -->
+    <table class="table table-hover table-condensed">		
+      <thead>
+          <tr>
+              <th width="10px"></th>
+              <th width="30px"></th>
+              <th width="30px"></th>
+              <th width="30px"></th>
+              <th width="5px"></th>
+              <th style="vertical-align: middle; text-align: left; padding-left:10px;">Measure</th>
+              <th width="50px" style="vertical-align: middle; text-align: center;">Relevant</th>
+              <th width="50px" style="vertical-align: middle; text-align: center;">Required</th>
+              <th width="50px" style="vertical-align: middle; text-align: center;">Source</th>
+          </tr>
+	        <tr>
+	            <td></td>
+	            <td></td>
+	            <td></td>
+	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.MEASURE_ID" placeholder="ID"/></td>
+	            <td></td>
+	            <td>
+	            	<span layout="row">
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.BUSINESS_PROCESS"  placeholder="Business process"/> &nbsp;
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.BUSINESS_SUB_PROCESS"  placeholder="Business sub-process"/> &nbsp;
+	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.MEASURE_NAME"  placeholder="Measure name"/>
+	            	</span>
+	            </td>
+	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.RELEVANT" placeholder="y/n"/></td>
+	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.REQUIRED" placeholder="y/n"/></td>
+	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.SOURCE" placeholder=""/></td>
+	        </tr>
+      </thead>
+      <tbody>
+        <tr ng-if="!filteredMeasures.length && !loadFinished">
+            <td colspan="9">
+                <!-- Spinner -->
+                  <div class="col-sm-12 text-center">
+                    <br><br>
+                    <i class="fa fa-spinner fa-pulse fa-3x"></i>
+                  </div>
+                <!-- Spinner -->                
+            </td>
+        </tr>   
+        <tr ng-if="!filteredMeasures.length && loadFinished">
+            <td colspan="9">
+                <h4>No measures found.</h4>
+            </td>
+        </tr>   
+
+				<tr class="animation pointer-row" ng-class="{'info':measure.SELECTED=='Y'}" ng-repeat="measure in filteredMeasures" ng-click="$event.originalEvent.checkBoxClick || measureInfo(measure.MEASURE_ID)">
+					<td style="vertical-align: middle; text-align: center;">
+	          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="measure.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Measure selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="printSelected()" ng-disabled="isDisabled"> 
+	          </md-checkbox>							
+					</td>
+					<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}} |</span></td>			
+					<td style="vertical-align: middle; text-align: center;"><span><i class="fa fa-2x fa-fw fa-check-circle"></i></span></td>
+					<td style="vertical-align: middle; text-align: center;"><strong ng-if='measure.MEASURE_ID'>{{measure.MEASURE_ID}}</strong> <span ng-if='!measure.MEASURE_ID' ng-class="{'btn-red': !measure.MEASURE_ID.length, 'btn-green': measure.MEASURE_ID.length > 0}"><strong>ERR</strong></span></td>
+					<td style="vertical-align: middle; text-align: left;" class="label-process-{{measure.BUSINESS_PROCESS_ID}}"></td>
+					<td style="vertical-align: middle; text-align: left; padding-left:10px;">
+						<div style="font-size: 14px" class="btn-process-{{measure.BUSINESS_PROCESS_ID}}">
+							<strong>{{measure.BUSINESS_PROCESS}}</strong> 
+							<i class="fa fa-fw fa-dot-circle-o"></i> 
+							<span>{{measure.BUSINESS_SUB_PROCESS}}</span> 
+						</div>
+						<span ng-if="measure.MEASURE_NAME">
+							<span style="font-size: 14px">
+								<strong>{{measure.MEASURE_NAME}}</strong> 
+							</span>	
+							<span ng-if="measure.MEASURE_DESCRIPTION" class="no-margins">
+								<br/>
+								{{measure.MEASURE_DESCRIPTION}}
+							</span>
+							<span ng-if="measure.MEASURE_TYPE"> 
+								<i class="fa fa-fw fa-caret-right"></i> <span>{{measure.MEASURE_TYPE}}</span>
+							</span>
+						</span>
+					
+					</td>
+					<td style="text-align:center; vertical-align:middle"><i class="fa fa-2x fa-fw btn-grey" ng-class="{'fa-check-square':measure.RELEVANT == 'Y', 'fa-square-o':measure.RELEVANT != 'Y'}"></i></td>
+					<td style="text-align:center; vertical-align:middle"><i class="fa fa-2x fa-fw btn-grey" ng-class="{'fa-check-square':measure.REQUIRED == 'Y', 'fa-square-o':measure.REQUIRED != 'Y'}"></i></td>
+					<td style="vertical-align: middle; text-align: center;">{{measure.SOURCE}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- Main table -->
+
+</div>

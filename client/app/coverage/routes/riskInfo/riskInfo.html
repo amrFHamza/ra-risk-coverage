@@ -2,6 +2,7 @@
 <ol class="breadcrumb">
   <li><a href="/risk-catalogue"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</a></li>
   <li class="active"><span ng-if="risk.RISK_ID">{{risk.RISK}}</span><span ng-if="!risk.RISK_ID">New risk</span></li>
+  <li><a href="/measures"><i class="fa fa-fw fa-check-circle"></i> Measure catalogue</a></li>
   <li><a href="/key-risk-areas"><i class="fa fa-fw fa-map"></i> Key Risk Areas</a></li>
 </ol>
 <!-- Breadcrumbs -->
@@ -32,7 +33,7 @@
 
 	  <div class="panel-heading no-margins">
 			<h4 class="no-margins">
-				<i class="fa fa-exclamation-triangle"></i> 
+				<i class="fa fa-fw fa-lg fa-exclamation-circle"></i> 
 				<strong>{{risk.RISK}}</strong> 
 			</h4>
 	  </div>

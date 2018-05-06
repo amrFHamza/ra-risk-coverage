@@ -9,7 +9,7 @@ angular.module('amxApp')
         data: {
               requireLogin: true,
               leftMenu: 'Risk catalogue',
-              title: 'Generic measures',
+              title: 'Generic measure catalogue',
               showOpcoFilter: false
             }        
       });

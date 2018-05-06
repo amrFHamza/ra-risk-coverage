@@ -1098,14 +1098,12 @@ constructor($scope, Entry, Coverage, $filter, $timeout, $state, $stateParams, Co
 										<tr>
 											<td width="7px" class="` + ((measure.RELEVANT == 'N')?'label-grey':((measure.REQUIRED == 'N')?('label-yellow'):('label-red'))) + `"></td>
 											<td style="width:70px; vertical-align: middle; text-align: center;">
-												<strong>` + measure.TMF_ID + `</strong>
-												<div><small class="btn-blue ng-binding ng-scope">` + measure.SOURCE + `</small></div>
+												<strong>` + measure.BUSINESS_PROCESS_ID + '-' + measure.MEASURE_ID + `</strong>
 											<td style="width:2px; border-left: 1px solid;">&nbsp;</td>
 											<td style="vertical-align: middle; text-align: left;" flex>
 												<strong>` + measure.MEASURE_NAME + `</strong> <br/>
 												<span class="btn-grey no-margins">` + measure.MEASURE_DESCRIPTION + `
-												<span class="btn-blue">` + measure.TMF_REFERENCE + `</span> 
-													<i class="fa fa-fw fa-caret-right"></i>` + measure.MEASURE_TYPE + `
+													<span class="btn-blue"> <i class="fa fa-fw fa-caret-right"></i>` + measure.MEASURE_TYPE + `</span>
 												</span>
 											</td>
 										</tr>

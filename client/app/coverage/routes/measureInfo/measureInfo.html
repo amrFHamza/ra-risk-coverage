@@ -1,8 +1,130 @@
 <!-- Breadcrumbs -->
 <ol class="breadcrumb">
   <li><a href="/risk-catalogue"><i class="fa fa-fw fa-exclamation-triangle"></i> Risk catalogue</a></li>
-  <li><a href="/measures"><i class="fa fa-fw fa-wrench"></i> Generic measures</a></li>
-  <li class="active"><span ng-if="measure.MEASURE_ID">Measure #{{measure.MEASURE_ID}}</span><span ng-if="!measure.MEASURE_ID">New generic measure</span></li>  
+  <li><a href="/measures"><i class="fa fa-fw fa-check-circle"></i> Measure catalogue</a></li>
+  <li class="active"><span ng-if="measure.MEASURE_ID">Measure #{{measure.BUSINESS_PROCESS_ID}}-{{measure.MEASURE_ID}}</span><span ng-if="!measure.MEASURE_ID">New generic measure</span></li>  
   <li><a href="/key-risk-areas"><i class="fa fa-fw fa-map"></i> Key Risk Areas</a></li>
 </ol>
 <!-- Breadcrumbs -->
+
+
+<h3>
+	<span ng-if="measure.MEASURE_ID" class="input-group btn-group pull-left">
+		<a class="btn label-process-{{measure.BUSINESS_PROCESS_ID}} dropdown-toggle no-margins no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="isDisabled">
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a ui-sref="measureInfo({measureId:'newMeasure'})"><i class="fa fa-check-circle fa-fw"></i> New measure</a></li>
+			<li ng-if="measure.MEASURE_ID"><a href="#" ng-click="deleteMeasure(measure.MEASURE_ID)"><i class="fa fa-trash fa-fw"></i> Delete measure</a></li>
+		</ul>
+	</span> 
+	&nbsp;
+
+	<span ng-if="measure.BUSINESS_SUB_PROCESS_ID" class="btn-process-{{measure.BUSINESS_PROCESS_ID}}">
+		<strong>{{measure.BUSINESS_PROCESS}}</strong> 
+		<i class="fa fa-fw fa-dot-circle-o"></i> 
+		<span>{{measure.BUSINESS_SUB_PROCESS}}</span> 
+	</span>
+</h3>
+
+<form class="form-horizontal" name="datoForm">
+
+	<div class="panel panel-default md-whiteframe-4dp panel-process-{{measure.BUSINESS_PROCESS_ID}}">
+
+	  <div class="panel-heading no-margins">
+			<h4 class="no-margins">
+				<i class="fa fa-lg fa-check-circle"></i> 
+				<strong>{{measure.MEASURE_NAME}}</strong> 
+			</h4>
+	  </div>
+
+	  <div class="panel-body" ng-cloak>
+
+      <!-- Solution -->
+      <div class="form-group">
+          <div class="col-sm-5">
+              <label for="measurePROCESS">Business process</label>
+              <select class="form-control" name="measurePROCESS" ng-options="process.BUSINESS_PROCESS_ID as process.BUSINESS_PROCESS for process in processes" ng-model="measure.BUSINESS_PROCESS_ID" ng-change="processChanged(measure.BUSINESS_PROCESS_ID)" ng-disabled="isDisabled" required>
+              </select>
+	            <div ng-messages="datoForm.measurePROCESS.$error"> 
+	              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+	            </div>               
+          </div>
+
+          <div class="col-sm-4">
+              <label for="measureSUBPROCESS">Business sub-process</label>
+              <select class="form-control" name="measureSUBPROCESS" ng-options="subProcess.BUSINESS_SUB_PROCESS_ID as subProcess.BUSINESS_SUB_PROCESS for subProcess in subProcesses | filter: {BUSINESS_PROCESS_ID: measure.BUSINESS_PROCESS_ID}" ng-model="measure.BUSINESS_SUB_PROCESS_ID" ng-change="subProcessChanged(measure.BUSINESS_SUB_PROCESS_ID)" ng-disabled="isDisabled" required>
+              	
+              </select>
+	            <div ng-messages="datoForm.measureSUBPROCESS.$error"> 
+	              <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+	            </div>               
+          </div>
+
+          <div class="col-sm-3">
+							<label></label>
+							<div layout="row" layout-align="start center">
+	              <md-checkbox class="md-primary md-hue-1 xs-margins" md-no-ink ng-true-value="'Y'" ng-false-value="'N'" ng-model="measure.RELEVANT" ng-disabled="isDisabled" aria-label="Relevant">
+	                Relevant
+	              </md-checkbox>
+	              <md-checkbox class="md-primary md-hue-1 xs-margins" md-no-ink ng-true-value="'Y'" ng-false-value="'N'" ng-model="measure.REQUIRED" ng-disabled="isDisabled" aria-label="Required">
+	                Required
+	              </md-checkbox>              
+							</div>
+          </div>
+
+
+      </div>      
+      <!-- Solution -->
+
+      <!-- Measure -->
+      <div class="form-group">
+          <div class="col-sm-9">
+              <label for="measureRISK">Measure</label>
+            	<input type="text" name="measureRISK" minlength="3" maxlength="255" class="form-control" placeholder="Measure" ng-model="measure.MEASURE_NAME" required ng-disabled="isDisabled" autocomplete="off">
+              <div ng-messages="datoForm.measureRISK.$error">
+                <div ng-message="required"><small class="label label-danger">This field is required</small></div>
+              	<div ng-message="minlength" ng-message="maxlength"><small class="label label-danger">Should at least 3 characters long</small></div>                
+              </div>            
+          </div>
+
+          <div class="col-sm-3">
+              <label for="measureCATEGORY">Measure type</label>
+              <select class="form-control" name="measureCATEGORY" ng-model="measure.MEASURE_TYPE" ng-disabled="isDisabled">
+	              <option value=""></option>
+	              <option value="Correctness">Correctness</option>
+	              <option value="Completeness">Completeness</option>
+	              <option value="Trend">Trend</option>
+	              <option value="Margins">Margins</option>
+              </select>
+          </div>
+
+      </div>
+      <!-- Measure -->     
+
+      <!-- Description -->
+      <div class="form-group">
+          <div class="col-sm-12">
+              <label for="measureDESCRIPTION">Measure description</label>
+              <textarea name="measureDESCRIPTION" type="text" class="form-control" placeholder="Measure description" ng-model="measure.MEASURE_DESCRIPTION" rows="1" ng-disabled="isDisabled" msd-elastic></textarea>          
+          </div>
+      </div>
+      <!-- Description -->
+			
+	  </div> 
+
+	  <!-- Buttons -->
+	  <div class="panel-footer no-margins">
+
+	    <div class="form-group">
+	      <div class="col-sm-12">
+	        <button ng-if="!isDisabled && datoForm.$dirty" type="button" class="btn btn-primary" ng-click="save()"><i class="fa fa-save"></i> Save</button>  
+	        <button type="button" class="btn btn-default" ng-click="cancel()">Back</button>
+	      </div>
+	    </div>
+	  </div>
+	  <!-- Buttons -->
+
+	</div>
+
+</form>

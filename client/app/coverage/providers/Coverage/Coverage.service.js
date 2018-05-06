@@ -970,7 +970,54 @@ function CoverageService($rootScope, Entry, $http, $q, $uibModal, $timeout) {
             return $q.reject(response.data);
           });
       },      
-
+      getMeasures: function(){
+        return $http({
+          url: '/api/coverage/getMeasures', 
+          method: 'GET',
+          params: {}
+        })
+        .then(function(response) {
+            return response.data;
+          }, function(response) {
+            return $q.reject(response.data);
+          });
+      },      
+      getMeasureInfo: function(measureId){
+        return $http({
+          url: '/api/coverage/getMeasureInfo', 
+          method: 'GET',
+          params: {measureId: measureId}
+        })
+        .then(function(response) {
+            return response.data;
+          }, function(response) {
+            return $q.reject(response.data);
+          });
+      },  
+      postMeasure: function(measure){
+        return $http({
+          url: '/api/coverage/postMeasure', 
+          method: 'POST',
+          data: measure
+        })
+        .then(function(response) {
+            return response.data;
+          }, function(response) {
+            return $q.reject(response.data);
+          });
+      }, 
+      deleteMeasure: function(measureId){
+        return $http({
+          url: '/api/coverage/deleteMeasure', 
+          method: 'DELETE',
+          params: {measureId: measureId}
+        })
+        .then(function(response) {
+            return response.data;
+          }, function(response) {
+            return $q.reject(response.data);
+          });
+      },           
     }; //END return
 }
 
