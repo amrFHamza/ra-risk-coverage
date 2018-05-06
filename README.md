@@ -12,7 +12,7 @@ The main features include:
 - **Risk coverage visualisation and analysis** (provides means to set priorities and plan risk mitigation strategies)
 
 The risk modeling tool comes out of the box with two (mutually exclusive) data models based on different risk catalogues, whcih are de-facto risk management standards in telecom industry:
-- **RAG RA Risk Catalogue** ([more information](https://riskandassurancegroup.org/)), available under [Creative Commons Attribution-Non Commercial-No Derivatives International 4.0 Licence](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)
+- **RAG RA Risk Catalogue** ([more information](https://riskandassurancegroup.org/rag-ra-risk-catalogue/)), available under [Creative Commons Attribution-Non Commercial-No Derivatives International 4.0 Licence](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)
 - **TM Forum RA Risk Inventory** ([more information](https://www.tmforum.org/resources/best-practice/gb941e-revenue-assurance-coverage-model-risk-inventory-v1-4-1/)), Copyright © TM Forum 2014.
 
 ## Getting Started
