@@ -5,6 +5,8 @@
 class MeasureTableComponent {
   constructor($scope, Entry, Coverage, $filter, $timeout, $state) {
     $scope.entry = Entry;
+    $scope.isDisabled = $scope.entry.isDisabled();
+    
     $scope.businessProcesses = [];
     $scope.measures = [];
     $scope.subRisks = [];
@@ -12,7 +14,13 @@ class MeasureTableComponent {
     $scope._und = _;
     $scope.loadFinished = false;
 
-    $scope.isDisabled = $scope.entry.isDisabled();
+    // Pagination
+    $scope.pageSize = 20;
+    $scope.currentPage = 1;
+
+    $scope.setCurrentPage = function(currentPage) {
+        $scope.currentPage = currentPage;
+    };
 
     Coverage.getMeasures()
       .then(function(data){
@@ -83,6 +91,8 @@ class MeasureTableComponent {
                 
           $scope.filteredMeasures = $filter('filter') ($scope.measures, $scope.entry.searchRiskCatalogue);
           $scope.loadFinished = true;
+          $scope.currentPage = 1;
+
         }, 400);
     };
     $scope.$watch('entry.searchRiskCatalogue', timeoutFilterChange, true);      

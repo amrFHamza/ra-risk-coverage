@@ -315,6 +315,14 @@ function CoverageService($rootScope, Entry, $http, $q, $uibModal, $timeout) {
             $scope.measures = [];
             $scope.selectedMeasures = [];
 
+            // Pagination
+            $scope.pageSize = 20;
+            $scope.currentPage = 1;
+
+            $scope.setCurrentPage = function(currentPage) {
+                $scope.currentPage = currentPage;
+            };
+    
             // Get unlinked measures
             $http({
               url: '/api/coverage/getUnlinkedMeasuresForSubRiskId', 

@@ -18,15 +18,15 @@
 		    </thead>
 
 		    <tbody>				    	
-					<tr class="animation pointer-row" ng-class="{'info': measure.SELECTED == 'Y'}" ng-repeat="measure in measures | filter: entry.searchMeasure" ng-click="$event.originalEvent.checkBoxClick || ((measure.SELECTED=='Y'?measure.SELECTED='N':measure.SELECTED='Y') && updateSelected())">
+					<tr class="animation pointer-row" ng-class="{'info': measure.SELECTED == 'Y'}" ng-repeat="measure in measures | filter: entry.searchMeasure | startFrom: (currentPage-1) * pageSize  | limitTo:pageSize" ng-click="$event.originalEvent.checkBoxClick || ((measure.SELECTED=='Y'?measure.SELECTED='N':measure.SELECTED='Y') && updateSelected())">
 						<td style="vertical-align: middle; text-align: center;">
 		          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="measure.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Sub-risk selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="updateSelected()"> 
 		          </md-checkbox>							
 						</td>		        
-						<td style="vertical-align: middle; text-align: center;"><span>{{$index + 1}} | <strong ng-if='measure.TMF_ID'>{{measure.TMF_ID}}</strong> <span ng-if='!measure.MEASURE_ID' ng-class="{'btn-red': !measure.SUB_RISK.length, 'btn-green': measure.SUB_RISK.length > 0}"><strong>NEW</strong></span></td>
+						<td style="vertical-align: middle; text-align: center;"><span>{{$index + 1 + (currentPage-1) * pageSize}} | <strong ng-if='measure.MEASURE_ID'>{{measure.BUSINESS_PROCESS_ID}}-{{measure.MEASURE_ID}}</strong> <span ng-if='!measure.MEASURE_ID' ng-class="{'btn-red': !measure.SUB_RISK.length, 'btn-green': measure.SUB_RISK.length > 0}"><strong>NEW</strong></span></td>
 						<td ng-class="{'label-grey': measure.RELEVANT == 'N', 'label-yellow': measure.REQUIRED == 'N', 'label-red': measure.REQUIRED == 'Y'}"></td>
 						<td style="vertical-align: middle; text-align: left; padding-left: 7px;">
-							{{measure.MEASURE_NAME}} <br/> 
+							<strong>{{measure.MEASURE_NAME}}</strong> <br/> 
 							<span class="btn-grey no-margins">{{measure.MEASURE_DESCRIPTION}} <span ng-if="measure.TMF_REFERENCE" class="btn-blue">Ref. {{measure.TMF_REFERENCE}}</span> <i class="fa fa-fw fa-caret-right"> </i> {{measure.MEASURE_TYPE}}</span>
 						</td>
 						<td style="vertical-align: middle; text-align: center;">{{measure.SOURCE}}</td>
@@ -42,6 +42,11 @@
 				</tbody>
 			</table>			
 			<!-- Main table -->
+
+	    <div ng-if="(measures | filter: entry.searchMeasure).length > pageSize" class="no-margins" layout="row" layout-align="center">
+	        <ul uib-pagination total-items="(measures | filter: entry.searchMeasure).length" items-per-page="pageSize" max-size="10" ng-model="currentPage" ng-change="setCurrentPage(currentPage)" boundary-link-numbers="true" previous-text="<" next-text=">"></ul>
+	    </div>
+
     </div>
 
 		<div class="modal-footer no-margins">

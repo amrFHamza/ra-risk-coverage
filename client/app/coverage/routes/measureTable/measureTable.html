@@ -85,8 +85,8 @@
 	            		<input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.MEASURE_NAME"  placeholder="Measure name"/>
 	            	</span>
 	            </td>
-	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.RELEVANT" placeholder="y/n"/></td>
-	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.REQUIRED" placeholder="y/n"/></td>
+	            <td style="text-align:center;"><div layout="row" layout-align="center center"><md-switch class="md-primary md-hue-1 no-margins" ng-true-value="'Y'" ng-false-value="'N'" ng-model="entry.searchRiskCatalogue.RELEVANT" aria-label="RELEVANT"></md-switch></div></td>
+	            <td style="text-align:center;"><div layout="row" layout-align="center center"><md-switch class="md-primary md-hue-1 no-margins" ng-true-value="'Y'" ng-false-value="'N'" ng-model="entry.searchRiskCatalogue.REQUIRED" aria-label="REQUIRED"></md-switch></div></td>
 	            <td style="text-align:center;"><input class="no-borders-title" type="text" ng-model="entry.searchRiskCatalogue.SOURCE" placeholder=""/></td>
 	        </tr>
       </thead>
@@ -107,17 +107,17 @@
             </td>
         </tr>   
 
-				<tr class="animation pointer-row" ng-class="{'info':measure.SELECTED=='Y'}" ng-repeat="measure in filteredMeasures" ng-click="$event.originalEvent.checkBoxClick || measureInfo(measure.MEASURE_ID)">
+				<tr class="animation pointer-row" ng-class="{'info':measure.SELECTED=='Y'}" ng-repeat="measure in filteredMeasures | startFrom: (currentPage-1) * pageSize  | limitTo:pageSize" ng-click="$event.originalEvent.checkBoxClick || measureInfo(measure.MEASURE_ID)">
 					<td style="vertical-align: middle; text-align: center;">
 	          <md-checkbox class="md-primary md-hue-1 no-margins" ng-model="measure.SELECTED" ng-true-value="'Y'" ng-false-value="'N'" md-no-ink aria-label="Measure selected" ng-click="$event.originalEvent.checkBoxClick = true" ng-change="printSelected()" ng-disabled="isDisabled"> 
 	          </md-checkbox>							
 					</td>
-					<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1}} |</span></td>			
+					<td style="vertical-align: middle; text-align: right;"><span>{{$index + 1 + (currentPage-1) * pageSize}}.</span></td>			
 					<td style="vertical-align: middle; text-align: center;"><span><i class="fa fa-2x fa-fw fa-check-circle"></i></span></td>
 					<td style="vertical-align: middle; text-align: center;"><strong ng-if='measure.MEASURE_ID'>{{measure.MEASURE_ID}}</strong> <span ng-if='!measure.MEASURE_ID' ng-class="{'btn-red': !measure.MEASURE_ID.length, 'btn-green': measure.MEASURE_ID.length > 0}"><strong>ERR</strong></span></td>
 					<td style="vertical-align: middle; text-align: left;" class="label-process-{{measure.BUSINESS_PROCESS_ID}}"></td>
 					<td style="vertical-align: middle; text-align: left; padding-left:10px;">
-						<div style="font-size: 14px" class="btn-process-{{measure.BUSINESS_PROCESS_ID}}">
+						<div style="font-size: 12px" class="btn-process-{{measure.BUSINESS_PROCESS_ID}}">
 							<strong>{{measure.BUSINESS_PROCESS}}</strong> 
 							<i class="fa fa-fw fa-dot-circle-o"></i> 
 							<span>{{measure.BUSINESS_SUB_PROCESS}}</span> 
@@ -143,5 +143,8 @@
 			</tbody>
 		</table>
 		<!-- Main table -->
+    <div ng-if="filteredMeasures.length > pageSize" class="no-margins" layout="row" layout-align="center">
+        <ul uib-pagination total-items="filteredMeasures.length" items-per-page="pageSize" max-size="10" ng-model="currentPage" ng-change="setCurrentPage(currentPage)" boundary-link-numbers="true" previous-text="<" next-text=">"></ul>
+    </div>
 
 </div>

@@ -23,7 +23,7 @@ class ProcedureTableComponent {
 			$scope.loadFinished = true;
 
 			// Pagination in controller
-			$scope.pageSize = 25;
+			$scope.pageSize = 20;
 			$scope.currentPage = 1;
 
 		}, function (err) {

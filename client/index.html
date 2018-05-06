@@ -124,13 +124,13 @@
 
               <!-- Coverage -->
               <ul class="nav nav-sidebar">
-                <li ng-class="{'active': entry.state.data.leftMenu == 'Risk catalogue'}"><a ui-sref="riskTable()" ><i class="fa fa-exclamation-triangle fa-fw"></i> Risk catalogue</a></li>
+                <li ng-class="{'active': entry.state.data.leftMenu == 'Risk catalogue'}"><a ui-sref="riskTable()" ><i class="fa fa-lg fa-fw fa-book"></i> Catalogues</a></li>
               </ul> 
 
               <!-- Dataflow -->
               <ul class="nav nav-sidebar">
-                <li ng-class="{'active': entry.state.data.leftMenu == 'Coverage'}"><a ui-sref="productSegmentTable({'opcoId': entry.OPCO_ID})" ><i class="fa fa-umbrella fa-fw"></i> Risk coverage</a></li>
-                <li ng-class="{'active': entry.state.data.leftMenu == 'Dataflow'}"><a ui-sref="procedureTable({'opcoId': entry.OPCO_ID})" ><i class="fa fa-sitemap fa-fw"></i> Dataflows</a></li>
+                <li ng-class="{'active': entry.state.data.leftMenu == 'Coverage'}"><a ui-sref="productSegmentTable({'opcoId': entry.OPCO_ID})" ><i class="fa fa-lg fa-fw fa-umbrella"></i> Risk coverage</a></li>
+                <li ng-class="{'active': entry.state.data.leftMenu == 'Dataflow'}"><a ui-sref="procedureTable({'opcoId': entry.OPCO_ID})" ><i class="fa fa-lg fa-fw fa-sitemap"></i> Dataflows</a></li>
               </ul> 
 
       
@@ -151,18 +151,6 @@
       </md-content>
     </div>
   </div>
-    
-    <!-- manual -->
-      <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-          jax: ["input/AsciiMath","output/CommonHTML"],
-          extensions: ["tex2jax.js","asciimath2jax.js","MathMenu.js"],
-          TeX: {
-            extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
-          }
-        });
-      </script>      
-    <!-- end manual -->
 
     <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>

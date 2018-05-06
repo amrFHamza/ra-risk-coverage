@@ -23,7 +23,7 @@ class DatasourceTableComponent {
 			$scope.filteredDatasources = $filter('filter') ($scope.datasources, $scope.entry.searchDatasource);
 
 			// Pagination in controller
-			$scope.pageSize = 25;
+			$scope.pageSize = 20;
 			$scope.currentPage = 1;
 			$scope.setCurrentPage = function(currentPage) {
 			    $scope.currentPage = currentPage;

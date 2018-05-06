@@ -5,13 +5,21 @@
 class RiskTableComponent {
   constructor($scope, Entry, Coverage, $filter, $timeout, $state) {
     $scope.entry = Entry;
+    $scope.isDisabled = $scope.entry.isDisabled();
+    
     $scope.businessProcesses = [];
     $scope.risks = [];
     $scope.subRisks = [];
     $scope.selectedRisks = [];
     $scope._und = _;
 
-    $scope.isDisabled = $scope.entry.isDisabled();
+    // Pagination
+    $scope.pageSize = 20;
+    $scope.currentPage = 1;
+
+    $scope.setCurrentPage = function(currentPage) {
+        $scope.currentPage = currentPage;
+    };
 
     Coverage.getRisks()
       .then(function(data){
@@ -92,7 +100,9 @@ class RiskTableComponent {
             $scope.entry.searchRiskCatalogue = {};
           }
           $scope.filteredRisks = $filter('filter') ($scope.risks, $scope.entry.searchRiskCatalogue);
-          $scope.loadFinished = true;     
+          $scope.loadFinished = true;   
+          $scope.currentPage = 1;
+
         }, 400);
     };
     $scope.$watch('entry.searchRiskCatalogue', timeoutFilterChange, true);      
